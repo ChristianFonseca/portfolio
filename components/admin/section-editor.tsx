@@ -200,15 +200,21 @@ export function SectionEditor({
     })
   }
 
+  const anyStale = stale.en || stale.es
   const statusText = pending
     ? "Guardando…"
-    : stale.en || stale.es
-      ? `Falta actualizar ${stale.en ? "EN" : "ES"} — tradúcelo con IA o edítalo a mano`
+    : anyStale
+      ? `Falta actualizar ${stale.en ? "EN" : "ES"}`
       : dirty
         ? "Cambios sin guardar"
         : saved
           ? "Guardado"
           : "Sin cambios"
+
+  const markUpToDate = () => {
+    setStale({ en: false, es: false })
+    setToast({ ok: true, text: "Ambos idiomas marcados como al día — ya puedes guardar." })
+  }
 
   return (
     <div>
@@ -244,6 +250,16 @@ export function SectionEditor({
               )}
               {statusText}
             </span>
+            {anyStale && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={markUpToDate}
+                className="rounded-full border-yellow-500/50 bg-transparent text-xs text-yellow-600 hover:bg-yellow-500/10 dark:text-yellow-400"
+              >
+                Marcar al día
+              </Button>
+            )}
             <Button variant="outline" size="sm" className="rounded-full text-xs bg-transparent" asChild>
               <a
                 href={active === "es" ? "https://christianfonseca.dev/es" : "https://christianfonseca.dev"}
@@ -306,9 +322,21 @@ export function SectionEditor({
             : `Traducir ${active.toUpperCase()} → ${other.toUpperCase()} con IA`}
         </Button>
         <p className="text-xs text-muted-foreground">
-          Editas en {LOCALE_LABELS[active]}; la IA genera el otro idioma.
+          La IA es opcional: también puedes escribir la traducción a mano en la otra pestaña.
         </p>
       </div>
+
+      {/* Aviso cuando la versión activa está desactualizada */}
+      {stale[active] && (
+        <div className="mb-6 flex flex-wrap items-center gap-2 rounded-xl border border-yellow-500/40 bg-yellow-500/10 px-4 py-3 text-sm text-yellow-700 dark:text-yellow-300">
+          <AlertTriangle className="h-4 w-4 shrink-0" />
+          <span>
+            Esta versión ({active.toUpperCase()}) quedó desactualizada respecto a {other.toUpperCase()}. Tienes 3
+            opciones: <b>edítala a mano</b> (se marca al día sola), genera la traducción con IA desde la pestaña{" "}
+            {other.toUpperCase()}, o usa <b>Marcar al día</b> si ya está correcta.
+          </span>
+        </div>
+      )}
 
       {/* Título de la sección por idioma */}
       <div className="mb-8 grid gap-4 md:grid-cols-2">
