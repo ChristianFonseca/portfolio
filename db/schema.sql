@@ -25,6 +25,20 @@ CREATE TABLE IF NOT EXISTS settings (
   value jsonb NOT NULL
 );
 
+-- Preguntas del chat público. La IP se guarda SOLO seudonimizada (HMAC-SHA256),
+-- suficiente para rate-limiting y analítica sin almacenar datos personales en claro.
+CREATE TABLE IF NOT EXISTS chat_questions (
+  id         bigserial PRIMARY KEY,
+  ip_hash    text NOT NULL,
+  locale     text NOT NULL DEFAULT 'en',
+  question   text NOT NULL,
+  answer     text NOT NULL DEFAULT '',
+  model      text NOT NULL DEFAULT '',
+  created_at timestamptz NOT NULL DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS chat_questions_ip_day_idx ON chat_questions (ip_hash, created_at);
+
 CREATE INDEX IF NOT EXISTS sections_order_idx ON sections (visible, position);
 
 CREATE TABLE IF NOT EXISTS assets (

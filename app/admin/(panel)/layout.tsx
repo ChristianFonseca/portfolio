@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation"
 import Link from "next/link"
-import { Users, ExternalLink, LayoutGrid, Settings } from "lucide-react"
+import { Users, ExternalLink, LayoutGrid, Settings, MessageSquare } from "lucide-react"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { getSessionUser } from "@/lib/auth"
 import { sql } from "@/lib/db"
@@ -63,6 +63,15 @@ export default async function PanelLayout({ children }: { children: React.ReactN
                 >
                   <Users className="h-4 w-4" />
                   Usuarios
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/questions"
+                  className="flex items-center gap-2 rounded-lg px-2 py-2 text-sm text-muted-foreground transition-colors hover:bg-card/80 hover:text-foreground"
+                >
+                  <MessageSquare className="h-4 w-4" />
+                  Preguntas
                 </Link>
               </li>
               <li>

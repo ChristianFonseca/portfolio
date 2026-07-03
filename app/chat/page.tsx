@@ -30,6 +30,7 @@ export default function ChatPage() {
   ])
   const [input, setInput] = useState("")
   const [isTyping, setIsTyping] = useState(false)
+  const [remaining, setRemaining] = useState<number | null>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const [isNavigating, setIsNavigating] = useState(false)
   const router = useRouter()
@@ -52,12 +53,13 @@ export default function ChatPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!input.trim()) return
+    const question = input.trim()
+    if (!question) return
 
     const userMessage: Message = {
       id: Date.now().toString(),
       role: "user",
-      content: input,
+      content: question,
       timestamp: new Date(),
     }
 
@@ -65,47 +67,45 @@ export default function ChatPage() {
     setInput("")
     setIsTyping(true)
 
-    // Simulate AI response (replace with actual API call)
-    setTimeout(() => {
-      const assistantMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        role: "assistant",
-        content: getResponse(input),
-        timestamp: new Date(),
+    try {
+      // Historial reciente (sin el saludo inicial) para dar contexto al asistente
+      const history = [...messages, userMessage]
+        .filter((m) => m.id !== "1")
+        .slice(-10, -1)
+        .map((m) => ({ role: m.role === "user" ? "user" : "model", content: m.content }))
+
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: question, history, locale: "en" }),
+      })
+      const data = await res.json().catch(() => ({}))
+
+      const content = res.ok
+        ? data.answer
+        : (data.error ?? "The assistant is unavailable right now. Please try again in a minute.")
+
+      if (res.ok && typeof data.remaining === "number" && data.remaining >= 0) {
+        setRemaining(data.remaining)
       }
-      setMessages((prev) => [...prev, assistantMessage])
+
+      setMessages((prev) => [
+        ...prev,
+        { id: (Date.now() + 1).toString(), role: "assistant", content, timestamp: new Date() },
+      ])
+    } catch {
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: (Date.now() + 1).toString(),
+          role: "assistant",
+          content: "Connection error. Please try again.",
+          timestamp: new Date(),
+        },
+      ])
+    } finally {
       setIsTyping(false)
-    }, 1000)
-  }
-
-  const getResponse = (query: string): string => {
-    const lowerQuery = query.toLowerCase()
-
-    if (lowerQuery.includes("experience") || lowerQuery.includes("work")) {
-      return "Christian has a decade of experience as a Data & AI Engineer. He's worked at companies like Baufest, Coderio, Tottus, Apple (via Turing), JobLeap AI, BBVA, BCP, and Rimac. He specializes in automating data pipelines, deploying GenAI agents, and establishing MLOps standards."
     }
-
-    if (lowerQuery.includes("skill") || lowerQuery.includes("technology")) {
-      return "Christian is proficient in GenAI (RAG, LangChain, LangGraph), Machine Learning, Python, TypeScript, PySpark, SQL, TensorFlow, PyTorch, and more. He works across AWS, Azure, GCP and OCI, with strong MLOps practices (MLflow, Vertex AI, SageMaker)."
-    }
-
-    if (lowerQuery.includes("project")) {
-      return "Christian has worked on various projects including ML Pipeline Frameworks, Data Engineering Toolkits, NLP Analytics Suites, Time Series Forecasting systems, and Cloud Infrastructure solutions. He's also contributed to research projects like Brain-Computer Interfaces and autonomous Mining Robots."
-    }
-
-    if (lowerQuery.includes("education") || lowerQuery.includes("degree")) {
-      return "Christian is pursuing a Master of Science in Artificial Intelligence at Universidad Nacional de Ingeniería, Peru (2024-2026). He holds a Bachelor's in Mechatronics Engineering and completed a Diploma in Advanced Computing in India. He's also 13x AWS, 4x Azure and 4x OCI certified."
-    }
-
-    if (lowerQuery.includes("contact") || lowerQuery.includes("email") || lowerQuery.includes("reach")) {
-      return "You can reach Christian at christian.fonseca.r@gmail.com or connect with him on LinkedIn. He's available for new projects and opportunities!"
-    }
-
-    if (lowerQuery.includes("teaching") || lowerQuery.includes("professor")) {
-      return "Christian is a Professor at Data Mining Consulting (DMC) and BPC Business School (UNALM). He's authored and taught over 20 advanced analytics programs covering Data Engineering, MLOps, Deep Learning, Time Series & NLP, training 100+ professionals."
-    }
-
-    return "That's a great question! Christian has extensive experience in AI, data science, and engineering. Could you be more specific about what you'd like to know? You can ask about his experience, skills, projects, education, or how to contact him."
   }
 
   return (
@@ -139,7 +139,12 @@ export default function ChatPage() {
           Chat with AI Assistant
         </h1>
         <p className="text-sm text-muted-foreground text-center mb-8">
-          Demo preview — answers are predefined, not generated by a live AI.
+          Ask anything about Christian's experience, skills or projects — answers are grounded in his real profile.
+          {remaining !== null && remaining <= 3 && (
+            <span className="ml-2 text-yellow-600 dark:text-yellow-400">
+              {remaining} question{remaining === 1 ? "" : "s"} left today.
+            </span>
+          )}
         </p>
 
         {/* Messages Container */}

@@ -54,6 +54,42 @@ export async function saveSection(slug: string, payload: SaveSectionPayload): Pr
   }
 }
 
+const chatConfigSchema = z.object({
+  dailyLimit: z.number().int().min(1).max(1000),
+  allowlist: z
+    .array(
+      z
+        .string()
+        .trim()
+        .min(3)
+        .max(45)
+        .regex(/^[0-9a-fA-F:.]+$/, "IP inválida"),
+    )
+    .max(100),
+  extraContext: z.string().max(8000),
+})
+
+export async function setChatConfig(input: {
+  dailyLimit: number
+  allowlist: string[]
+  extraContext: string
+}): Promise<ActionResult> {
+  try {
+    await requireAdmin()
+    const parsed = chatConfigSchema.safeParse(input)
+    if (!parsed.success) return { ok: false, error: parsed.error.issues[0].message }
+    await setSetting("chat_daily_limit", parsed.data.dailyLimit)
+    await setSetting("chat_ip_allowlist", parsed.data.allowlist)
+    await setSetting("chat_extra_context", parsed.data.extraContext)
+    // El contexto extra alimenta la knowledge base del chat (cache tag "content")
+    revalidateTag("content")
+    return { ok: true }
+  } catch (error) {
+    console.error("setChatConfig:", error)
+    return { ok: false, error: "Error al guardar la configuración del chat" }
+  }
+}
+
 export async function setGeminiModel(model: string): Promise<ActionResult> {
   try {
     await requireAdmin()

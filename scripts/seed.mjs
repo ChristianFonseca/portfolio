@@ -32,11 +32,25 @@ for (const s of sections) {
   console.log(`sección ${s.slug}: ${inserted.length ? "insertada" : "ya existía (no se toca)"}`)
 }
 
-await sql`
-  insert into settings (key, value) values ('gemini_model', '"gemini-2.5-flash-lite"'::jsonb)
-  on conflict (key) do nothing
-`
-console.log("setting gemini_model: OK")
+const CHAT_EXTRA_CONTEXT = [
+  "Education: MSc in Artificial Intelligence (in progress, 2024-2026) at Universidad Nacional de Ingenieria, Peru. Diploma in Advanced Computing (2015) at C-DAC, India. BSc in Mechatronics Engineering (2011-2015) at Universidad Nacional de Ingenieria, Peru.",
+  "Certifications detail: AWS 13x certified (Solutions Architect Professional, DevOps Engineer Professional, Machine Learning Specialty, Advanced Networking Specialty, Security Specialty, ML Engineer Associate, Solutions Architect Associate, Data Engineer Associate, CloudOps Engineer Associate, SysOps Administrator Associate, Developer Associate, AI Practitioner, Cloud Practitioner). Microsoft 4x (Azure AI Engineer Associate, Azure Data Scientist Associate, Azure AI Fundamentals, Azure Data Fundamentals). Oracle 4x (AI Vector Search Professional, OCI Data Science Professional, OCI GenAI Professional, OCI AI Foundations Associate). Also TOGAF and DAMA CDMP.",
+  "Contact: christian.fonseca.r@gmail.com. LinkedIn: linkedin.com/in/christian-fonseca-rodriguez. GitHub: github.com/christianfonseca. Google Scholar and Credly profiles are linked on the website. Based in Lima, Peru (GMT-5). Open to new projects and opportunities. The website has an English version at / and Spanish at /es. His CV can be downloaded at christianfonseca.dev/cv.pdf.",
+].join("\n")
+
+const defaultSettings = [
+  ["gemini_model", "gemini-2.5-flash-lite"],
+  ["chat_daily_limit", 10],
+  ["chat_ip_allowlist", []],
+  ["chat_extra_context", CHAT_EXTRA_CONTEXT],
+]
+for (const [key, value] of defaultSettings) {
+  await sql`
+    insert into settings (key, value) values (${key}, ${sql.json(value)})
+    on conflict (key) do nothing
+  `
+  console.log(`setting ${key}: OK`)
+}
 
 if (ADMIN_EMAIL && ADMIN_PASSWORD) {
   const salt = randomBytes(16).toString("hex")
