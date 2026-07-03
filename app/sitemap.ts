@@ -1,6 +1,9 @@
 import type { MetadataRoute } from "next"
 import { getPublishedPosts } from "@/lib/blog"
 
+// Dinámico: el build de Docker no ve la DB; los posts deben resolverse en runtime
+export const dynamic = "force-dynamic"
+
 const SITE = "https://christianfonseca.dev"
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
