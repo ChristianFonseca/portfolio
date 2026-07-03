@@ -1,7 +1,10 @@
 import type { Metadata } from "next"
+import Link from "next/link"
 import { notFound } from "next/navigation"
-import { getPublishedPost, renderMarkdown } from "@/lib/blog"
+import { ArrowLeft } from "lucide-react"
+import { getPublishedPost, getPublishedPosts, renderMarkdown } from "@/lib/blog"
 import { BlogHeader } from "@/components/blog/blog-header"
+import { PostPager } from "@/components/blog/post-pager"
 import { Badge } from "@/components/ui/badge"
 
 export const dynamic = "force-dynamic"
@@ -33,6 +36,12 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
   const post = await getPublishedPost(slug, "en")
   if (!post) notFound()
 
+  // Vecinos para la navegación anterior/siguiente (lista ordenada del más nuevo al más viejo)
+  const all = await getPublishedPosts("en")
+  const index = all.findIndex((p) => p.slug === slug)
+  const newer = index > 0 ? all[index - 1] : null
+  const older = index >= 0 && index < all.length - 1 ? all[index + 1] : null
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Article",
@@ -55,6 +64,13 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
       <BlogHeader locale="en" altHref={`/es/blog/${post.slug}`} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <article className="mx-auto max-w-3xl px-6 py-12">
+        <Link
+          href="/blog"
+          className="mb-6 inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-primary"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Back to blog
+        </Link>
         <p className="text-sm text-muted-foreground">
           {post.published_at &&
             new Date(post.published_at).toLocaleDateString("en-US", {
@@ -80,6 +96,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
           </div>
         )}
         <div className="blog-prose mt-10" dangerouslySetInnerHTML={{ __html: renderMarkdown(post.body) }} />
+        <PostPager prev={older} next={newer} locale="en" />
       </article>
     </main>
   )

@@ -37,13 +37,15 @@ export function Navigation({ locale, dict }: { locale: Locale; dict: Dictionary 
     setIsOpen(false)
   }
 
+  // Los anchors hacen smooth-scroll en la landing; Blog navega a otra página,
+  // por eso va al final, separado del resto
   const navItems = [
     { icon: Home, label: dict.nav.home, href: "#home" },
     { icon: User, label: dict.nav.profile, href: "#profile" },
     { icon: Code, label: dict.nav.projects, href: "#public-projects" },
     { icon: Briefcase, label: dict.nav.experience, href: "#experience" },
-    { icon: BookOpen, label: dict.nav.blog, href: locale === "es" ? "/es/blog" : "/blog" },
     { icon: Mail, label: dict.nav.contact, href: "#contact" },
+    { icon: BookOpen, label: dict.nav.blog, href: locale === "es" ? "/es/blog" : "/blog" },
   ]
 
   const otherLocaleHref = locale === "en" ? "/es" : "/"
