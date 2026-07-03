@@ -21,6 +21,13 @@ export async function middleware(req: NextRequest) {
     return NextResponse.next({ request: { headers: requestHeaders } })
   }
 
+  // Host admin: las rutas del sitio público (/es, /chat) no existen aquí — redirigen al panel
+  if (pathname === "/es" || pathname.startsWith("/es/") || pathname === "/chat" || pathname.startsWith("/chat/")) {
+    const url = req.nextUrl.clone()
+    url.pathname = "/"
+    return NextResponse.redirect(url)
+  }
+
   // Host admin: todo vive bajo /admin vía rewrite (la URL del navegador queda limpia)
   const target = pathname.startsWith("/admin") ? pathname : `/admin${pathname === "/" ? "" : pathname}`
   const isPublic = PUBLIC_ADMIN_PATHS.some((p) => target === p)
