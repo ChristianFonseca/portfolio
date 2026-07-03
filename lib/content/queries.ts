@@ -5,6 +5,7 @@ import type { Locale } from "@/lib/i18n/dictionaries"
 import type {
   AboutData,
   ExperienceData,
+  FaqData,
   HeroData,
   LandingContent,
   ProjectsData,
@@ -44,6 +45,7 @@ function buildContent(rows: SectionRecord[], locale: Locale): LandingContent {
     researchProjects: entry<ResearchData>("research-projects"),
     experience: entry<ExperienceData>("experience"),
     teaching: entry<ExperienceData>("teaching"),
+    faq: entry<FaqData>("faq"),
   }
 }
 

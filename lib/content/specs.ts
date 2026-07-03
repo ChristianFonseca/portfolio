@@ -91,6 +91,19 @@ export const kindSpecs: Record<SectionKind, FieldSpec[]> = {
       ],
     },
   ],
+  faq: [
+    {
+      key: "items",
+      label: "Preguntas frecuentes",
+      type: "items",
+      itemName: "pregunta",
+      titleKey: "question",
+      fields: [
+        { key: "question", label: "Pregunta", type: "text" },
+        { key: "answer", label: "Respuesta", type: "textarea" },
+      ],
+    },
+  ],
   experience: [
     {
       key: "items",

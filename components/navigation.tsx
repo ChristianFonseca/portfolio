@@ -5,7 +5,7 @@ import type React from "react"
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Menu, X, Home, User, Briefcase, Code, Mail, Languages } from "lucide-react"
+import { Menu, X, Home, User, Briefcase, Code, Mail, Languages, BookOpen } from "lucide-react"
 import { ThemeToggle } from "@/components/theme-toggle"
 import type { Dictionary, Locale } from "@/lib/i18n/dictionaries"
 
@@ -22,6 +22,11 @@ export function Navigation({ locale, dict }: { locale: Locale; dict: Dictionary 
   }, [])
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    // Los links de página (ej. /blog) navegan normal; solo los anchors hacen smooth scroll
+    if (!href.startsWith("#")) {
+      setIsOpen(false)
+      return
+    }
     e.preventDefault()
     const target = document.querySelector(href)
     if (target) {
@@ -37,6 +42,7 @@ export function Navigation({ locale, dict }: { locale: Locale; dict: Dictionary 
     { icon: User, label: dict.nav.profile, href: "#profile" },
     { icon: Code, label: dict.nav.projects, href: "#public-projects" },
     { icon: Briefcase, label: dict.nav.experience, href: "#experience" },
+    { icon: BookOpen, label: dict.nav.blog, href: locale === "es" ? "/es/blog" : "/blog" },
     { icon: Mail, label: dict.nav.contact, href: "#contact" },
   ]
 

@@ -11,6 +11,7 @@ export const dictionaries = {
       profile: "Profile",
       projects: "Projects",
       experience: "Experience",
+      blog: "Blog",
       contact: "Contact",
     },
     hero: {
@@ -50,6 +51,7 @@ export const dictionaries = {
       profile: "Perfil",
       projects: "Proyectos",
       experience: "Experiencia",
+      blog: "Blog",
       contact: "Contacto",
     },
     hero: {

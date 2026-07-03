@@ -41,6 +41,26 @@ CREATE TABLE IF NOT EXISTS chat_questions (
 
 CREATE INDEX IF NOT EXISTS chat_questions_ip_day_idx ON chat_questions (ip_hash, created_at);
 
+-- Blog bilingüe (markdown por idioma; publicar exige ambos idiomas completos)
+CREATE TABLE IF NOT EXISTS posts (
+  id           serial PRIMARY KEY,
+  slug         text UNIQUE NOT NULL,
+  title        text NOT NULL DEFAULT '',
+  title_es     text NOT NULL DEFAULT '',
+  excerpt      text NOT NULL DEFAULT '',
+  excerpt_es   text NOT NULL DEFAULT '',
+  body         text NOT NULL DEFAULT '',
+  body_es      text NOT NULL DEFAULT '',
+  cover_image  text NOT NULL DEFAULT '',
+  tags         jsonb NOT NULL DEFAULT '[]'::jsonb,
+  published    boolean NOT NULL DEFAULT false,
+  published_at timestamptz,
+  updated_at   timestamptz NOT NULL DEFAULT now(),
+  created_at   timestamptz NOT NULL DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS posts_published_idx ON posts (published, published_at DESC);
+
 CREATE INDEX IF NOT EXISTS sections_order_idx ON sections (visible, position);
 
 CREATE TABLE IF NOT EXISTS assets (

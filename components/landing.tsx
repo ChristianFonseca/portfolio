@@ -105,7 +105,7 @@ export function Landing({
     }))
   }
 
-  const { hero, about, skills, publicProjects, researchProjects, experience, teaching } = content
+  const { hero, about, skills, publicProjects, researchProjects, experience, teaching, faq } = content
 
   return (
     <main className="min-h-screen relative animate-page-fade">
@@ -460,6 +460,31 @@ export function Landing({
             <div className="space-y-8">
               {teaching.data.items.map((item, i) => (
                 <ExperienceCard key={`${item.org}-${i}`} item={item} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* FAQ Section */}
+      {faq.visible && faq.data.items.length > 0 && (
+        <section id="faq" className="py-20 px-6">
+          <div className="max-w-3xl mx-auto">
+            <h2 className="text-3xl md:text-4xl font-bold text-center mb-16 floating-element bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+              {faq.title}
+            </h2>
+            <div className="space-y-4">
+              {faq.data.items.map((item, i) => (
+                <details
+                  key={i}
+                  className="group rounded-2xl border border-border bg-card/40 backdrop-blur-sm"
+                >
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-6 py-4 text-left font-medium [&::-webkit-details-marker]:hidden">
+                    {item.question}
+                    <span className="shrink-0 text-primary transition-transform group-open:rotate-45">+</span>
+                  </summary>
+                  <p className="px-6 pb-5 text-sm leading-relaxed text-muted-foreground">{item.answer}</p>
+                </details>
               ))}
             </div>
           </div>

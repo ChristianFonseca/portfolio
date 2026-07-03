@@ -68,6 +68,17 @@ export const experienceSchema = z.object({
     .max(24),
 })
 
+export const faqSchema = z.object({
+  items: z
+    .array(
+      z.object({
+        question: z.string().min(1).max(200),
+        answer: z.string().min(1).max(1000),
+      }),
+    )
+    .max(20),
+})
+
 export const kindSchemas = {
   hero: heroSchema,
   about: aboutSchema,
@@ -75,6 +86,7 @@ export const kindSchemas = {
   projects: projectsSchema,
   research: researchSchema,
   experience: experienceSchema,
+  faq: faqSchema,
 } as const
 
 export type SectionKind = keyof typeof kindSchemas
@@ -91,6 +103,7 @@ export type SkillsData = z.infer<typeof skillsSchema>
 export type ProjectsData = z.infer<typeof projectsSchema>
 export type ResearchData = z.infer<typeof researchSchema>
 export type ExperienceData = z.infer<typeof experienceSchema>
+export type FaqData = z.infer<typeof faqSchema>
 
 export interface SectionRecord {
   slug: string
@@ -116,4 +129,5 @@ export interface LandingContent {
   researchProjects: SectionEntry<ResearchData>
   experience: SectionEntry<ExperienceData>
   teaching: SectionEntry<ExperienceData>
+  faq: SectionEntry<FaqData>
 }

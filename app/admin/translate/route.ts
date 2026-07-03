@@ -1,9 +1,23 @@
 import { NextResponse } from "next/server"
+import { z } from "zod"
 import { getSessionUser } from "@/lib/auth"
-import { kindSchemas, type SectionKind } from "@/lib/content/schemas"
+import { kindSchemas } from "@/lib/content/schemas"
 import { DEFAULT_GEMINI_MODEL, getSetting } from "@/lib/settings"
 
-const LOCALE_NAMES: Record<string, string> = { en: "English", es: "Spanish (Latin American, professional CV tone)" }
+// Además de las secciones, se pueden traducir artículos del blog (markdown:
+// la IA preserva el formato, código y links)
+const postTranslatableSchema = z.object({
+  title: z.string().min(1).max(200),
+  excerpt: z.string().max(500),
+  body: z.string().max(50000),
+})
+
+const TRANSLATABLE: Record<string, z.ZodTypeAny> = { ...kindSchemas, post: postTranslatableSchema }
+
+const LOCALE_NAMES: Record<string, string> = {
+  en: "English",
+  es: "NEUTRAL Latin American Spanish (professional CV tone; use tuteo — NEVER voseo or Argentine/Rioplatense forms like 'vos', 'podés', 'tenés', 'acá', 'mirá')",
+}
 
 function buildPrompt(from: string, to: string, data: unknown): string {
   return `You are a professional translator for a Data & AI engineer's portfolio website.
@@ -12,7 +26,8 @@ Translate the human-readable text in the JSON below from ${LOCALE_NAMES[from]} t
 STRICT RULES:
 - Return ONLY valid JSON with EXACTLY the same structure, keys and types. No markdown, no explanations.
 - DO NOT translate: company/organization names ("org"), technology names (arrays like "tech", "badges"), URLs, image paths ("image", "photo"), proper nouns, acronyms (AWS, MLOps, GenAI, LLM, RAG, EEG, etc.), hex colors, booleans.
-- DO translate: titles, descriptions, bullets, roles/job titles, taglines, locations, month names in "period" fields (e.g. "May 2025 - Present" ↔ "Mayo 2025 - Presente"), skill group names, language names/levels.
+- DO translate: titles, descriptions, bullets, roles/job titles, taglines, locations, month names in "period" fields (e.g. "May 2025 - Present" ↔ "Mayo 2025 - Presente"), skill group names, language names/levels, and article body text.
+- If a field contains Markdown, preserve ALL formatting exactly: headings, lists, links (translate link text, never URLs), bold/italic markers, and code blocks (never translate code or commands).
 - Keep all numbers and metrics intact.
 - Natural, professional phrasing — not literal robotic translation.
 
@@ -40,7 +55,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Solicitud inválida" }, { status: 400 })
     }
     const { kind, from, to, data } = body
-    if (!kind || !(kind in kindSchemas) || !from || !to || from === to || data === undefined) {
+    if (!kind || !(kind in TRANSLATABLE) || !from || !to || from === to || data === undefined) {
       return NextResponse.json({ error: "Parámetros inválidos" }, { status: 400 })
     }
     if (!["en", "es"].includes(from) || !["en", "es"].includes(to)) {
@@ -92,7 +107,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "La respuesta de Gemini no fue JSON válido. Intenta de nuevo." }, { status: 502 })
     }
 
-    const parsed = kindSchemas[kind as SectionKind].safeParse(translated)
+    const parsed = TRANSLATABLE[kind].safeParse(translated)
     if (!parsed.success) {
       const issue = parsed.error.issues[0]
       return NextResponse.json(

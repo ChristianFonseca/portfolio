@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import { Landing } from "@/components/landing"
 import { getContent } from "@/lib/content/queries"
 import { getDictionary } from "@/lib/i18n/dictionaries"
+import { faqJsonLd, personJsonLd } from "@/lib/seo"
 
 export const dynamic = "force-dynamic"
 
@@ -35,5 +36,19 @@ export const metadata: Metadata = {
 
 export default async function HomeEs() {
   const content = await getContent("es")
-  return <Landing content={content} locale="es" dict={getDictionary("es")} />
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd(content, "es")) }}
+      />
+      {content.faq.visible && content.faq.data.items.length > 0 && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd(content.faq.data)) }}
+        />
+      )}
+      <Landing content={content} locale="es" dict={getDictionary("es")} />
+    </>
+  )
 }

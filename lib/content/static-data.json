@@ -1165,6 +1165,64 @@
         }
       },
       "title_es": "Consultoría y Docencia"
+    },
+    {
+      "slug": "faq",
+      "kind": "faq",
+      "title": "Frequently Asked Questions",
+      "title_es": "Preguntas Frecuentes",
+      "position": 8,
+      "visible": true,
+      "data": {
+        "en": {
+          "items": [
+            {
+              "question": "Is Christian available for new projects?",
+              "answer": "Yes. He is open to consulting, AI and data engineering projects, and advisory roles, both remote and hybrid (based in Lima, Peru, GMT-5). The fastest way to reach him is christian.fonseca.r@gmail.com or the contact form on this site."
+            },
+            {
+              "question": "What services does Christian offer?",
+              "answer": "End-to-end AI and data solutions: GenAI agents and RAG systems, MLOps standards and ML pipelines, scalable cloud data architectures on AWS, Azure and GCP, and technical training for teams."
+            },
+            {
+              "question": "Which industries has Christian worked in?",
+              "answer": "Banking (BBVA, BCP), insurance (Rimac), mining (Antamina), retail (Tottus, DELOSI), logistics, edtech and technology consulting across Latin America and global teams."
+            },
+            {
+              "question": "Does Christian work with international teams?",
+              "answer": "Yes. He has delivered projects for companies in the US and Latin America, including global teams such as Apple (via Turing), working fluently in English and Spanish."
+            },
+            {
+              "question": "What makes his profile different?",
+              "answer": "A decade of hands-on experience combining data engineering, machine learning and GenAI, backed by 21+ cloud certifications (13x AWS, 4x Azure, 4x OCI) and 5+ years teaching advanced analytics to 100+ professionals."
+            }
+          ]
+        },
+        "es": {
+          "items": [
+            {
+              "question": "¿Está Christian disponible para nuevos proyectos?",
+              "answer": "Sí. Está abierto a consultoría, proyectos de IA e ingeniería de datos y roles de asesoría, tanto remotos como híbridos (con base en Lima, Perú, GMT-5). La forma más rápida de contactarlo es christian.fonseca.r@gmail.com o el formulario de contacto de este sitio."
+            },
+            {
+              "question": "¿Qué servicios ofrece Christian?",
+              "answer": "Soluciones de IA y datos de extremo a extremo: agentes de GenAI y sistemas RAG, estándares de MLOps y pipelines de ML, arquitecturas de datos escalables en AWS, Azure y GCP, y capacitación técnica para equipos."
+            },
+            {
+              "question": "¿En qué industrias ha trabajado Christian?",
+              "answer": "Banca (BBVA, BCP), seguros (Rimac), minería (Antamina), retail (Tottus, DELOSI), logística, edtech y consultoría tecnológica en Latinoamérica y equipos globales."
+            },
+            {
+              "question": "¿Trabaja Christian con equipos internacionales?",
+              "answer": "Sí. Ha entregado proyectos para empresas de Estados Unidos y Latinoamérica, incluyendo equipos globales como Apple (vía Turing), trabajando con fluidez en inglés y español."
+            },
+            {
+              "question": "¿Qué hace diferente a su perfil?",
+              "answer": "Una década de experiencia práctica combinando ingeniería de datos, machine learning y GenAI, respaldada por más de 21 certificaciones cloud (13x AWS, 4x Azure, 4x OCI) y más de 5 años enseñando analítica avanzada a más de 100 profesionales."
+            }
+          ]
+        }
+      }
     }
   ]
 }

@@ -69,6 +69,121 @@ const chatConfigSchema = z.object({
   extraContext: z.string().max(8000),
 })
 
+// ---------- Blog ----------
+
+const slugSchema = z
+  .string()
+  .trim()
+  .toLowerCase()
+  .min(3)
+  .max(120)
+  .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Slug inválido: solo minúsculas, números y guiones")
+
+const postFieldsSchema = z.object({
+  slug: slugSchema,
+  title: z.string().trim().max(200),
+  title_es: z.string().trim().max(200),
+  excerpt: z.string().trim().max(500),
+  excerpt_es: z.string().trim().max(500),
+  body: z.string().max(50000),
+  body_es: z.string().max(50000),
+  cover_image: z.string().trim().max(300),
+  tags: z.array(z.string().trim().min(1).max(40)).max(10),
+})
+
+export type PostFields = z.infer<typeof postFieldsSchema>
+
+export async function createPost(input: { title: string; slug: string }): Promise<
+  { ok: true; id: number } | { ok: false; error: string }
+> {
+  try {
+    await requireAdmin()
+    const title = z.string().trim().min(1).max(200).safeParse(input.title)
+    const slug = slugSchema.safeParse(input.slug)
+    if (!title.success) return { ok: false, error: "El título es obligatorio" }
+    if (!slug.success) return { ok: false, error: slug.error.issues[0].message }
+
+    const rows = await sql<{ id: number }[]>`
+      insert into posts (slug, title) values (${slug.data}, ${title.data})
+      on conflict (slug) do nothing
+      returning id
+    `
+    if (!rows.length) return { ok: false, error: "Ya existe un artículo con ese slug" }
+    return { ok: true, id: rows[0].id }
+  } catch (error) {
+    console.error("createPost:", error)
+    return { ok: false, error: "Error al crear el artículo" }
+  }
+}
+
+export async function savePost(id: number, fields: PostFields): Promise<ActionResult> {
+  try {
+    await requireAdmin()
+    const parsed = postFieldsSchema.safeParse(fields)
+    if (!parsed.success) {
+      const issue = parsed.error.issues[0]
+      return { ok: false, error: `${issue.path.join(".")}: ${issue.message}` }
+    }
+    const f = parsed.data
+    const rows = await sql`
+      update posts set
+        slug = ${f.slug}, title = ${f.title}, title_es = ${f.title_es},
+        excerpt = ${f.excerpt}, excerpt_es = ${f.excerpt_es},
+        body = ${f.body}, body_es = ${f.body_es},
+        cover_image = ${f.cover_image}, tags = ${sql.json(f.tags)},
+        updated_at = now()
+      where id = ${id} returning id
+    `
+    if (!rows.length) return { ok: false, error: "Artículo no encontrado" }
+    revalidateTag("posts")
+    return { ok: true }
+  } catch (error) {
+    console.error("savePost:", error)
+    return { ok: false, error: "Error al guardar el artículo (¿slug duplicado?)" }
+  }
+}
+
+export async function togglePublishPost(id: number): Promise<ActionResult> {
+  try {
+    await requireAdmin()
+    const rows = await sql<{ published: boolean; title: string; title_es: string; body: string; body_es: string }[]>`
+      select published, title, title_es, body, body_es from posts where id = ${id}
+    `
+    const post = rows[0]
+    if (!post) return { ok: false, error: "Artículo no encontrado" }
+
+    if (!post.published) {
+      // Publicar exige ambos idiomas completos (título y cuerpo EN + ES)
+      if (!post.title.trim() || !post.body.trim() || !post.title_es.trim() || !post.body_es.trim()) {
+        return {
+          ok: false,
+          error: "Para publicar se necesitan título y contenido en AMBOS idiomas (usa Traducir con IA o complétalos a mano).",
+        }
+      }
+      await sql`update posts set published = true, published_at = coalesce(published_at, now()), updated_at = now() where id = ${id}`
+    } else {
+      await sql`update posts set published = false, updated_at = now() where id = ${id}`
+    }
+    revalidateTag("posts")
+    return { ok: true }
+  } catch (error) {
+    console.error("togglePublishPost:", error)
+    return { ok: false, error: "Error al cambiar el estado de publicación" }
+  }
+}
+
+export async function deletePost(id: number): Promise<ActionResult> {
+  try {
+    await requireAdmin()
+    await sql`delete from posts where id = ${id}`
+    revalidateTag("posts")
+    return { ok: true }
+  } catch (error) {
+    console.error("deletePost:", error)
+    return { ok: false, error: "Error al eliminar el artículo" }
+  }
+}
+
 export async function setChatConfig(input: {
   dailyLimit: number
   allowlist: string[]
