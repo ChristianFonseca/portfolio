@@ -35,7 +35,12 @@ export default async function PanelLayout({ children }: { children: React.ReactN
           </Link>
           <div className="ml-auto flex items-center gap-3">
             <ThemeToggle />
-            <span className="hidden text-xs text-muted-foreground sm:block">{user.email}</span>
+            <span className="hidden text-xs text-muted-foreground sm:block">
+              {user.email}
+              <span className="ml-1.5 rounded-full border border-border px-1.5 py-0.5 text-[10px] uppercase tracking-wide">
+                {user.role}
+              </span>
+            </span>
             <LogoutButton />
           </div>
         </div>
@@ -56,15 +61,17 @@ export default async function PanelLayout({ children }: { children: React.ReactN
                   Resumen
                 </Link>
               </li>
-              <li>
-                <Link
-                  href="/users"
-                  className="flex items-center gap-2 rounded-lg px-2 py-2 text-sm text-muted-foreground transition-colors hover:bg-card/80 hover:text-foreground"
-                >
-                  <Users className="h-4 w-4" />
-                  Usuarios
-                </Link>
-              </li>
+              {user.role === "admin" && (
+                <li>
+                  <Link
+                    href="/users"
+                    className="flex items-center gap-2 rounded-lg px-2 py-2 text-sm text-muted-foreground transition-colors hover:bg-card/80 hover:text-foreground"
+                  >
+                    <Users className="h-4 w-4" />
+                    Usuarios
+                  </Link>
+                </li>
+              )}
               <li>
                 <Link
                   href="/questions"
@@ -74,15 +81,17 @@ export default async function PanelLayout({ children }: { children: React.ReactN
                   Preguntas
                 </Link>
               </li>
-              <li>
-                <Link
-                  href="/config"
-                  className="flex items-center gap-2 rounded-lg px-2 py-2 text-sm text-muted-foreground transition-colors hover:bg-card/80 hover:text-foreground"
-                >
-                  <Settings className="h-4 w-4" />
-                  Configuración
-                </Link>
-              </li>
+              {user.role === "admin" && (
+                <li>
+                  <Link
+                    href="/config"
+                    className="flex items-center gap-2 rounded-lg px-2 py-2 text-sm text-muted-foreground transition-colors hover:bg-card/80 hover:text-foreground"
+                  >
+                    <Settings className="h-4 w-4" />
+                    Configuración
+                  </Link>
+                </li>
+              )}
               <li>
                 <a
                   href="https://christianfonseca.dev"

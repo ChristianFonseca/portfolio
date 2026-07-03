@@ -1,4 +1,6 @@
+import { redirect } from "next/navigation"
 import { CheckCircle2, XCircle } from "lucide-react"
+import { getSessionUser } from "@/lib/auth"
 import { DEFAULT_GEMINI_MODEL, GEMINI_MODELS, getSetting } from "@/lib/settings"
 import { ConfigForm } from "@/components/admin/config-form"
 import { ChatConfigForm } from "@/components/admin/chat-config-form"
@@ -6,6 +8,9 @@ import { ChatConfigForm } from "@/components/admin/chat-config-form"
 export const dynamic = "force-dynamic"
 
 export default async function AdminConfigPage() {
+  const me = await getSessionUser()
+  if (!me || me.role !== "admin") redirect("/")
+
   const model = await getSetting<string>("gemini_model", DEFAULT_GEMINI_MODEL)
   const hasApiKey = Boolean(process.env.GEMINI_API_KEY)
   const dailyLimit = await getSetting<number>("chat_daily_limit", 10)

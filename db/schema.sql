@@ -4,6 +4,8 @@ CREATE TABLE IF NOT EXISTS users (
   email         text UNIQUE NOT NULL,
   name          text NOT NULL DEFAULT '',
   password_hash text NOT NULL,
+  -- 'admin' = todo (usuarios, configuración, contenido) · 'editor' = solo contenido y analítica
+  role          text NOT NULL DEFAULT 'admin' CHECK (role IN ('admin', 'editor')),
   created_at    timestamptz NOT NULL DEFAULT now()
 );
 

@@ -26,10 +26,13 @@ export function verifyPassword(password: string, stored: string): boolean {
   return expected.length === actual.length && timingSafeEqual(expected, actual)
 }
 
+export type UserRole = "admin" | "editor"
+
 export interface AdminUser {
   id: number
   email: string
   name: string
+  role: UserRole
 }
 
 export async function createSession(user: AdminUser) {
@@ -64,15 +67,24 @@ export async function getSessionUser(): Promise<AdminUser | null> {
     const { payload } = await jwtVerify(token, secretKey())
     const id = Number(payload.sub)
     if (!Number.isInteger(id)) return null
-    const rows = await sql<AdminUser[]>`select id, email, name from users where id = ${id}`
+    // El rol se lee SIEMPRE de la DB (no del JWT): cambios de rol aplican al instante
+    const rows = await sql<AdminUser[]>`select id, email, name, role from users where id = ${id}`
     return rows[0] ?? null
   } catch {
     return null
   }
 }
 
+// Cualquier usuario autenticado (admin o editor): puede editar contenido
 export async function requireAdmin(): Promise<AdminUser> {
   const user = await getSessionUser()
   if (!user) throw new Error("No autorizado")
+  return user
+}
+
+// Solo rol admin: gestión de usuarios y configuración
+export async function requireAdminRole(): Promise<AdminUser> {
+  const user = await requireAdmin()
+  if (user.role !== "admin") throw new Error("Requiere rol de administrador")
   return user
 }

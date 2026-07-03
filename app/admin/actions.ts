@@ -3,7 +3,7 @@
 import { revalidateTag } from "next/cache"
 import { z } from "zod"
 import { sql } from "@/lib/db"
-import { hashPassword, requireAdmin } from "@/lib/auth"
+import { hashPassword, requireAdmin, requireAdminRole, type UserRole } from "@/lib/auth"
 import { kindSchemas, localizedSchema, type SectionKind } from "@/lib/content/schemas"
 import { setSetting } from "@/lib/settings"
 
@@ -75,7 +75,7 @@ export async function setChatConfig(input: {
   extraContext: string
 }): Promise<ActionResult> {
   try {
-    await requireAdmin()
+    await requireAdminRole()
     const parsed = chatConfigSchema.safeParse(input)
     if (!parsed.success) return { ok: false, error: parsed.error.issues[0].message }
     await setSetting("chat_daily_limit", parsed.data.dailyLimit)
@@ -92,7 +92,7 @@ export async function setChatConfig(input: {
 
 export async function setGeminiModel(model: string): Promise<ActionResult> {
   try {
-    await requireAdmin()
+    await requireAdminRole()
     const parsed = z
       .string()
       .trim()
@@ -150,17 +150,28 @@ const newUserSchema = z.object({
   email: z.string().trim().toLowerCase().email().max(320),
   name: z.string().trim().max(120),
   password: z.string().min(10, "La contraseña debe tener al menos 10 caracteres").max(200),
+  role: z.enum(["admin", "editor"]),
 })
 
-export async function createUser(input: { email: string; name: string; password: string }): Promise<ActionResult> {
+async function countAdmins(): Promise<number> {
+  const rows = await sql<{ n: string }[]>`select count(*) as n from users where role = 'admin'`
+  return Number(rows[0]?.n ?? 0)
+}
+
+export async function createUser(input: {
+  email: string
+  name: string
+  password: string
+  role: UserRole
+}): Promise<ActionResult> {
   try {
-    await requireAdmin()
+    await requireAdminRole()
     const parsed = newUserSchema.safeParse(input)
     if (!parsed.success) return { ok: false, error: parsed.error.issues[0].message }
 
     const inserted = await sql`
-      insert into users (email, name, password_hash)
-      values (${parsed.data.email}, ${parsed.data.name}, ${hashPassword(parsed.data.password)})
+      insert into users (email, name, password_hash, role)
+      values (${parsed.data.email}, ${parsed.data.name}, ${hashPassword(parsed.data.password)}, ${parsed.data.role})
       on conflict (email) do nothing
       returning id
     `
@@ -174,10 +185,13 @@ export async function createUser(input: { email: string; name: string; password:
 
 export async function deleteUser(id: number): Promise<ActionResult> {
   try {
-    const admin = await requireAdmin()
+    const admin = await requireAdminRole()
     if (id === admin.id) return { ok: false, error: "No puedes eliminar tu propia cuenta" }
-    const count = await sql<{ n: string }[]>`select count(*) as n from users`
-    if (Number(count[0].n) <= 1) return { ok: false, error: "No se puede eliminar el último usuario" }
+    const target = await sql<{ role: UserRole }[]>`select role from users where id = ${id}`
+    if (!target.length) return { ok: false, error: "Usuario no encontrado" }
+    if (target[0].role === "admin" && (await countAdmins()) <= 1) {
+      return { ok: false, error: "No se puede eliminar al último administrador" }
+    }
     await sql`delete from users where id = ${id}`
     return { ok: true }
   } catch (error) {
@@ -186,9 +200,27 @@ export async function deleteUser(id: number): Promise<ActionResult> {
   }
 }
 
+export async function setUserRole(id: number, role: UserRole): Promise<ActionResult> {
+  try {
+    const admin = await requireAdminRole()
+    if (!["admin", "editor"].includes(role)) return { ok: false, error: "Rol inválido" }
+    if (id === admin.id) return { ok: false, error: "No puedes cambiar tu propio rol" }
+    const target = await sql<{ role: UserRole }[]>`select role from users where id = ${id}`
+    if (!target.length) return { ok: false, error: "Usuario no encontrado" }
+    if (target[0].role === "admin" && role !== "admin" && (await countAdmins()) <= 1) {
+      return { ok: false, error: "No se puede degradar al último administrador" }
+    }
+    await sql`update users set role = ${role} where id = ${id}`
+    return { ok: true }
+  } catch (error) {
+    console.error("setUserRole:", error)
+    return { ok: false, error: "Error al cambiar el rol" }
+  }
+}
+
 export async function resetUserPassword(id: number, password: string): Promise<ActionResult> {
   try {
-    await requireAdmin()
+    await requireAdminRole()
     if (password.length < 10) return { ok: false, error: "La contraseña debe tener al menos 10 caracteres" }
     const rows = await sql`update users set password_hash = ${hashPassword(password)} where id = ${id} returning id`
     if (!rows.length) return { ok: false, error: "Usuario no encontrado" }

@@ -5,14 +5,18 @@ import { useRouter } from "next/navigation"
 import { KeyRound, Trash2, UserPlus, Wand2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { createUser, deleteUser, resetUserPassword } from "@/app/admin/actions"
+import { createUser, deleteUser, resetUserPassword, setUserRole } from "@/app/admin/actions"
+import type { UserRole } from "@/lib/auth"
 
 export interface UserSummary {
   id: number
   email: string
   name: string
+  role: UserRole
   created_at: string
 }
+
+const ROLE_LABELS: Record<UserRole, string> = { admin: "Admin", editor: "Editor" }
 
 function generatePassword(): string {
   const chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789"
@@ -30,6 +34,7 @@ export function UsersManager({ users, currentUserId }: { users: UserSummary[]; c
   const [email, setEmail] = useState("")
   const [name, setName] = useState("")
   const [password, setPassword] = useState("")
+  const [role, setRole] = useState<UserRole>("editor")
   const [toast, setToast] = useState<{ ok: boolean; text: string; sticky?: boolean } | null>(null)
 
   useEffect(() => {
@@ -40,20 +45,40 @@ export function UsersManager({ users, currentUserId }: { users: UserSummary[]; c
 
   const handleCreate = () => {
     startTransition(async () => {
-      const result = await createUser({ email, name, password })
+      const result = await createUser({ email, name, password, role })
       if (result.ok) {
         setToast({
           ok: true,
           sticky: true,
-          text: `Usuario ${email} creado. Su contraseña: ${password} — cópiala y compártela de forma segura; no se vuelve a mostrar.`,
+          text: `Usuario ${email} creado con rol ${ROLE_LABELS[role]}. Su contraseña: ${password} — cópiala y compártela de forma segura; no se vuelve a mostrar.`,
         })
         setEmail("")
         setName("")
         setPassword("")
+        setRole("editor")
         router.refresh()
       } else {
         setToast({ ok: false, text: result.error })
       }
+    })
+  }
+
+  const handleRoleChange = (user: UserSummary) => {
+    const newRole: UserRole = user.role === "admin" ? "editor" : "admin"
+    if (
+      !confirm(
+        `¿Cambiar el rol de ${user.email} a ${ROLE_LABELS[newRole]}?\n\nAdmin: todo (usuarios, configuración, contenido).\nEditor: solo contenido y analítica.`,
+      )
+    )
+      return
+    startTransition(async () => {
+      const result = await setUserRole(user.id, newRole)
+      setToast(
+        result.ok
+          ? { ok: true, text: `${user.email} ahora es ${ROLE_LABELS[newRole]}` }
+          : { ok: false, text: result.error },
+      )
+      router.refresh()
     })
   }
 
@@ -97,6 +122,16 @@ export function UsersManager({ users, currentUserId }: { users: UserSummary[]; c
             <div className="min-w-0 flex-1">
               <p className="truncate text-sm font-semibold">
                 {user.name || user.email}
+                <Badge
+                  variant="outline"
+                  className={`ml-2 text-[10px] ${
+                    user.role === "admin"
+                      ? "border-primary/50 text-primary"
+                      : "border-border text-muted-foreground"
+                  }`}
+                >
+                  {ROLE_LABELS[user.role]}
+                </Badge>
                 {user.id === currentUserId && (
                   <Badge variant="secondary" className="ml-2 border-none bg-primary/15 text-[10px] text-primary">
                     tú
@@ -107,6 +142,15 @@ export function UsersManager({ users, currentUserId }: { users: UserSummary[]; c
                 {user.email} · desde {user.created_at}
               </p>
             </div>
+            <Button
+              variant="outline"
+              size="sm"
+              className="rounded-full bg-transparent text-xs"
+              disabled={pending || user.id === currentUserId}
+              onClick={() => handleRoleChange(user)}
+            >
+              {user.role === "admin" ? "Hacer Editor" : "Hacer Admin"}
+            </Button>
             <Button
               variant="outline"
               size="sm"
@@ -165,6 +209,20 @@ export function UsersManager({ users, currentUserId }: { users: UserSummary[]; c
               className={inputClass}
               placeholder="Nombre y apellido"
             />
+          </div>
+          <div>
+            <label htmlFor="new-role" className="mb-1 block text-xs text-muted-foreground">
+              Rol
+            </label>
+            <select
+              id="new-role"
+              value={role}
+              onChange={(e) => setRole(e.target.value as UserRole)}
+              className={inputClass}
+            >
+              <option value="editor">Editor — solo contenido y analítica</option>
+              <option value="admin">Admin — todo (usuarios y configuración)</option>
+            </select>
           </div>
           <div>
             <label htmlFor="new-password" className="mb-1 block text-xs text-muted-foreground">

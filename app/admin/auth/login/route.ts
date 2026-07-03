@@ -46,15 +46,15 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Email o contraseña incorrectos" }, { status: 401 })
     }
 
-    const rows = await sql<{ id: number; email: string; name: string; password_hash: string }[]>`
-      select id, email, name, password_hash from users where email = ${parsed.data.email}
+    const rows = await sql<{ id: number; email: string; name: string; role: "admin" | "editor"; password_hash: string }[]>`
+      select id, email, name, role, password_hash from users where email = ${parsed.data.email}
     `
     const user = rows[0]
     if (!user || !verifyPassword(parsed.data.password, user.password_hash)) {
       return NextResponse.json({ error: "Email o contraseña incorrectos" }, { status: 401 })
     }
 
-    await createSession({ id: user.id, email: user.email, name: user.name })
+    await createSession({ id: user.id, email: user.email, name: user.name, role: user.role })
     return NextResponse.json({ ok: true })
   } catch (error) {
     console.error("login:", error)
