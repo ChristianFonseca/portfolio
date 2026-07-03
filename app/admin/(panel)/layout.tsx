@@ -1,7 +1,10 @@
 import { redirect } from "next/navigation"
 import Link from "next/link"
+import { Users, ExternalLink, LayoutGrid } from "lucide-react"
 import { getSessionUser } from "@/lib/auth"
+import { sql } from "@/lib/db"
 import { LogoutButton } from "@/components/admin/logout-button"
+import { SidebarSections, type SidebarSection } from "@/components/admin/sidebar-sections"
 
 export const dynamic = "force-dynamic"
 
@@ -9,36 +12,75 @@ export default async function PanelLayout({ children }: { children: React.ReactN
   const user = await getSessionUser()
   if (!user) redirect("/login")
 
+  let sections: SidebarSection[] = []
+  try {
+    sections = await sql<SidebarSection[]>`
+      select slug, title, position, visible from sections order by position
+    `
+  } catch (error) {
+    console.error("panel layout sections:", error)
+  }
+
   return (
-    <main className="dark min-h-screen">
-      <div className="border-b border-border bg-card/40 backdrop-blur-sm">
-        <div className="max-w-6xl mx-auto px-6 h-16 flex items-center gap-6">
-          <span className="font-bold text-sm bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+    <main className="dark min-h-screen text-foreground">
+      {/* Topbar */}
+      <header className="sticky top-0 z-30 border-b border-border bg-[#0d0918]/90 backdrop-blur-md">
+        <div className="flex h-14 items-center gap-4 px-5">
+          <Link
+            href="/"
+            className="bg-gradient-to-r from-primary to-accent bg-clip-text text-sm font-bold text-transparent"
+          >
             christianfonseca.dev — admin
-          </span>
-          <nav className="flex items-center gap-4 text-sm">
-            <Link href="/" className="text-muted-foreground hover:text-primary transition-colors">
-              Secciones
-            </Link>
-            <Link href="/users" className="text-muted-foreground hover:text-primary transition-colors">
-              Usuarios
-            </Link>
-            <a
-              href="https://christianfonseca.dev"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-muted-foreground hover:text-primary transition-colors"
-            >
-              Ver landing ↗
-            </a>
-          </nav>
+          </Link>
           <div className="ml-auto flex items-center gap-3">
-            <span className="text-xs text-muted-foreground">{user.email}</span>
+            <span className="hidden text-xs text-muted-foreground sm:block">{user.email}</span>
             <LogoutButton />
           </div>
         </div>
+      </header>
+
+      <div className="mx-auto grid max-w-7xl md:grid-cols-[250px_1fr]">
+        {/* Sidebar */}
+        <aside className="border-b border-border bg-[#0f0a1c]/60 px-3 py-6 md:min-h-[calc(100vh-3.5rem)] md:border-b-0 md:border-r">
+          <SidebarSections sections={sections} />
+          <div className="mt-6 border-t border-border/70 pt-4">
+            <ul className="space-y-0.5">
+              <li>
+                <Link
+                  href="/"
+                  className="flex items-center gap-2 rounded-lg px-2 py-2 text-sm text-muted-foreground transition-colors hover:bg-card/80 hover:text-foreground"
+                >
+                  <LayoutGrid className="h-4 w-4" />
+                  Resumen
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/users"
+                  className="flex items-center gap-2 rounded-lg px-2 py-2 text-sm text-muted-foreground transition-colors hover:bg-card/80 hover:text-foreground"
+                >
+                  <Users className="h-4 w-4" />
+                  Usuarios
+                </Link>
+              </li>
+              <li>
+                <a
+                  href="https://christianfonseca.dev"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 rounded-lg px-2 py-2 text-sm text-muted-foreground transition-colors hover:bg-card/80 hover:text-foreground"
+                >
+                  <ExternalLink className="h-4 w-4" />
+                  Ver landing
+                </a>
+              </li>
+            </ul>
+          </div>
+        </aside>
+
+        {/* Contenido */}
+        <div className="min-w-0 px-6 py-8">{children}</div>
       </div>
-      <div className="max-w-6xl mx-auto px-6 py-10">{children}</div>
     </main>
   )
 }

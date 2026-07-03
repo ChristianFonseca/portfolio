@@ -18,12 +18,11 @@ export default async function EditSectionPage({ params }: { params: Promise<{ sl
   if (!spec) notFound()
 
   return (
-    <div>
-      <h1 className="text-2xl font-bold mb-1">{section.title}</h1>
-      <p className="text-sm text-muted-foreground mb-8">
-        {section.slug} · tipo {section.kind}
-      </p>
-      <SectionEditor slug={section.slug} spec={spec} initialData={section.data as Record<string, unknown>} />
-    </div>
+    <SectionEditor
+      slug={section.slug}
+      title={section.title}
+      spec={spec}
+      initialData={section.data as Record<string, unknown>}
+    />
   )
 }
