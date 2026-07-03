@@ -79,6 +79,12 @@ export const kindSchemas = {
 
 export type SectionKind = keyof typeof kindSchemas
 
+// El JSONB de cada sección guarda ambos idiomas: { en: <data>, es: <data> }
+export function localizedSchema(kind: SectionKind) {
+  const schema = kindSchemas[kind]
+  return z.object({ en: schema, es: schema })
+}
+
 export type HeroData = z.infer<typeof heroSchema>
 export type AboutData = z.infer<typeof aboutSchema>
 export type SkillsData = z.infer<typeof skillsSchema>
@@ -90,6 +96,7 @@ export interface SectionRecord {
   slug: string
   kind: SectionKind
   title: string
+  title_es?: string
   position: number
   visible: boolean
   data: unknown

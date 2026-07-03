@@ -1,6 +1,8 @@
 import type React from "react"
 import type { Metadata } from "next"
+import { headers } from "next/headers"
 import { DM_Sans } from "next/font/google"
+import { ThemeProvider } from "@/components/theme-provider"
 import "./globals.css"
 
 const dmSans = DM_Sans({
@@ -19,6 +21,10 @@ export const metadata: Metadata = {
   description: siteDescription,
   alternates: {
     canonical: "/",
+    languages: {
+      en: "/",
+      es: "/es",
+    },
   },
   openGraph: {
     title: "Christian Fonseca - AI Solutions Engineer",
@@ -35,15 +41,21 @@ export const metadata: Metadata = {
   },
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  // El middleware setea x-locale según la ruta (/es → es); default en
+  const requestHeaders = await headers()
+  const lang = requestHeaders.get("x-locale") === "es" ? "es" : "en"
+
   return (
-    <html lang="en" className={`dark ${dmSans.variable} antialiased`} suppressHydrationWarning>
+    <html lang={lang} className={`${dmSans.variable} antialiased`} suppressHydrationWarning>
       <body className="font-sans" suppressHydrationWarning>
-        {children}
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false} disableTransitionOnChange>
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   )

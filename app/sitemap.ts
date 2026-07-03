@@ -7,6 +7,24 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 1,
+      alternates: {
+        languages: {
+          en: "https://christianfonseca.dev",
+          es: "https://christianfonseca.dev/es",
+        },
+      },
+    },
+    {
+      url: "https://christianfonseca.dev/es",
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.9,
+      alternates: {
+        languages: {
+          en: "https://christianfonseca.dev",
+          es: "https://christianfonseca.dev/es",
+        },
+      },
     },
     {
       url: "https://christianfonseca.dev/chat",

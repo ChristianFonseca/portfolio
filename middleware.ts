@@ -9,12 +9,16 @@ export async function middleware(req: NextRequest) {
   const isAdminHost = host.startsWith("admin.")
   const { pathname } = req.nextUrl
 
-  // Dominio público: /admin no existe
+  // Dominio público: /admin no existe; propagamos el locale por header
+  // para que el layout raíz ponga <html lang> correcto
   if (!isAdminHost) {
     if (pathname.startsWith("/admin")) {
       return new NextResponse(null, { status: 404 })
     }
-    return NextResponse.next()
+    const locale = pathname === "/es" || pathname.startsWith("/es/") ? "es" : "en"
+    const requestHeaders = new Headers(req.headers)
+    requestHeaders.set("x-locale", locale)
+    return NextResponse.next({ request: { headers: requestHeaders } })
   }
 
   // Host admin: todo vive bajo /admin vía rewrite (la URL del navegador queda limpia)

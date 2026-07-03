@@ -204,8 +204,8 @@ export function UsersManager({ users, currentUserId }: { users: UserSummary[]; c
           role="status"
           className={`fixed bottom-6 left-1/2 z-50 max-w-[92vw] -translate-x-1/2 rounded-xl border px-5 py-3 text-sm shadow-2xl backdrop-blur-md ${
             toast.ok
-              ? "border-emerald-500/40 bg-emerald-950/85 text-emerald-200"
-              : "border-red-500/40 bg-red-950/85 text-red-200"
+              ? "border-emerald-500/50 bg-emerald-100/95 text-emerald-900 dark:bg-emerald-950/85 dark:text-emerald-200"
+              : "border-red-500/50 bg-red-100/95 text-red-900 dark:bg-red-950/85 dark:text-red-200"
           }`}
         >
           <span className="break-words">{toast.text}</span>

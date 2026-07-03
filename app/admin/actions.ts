@@ -4,11 +4,19 @@ import { revalidateTag } from "next/cache"
 import { z } from "zod"
 import { sql } from "@/lib/db"
 import { hashPassword, requireAdmin } from "@/lib/auth"
-import { kindSchemas, type SectionKind } from "@/lib/content/schemas"
+import { kindSchemas, localizedSchema, type SectionKind } from "@/lib/content/schemas"
+import { setSetting } from "@/lib/settings"
 
 export type ActionResult = { ok: true } | { ok: false; error: string }
 
-export async function saveSection(slug: string, data: unknown): Promise<ActionResult> {
+export interface SaveSectionPayload {
+  en: unknown
+  es: unknown
+  title: string
+  title_es: string
+}
+
+export async function saveSection(slug: string, payload: SaveSectionPayload): Promise<ActionResult> {
   try {
     const admin = await requireAdmin()
     const rows = await sql<{ id: number; kind: SectionKind; data: unknown }[]>`
@@ -17,17 +25,25 @@ export async function saveSection(slug: string, data: unknown): Promise<ActionRe
     const section = rows[0]
     if (!section) return { ok: false, error: "Sección no encontrada" }
 
-    const schema = kindSchemas[section.kind]
-    if (!schema) return { ok: false, error: `Tipo de sección desconocido: ${section.kind}` }
-    const parsed = schema.safeParse(data)
+    if (!kindSchemas[section.kind]) return { ok: false, error: `Tipo de sección desconocido: ${section.kind}` }
+    const parsed = localizedSchema(section.kind).safeParse({ en: payload.en, es: payload.es })
     if (!parsed.success) {
       const issue = parsed.error.issues[0]
       return { ok: false, error: `Datos inválidos: ${issue.path.join(".")} — ${issue.message}` }
     }
+    const title = z.string().trim().min(1).max(120).safeParse(payload.title)
+    const titleEs = z.string().trim().min(1).max(120).safeParse(payload.title_es)
+    if (!title.success || !titleEs.success) {
+      return { ok: false, error: "Los títulos EN y ES son obligatorios (máx. 120 caracteres)" }
+    }
 
     await sql.begin(async (tx) => {
       await tx`insert into section_revisions (section_id, data, saved_by) values (${section.id}, ${tx.json(section.data as never)}, ${admin.email})`
-      await tx`update sections set data = ${tx.json(parsed.data as never)}, updated_at = now() where id = ${section.id}`
+      await tx`
+        update sections
+        set data = ${tx.json(parsed.data as never)}, title = ${title.data}, title_es = ${titleEs.data}, updated_at = now()
+        where id = ${section.id}
+      `
     })
 
     revalidateTag("content")
@@ -35,6 +51,24 @@ export async function saveSection(slug: string, data: unknown): Promise<ActionRe
   } catch (error) {
     console.error("saveSection:", error)
     return { ok: false, error: "Error al guardar. Revisa la conexión a la base de datos." }
+  }
+}
+
+export async function setGeminiModel(model: string): Promise<ActionResult> {
+  try {
+    await requireAdmin()
+    const parsed = z
+      .string()
+      .trim()
+      .regex(/^[a-z0-9.-]+$/i, "Identificador de modelo inválido")
+      .max(80)
+      .safeParse(model)
+    if (!parsed.success) return { ok: false, error: parsed.error.issues[0].message }
+    await setSetting("gemini_model", parsed.data)
+    return { ok: true }
+  } catch (error) {
+    console.error("setGeminiModel:", error)
+    return { ok: false, error: "Error al guardar la configuración" }
   }
 }
 

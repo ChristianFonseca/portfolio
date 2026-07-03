@@ -7,18 +7,64 @@
       "position": 1,
       "visible": true,
       "data": {
-        "name": "Christian Fonseca",
-        "tagline": "AI Engineer | Data Architect | Data Scientist",
-        "location": "Lima, Peru",
-        "photo": "/profile.webp",
-        "certs": [
-          { "count": "13x", "label": "AWS" },
-          { "count": "4x", "label": "Azure" },
-          { "count": "4x", "label": "OCI" },
-          { "count": "", "label": "TOGAF" },
-          { "count": "", "label": "DAMA CDMP" }
-        ]
-      }
+        "en": {
+          "name": "Christian Fonseca",
+          "tagline": "AI Engineer | Data Architect | Data Scientist",
+          "location": "Lima, Peru",
+          "photo": "/profile.webp",
+          "certs": [
+            {
+              "count": "13x",
+              "label": "AWS"
+            },
+            {
+              "count": "4x",
+              "label": "Azure"
+            },
+            {
+              "count": "4x",
+              "label": "OCI"
+            },
+            {
+              "count": "",
+              "label": "TOGAF"
+            },
+            {
+              "count": "",
+              "label": "DAMA CDMP"
+            }
+          ]
+        },
+        "es": {
+          "name": "Christian Fonseca",
+          "tagline": "Ingeniero de IA | Arquitecto de Datos | Científico de Datos",
+          "location": "Lima, Perú",
+          "photo": "/profile.webp",
+          "certs": [
+            {
+              "count": "13x",
+              "label": "AWS"
+            },
+            {
+              "count": "4x",
+              "label": "Azure"
+            },
+            {
+              "count": "4x",
+              "label": "OCI"
+            },
+            {
+              "count": "",
+              "label": "TOGAF"
+            },
+            {
+              "count": "",
+              "label": "DAMA CDMP"
+            }
+          ]
+        }
+      },
+      "title_es": "Hero"
     },
     {
       "slug": "about",
@@ -27,8 +73,14 @@
       "position": 2,
       "visible": true,
       "data": {
-        "text": "Data & AI Engineer dedicated to solving enterprise challenges through advanced machine learning and cloud infrastructure. With a decade of experience across diverse industries, I specialize in automating data pipelines, deploying intelligent GenAI agents, and establishing MLOps standards. Leveraging deep expertise in Python, PySpark, and multiple cloud platforms, I consistently deliver reliable technical solutions that significantly reduce processing times and drive business growth."
-      }
+        "en": {
+          "text": "Data & AI Engineer dedicated to solving enterprise challenges through advanced machine learning and cloud infrastructure. With a decade of experience across diverse industries, I specialize in automating data pipelines, deploying intelligent GenAI agents, and establishing MLOps standards. Leveraging deep expertise in Python, PySpark, and multiple cloud platforms, I consistently deliver reliable technical solutions that significantly reduce processing times and drive business growth."
+        },
+        "es": {
+          "text": "Ingeniero de Datos e IA dedicado a resolver desafíos empresariales mediante machine learning avanzado e infraestructura cloud. Con una década de experiencia en diversas industrias, me especializo en automatizar pipelines de datos, desplegar agentes inteligentes de GenAI y establecer estándares de MLOps. Con amplia experiencia en Python, PySpark y múltiples plataformas cloud, entrego de manera consistente soluciones técnicas confiables que reducen significativamente los tiempos de procesamiento e impulsan el crecimiento del negocio."
+        }
+      },
+      "title_es": "Sobre mí"
     },
     {
       "slug": "skills",
@@ -37,20 +89,224 @@
       "position": 3,
       "visible": true,
       "data": {
-        "groups": [
-          { "name": "GenAI, LLMs & Agents", "color": "purple", "badges": ["RAG Architectures", "LangChain", "LangGraph", "Google ADK", "Prompt Engineering", "Pinecone", "FAISS", "Ollama", "Hugging Face", "OpenAI", "Gemini", "Anthropic", "Bedrock", "DeepSeek", "xAI"] },
-          { "name": "Machine Learning & MLOps", "color": "blue", "badges": ["TensorFlow", "PyTorch", "Scikit-learn", "MLflow", "Vertex AI", "Amazon SageMaker"] },
-          { "name": "Data Engineering & Databases", "color": "emerald", "badges": ["SQL", "PySpark", "Databricks", "PostgreSQL", "Oracle", "Redshift", "SQL Server", "MongoDB", "RDS/Aurora"] },
-          { "name": "Programming Languages", "color": "yellow", "badges": ["Python", "TypeScript", "R", "MATLAB", "C/C++", "C#", "Rust"] },
-          { "name": "Web & API Development", "color": "orange", "badges": ["React", "Next.js", "FastAPI", "RESTful APIs", "Microservices"] },
-          { "name": "Cloud Platforms", "color": "cyan", "badges": ["AWS", "Azure", "GCP", "OCI"] },
-          { "name": "DevOps & Tools", "color": "rose", "badges": ["Docker", "Kubernetes", "Git", "CI/CD (GitHub/GitLab/Bitbucket)", "Terraform", "CloudFormation"] }
-        ],
-        "languages": [
-          { "name": "Spanish", "level": "Native" },
-          { "name": "English", "level": "Advanced" }
-        ]
-      }
+        "en": {
+          "groups": [
+            {
+              "name": "GenAI, LLMs & Agents",
+              "color": "purple",
+              "badges": [
+                "RAG Architectures",
+                "LangChain",
+                "LangGraph",
+                "Google ADK",
+                "Prompt Engineering",
+                "Pinecone",
+                "FAISS",
+                "Ollama",
+                "Hugging Face",
+                "OpenAI",
+                "Gemini",
+                "Anthropic",
+                "Bedrock",
+                "DeepSeek",
+                "xAI"
+              ]
+            },
+            {
+              "name": "Machine Learning & MLOps",
+              "color": "blue",
+              "badges": [
+                "TensorFlow",
+                "PyTorch",
+                "Scikit-learn",
+                "MLflow",
+                "Vertex AI",
+                "Amazon SageMaker"
+              ]
+            },
+            {
+              "name": "Data Engineering & Databases",
+              "color": "emerald",
+              "badges": [
+                "SQL",
+                "PySpark",
+                "Databricks",
+                "PostgreSQL",
+                "Oracle",
+                "Redshift",
+                "SQL Server",
+                "MongoDB",
+                "RDS/Aurora"
+              ]
+            },
+            {
+              "name": "Programming Languages",
+              "color": "yellow",
+              "badges": [
+                "Python",
+                "TypeScript",
+                "R",
+                "MATLAB",
+                "C/C++",
+                "C#",
+                "Rust"
+              ]
+            },
+            {
+              "name": "Web & API Development",
+              "color": "orange",
+              "badges": [
+                "React",
+                "Next.js",
+                "FastAPI",
+                "RESTful APIs",
+                "Microservices"
+              ]
+            },
+            {
+              "name": "Cloud Platforms",
+              "color": "cyan",
+              "badges": [
+                "AWS",
+                "Azure",
+                "GCP",
+                "OCI"
+              ]
+            },
+            {
+              "name": "DevOps & Tools",
+              "color": "rose",
+              "badges": [
+                "Docker",
+                "Kubernetes",
+                "Git",
+                "CI/CD (GitHub/GitLab/Bitbucket)",
+                "Terraform",
+                "CloudFormation"
+              ]
+            }
+          ],
+          "languages": [
+            {
+              "name": "Spanish",
+              "level": "Native"
+            },
+            {
+              "name": "English",
+              "level": "Advanced"
+            }
+          ]
+        },
+        "es": {
+          "groups": [
+            {
+              "name": "GenAI, LLMs y Agentes",
+              "color": "purple",
+              "badges": [
+                "RAG Architectures",
+                "LangChain",
+                "LangGraph",
+                "Google ADK",
+                "Prompt Engineering",
+                "Pinecone",
+                "FAISS",
+                "Ollama",
+                "Hugging Face",
+                "OpenAI",
+                "Gemini",
+                "Anthropic",
+                "Bedrock",
+                "DeepSeek",
+                "xAI"
+              ]
+            },
+            {
+              "name": "Machine Learning y MLOps",
+              "color": "blue",
+              "badges": [
+                "TensorFlow",
+                "PyTorch",
+                "Scikit-learn",
+                "MLflow",
+                "Vertex AI",
+                "Amazon SageMaker"
+              ]
+            },
+            {
+              "name": "Ingeniería de Datos y Bases de Datos",
+              "color": "emerald",
+              "badges": [
+                "SQL",
+                "PySpark",
+                "Databricks",
+                "PostgreSQL",
+                "Oracle",
+                "Redshift",
+                "SQL Server",
+                "MongoDB",
+                "RDS/Aurora"
+              ]
+            },
+            {
+              "name": "Lenguajes de Programación",
+              "color": "yellow",
+              "badges": [
+                "Python",
+                "TypeScript",
+                "R",
+                "MATLAB",
+                "C/C++",
+                "C#",
+                "Rust"
+              ]
+            },
+            {
+              "name": "Desarrollo Web y APIs",
+              "color": "orange",
+              "badges": [
+                "React",
+                "Next.js",
+                "FastAPI",
+                "RESTful APIs",
+                "Microservices"
+              ]
+            },
+            {
+              "name": "Plataformas Cloud",
+              "color": "cyan",
+              "badges": [
+                "AWS",
+                "Azure",
+                "GCP",
+                "OCI"
+              ]
+            },
+            {
+              "name": "DevOps y Herramientas",
+              "color": "rose",
+              "badges": [
+                "Docker",
+                "Kubernetes",
+                "Git",
+                "CI/CD (GitHub/GitLab/Bitbucket)",
+                "Terraform",
+                "CloudFormation"
+              ]
+            }
+          ],
+          "languages": [
+            {
+              "name": "Español",
+              "level": "Nativo"
+            },
+            {
+              "name": "Inglés",
+              "level": "Avanzado"
+            }
+          ]
+        }
+      },
+      "title_es": "Habilidades"
     },
     {
       "slug": "public-projects",
@@ -59,15 +315,172 @@
       "position": 4,
       "visible": true,
       "data": {
-        "items": [
-          { "title": "ML Pipeline Framework", "description": "Scalable MLOps framework for automated model training, validation, and deployment with monitoring capabilities.", "image": "/ml-pipeline-dashboard.webp", "tech": ["Python", "Docker", "MLflow", "AWS"], "language": "Python", "languageColor": "#3b82f6" },
-          { "title": "Data Engineering Toolkit", "description": "Collection of reusable data processing utilities and ETL pipelines for various data sources and formats.", "image": "/data-engineering-etl-pipeline.webp", "tech": ["PySpark", "SQL", "Airflow", "Kafka"], "language": "Python", "languageColor": "#eab308" },
-          { "title": "NLP Analytics Suite", "description": "Advanced NLP toolkit with sentiment analysis, entity recognition, and text classification capabilities.", "image": "/nlp-analytics-suite.webp", "tech": ["Python", "Transformers", "spaCy", "FastAPI"], "language": "Python", "languageColor": "#22c55e" },
-          { "title": "Time Series Forecasting", "description": "Comprehensive time series analysis and forecasting models with automated feature engineering.", "image": "/time-series-forecasting.webp", "tech": ["Python", "Prophet", "ARIMA", "Plotly"], "language": "Jupyter Notebook", "languageColor": "#a855f7" },
-          { "title": "Cloud Infrastructure", "description": "Terraform modules and CloudFormation templates for scalable data infrastructure on AWS and Azure.", "image": "/aws-cloud-architecture.webp", "tech": ["Terraform", "AWS", "Azure", "Kubernetes"], "language": "HCL", "languageColor": "#f97316" },
-          { "title": "Deep Learning Models", "description": "Collection of deep learning architectures for computer vision and NLP tasks with pre-trained weights.", "image": "/deep-learning-network.webp", "tech": ["PyTorch", "TensorFlow", "CUDA", "OpenCV"], "language": "Python", "languageColor": "#ef4444" }
-        ]
-      }
+        "en": {
+          "items": [
+            {
+              "title": "ML Pipeline Framework",
+              "description": "Scalable MLOps framework for automated model training, validation, and deployment with monitoring capabilities.",
+              "image": "/ml-pipeline-dashboard.webp",
+              "tech": [
+                "Python",
+                "Docker",
+                "MLflow",
+                "AWS"
+              ],
+              "language": "Python",
+              "languageColor": "#3b82f6"
+            },
+            {
+              "title": "Data Engineering Toolkit",
+              "description": "Collection of reusable data processing utilities and ETL pipelines for various data sources and formats.",
+              "image": "/data-engineering-etl-pipeline.webp",
+              "tech": [
+                "PySpark",
+                "SQL",
+                "Airflow",
+                "Kafka"
+              ],
+              "language": "Python",
+              "languageColor": "#eab308"
+            },
+            {
+              "title": "NLP Analytics Suite",
+              "description": "Advanced NLP toolkit with sentiment analysis, entity recognition, and text classification capabilities.",
+              "image": "/nlp-analytics-suite.webp",
+              "tech": [
+                "Python",
+                "Transformers",
+                "spaCy",
+                "FastAPI"
+              ],
+              "language": "Python",
+              "languageColor": "#22c55e"
+            },
+            {
+              "title": "Time Series Forecasting",
+              "description": "Comprehensive time series analysis and forecasting models with automated feature engineering.",
+              "image": "/time-series-forecasting.webp",
+              "tech": [
+                "Python",
+                "Prophet",
+                "ARIMA",
+                "Plotly"
+              ],
+              "language": "Jupyter Notebook",
+              "languageColor": "#a855f7"
+            },
+            {
+              "title": "Cloud Infrastructure",
+              "description": "Terraform modules and CloudFormation templates for scalable data infrastructure on AWS and Azure.",
+              "image": "/aws-cloud-architecture.webp",
+              "tech": [
+                "Terraform",
+                "AWS",
+                "Azure",
+                "Kubernetes"
+              ],
+              "language": "HCL",
+              "languageColor": "#f97316"
+            },
+            {
+              "title": "Deep Learning Models",
+              "description": "Collection of deep learning architectures for computer vision and NLP tasks with pre-trained weights.",
+              "image": "/deep-learning-network.webp",
+              "tech": [
+                "PyTorch",
+                "TensorFlow",
+                "CUDA",
+                "OpenCV"
+              ],
+              "language": "Python",
+              "languageColor": "#ef4444"
+            }
+          ]
+        },
+        "es": {
+          "items": [
+            {
+              "title": "Framework de Pipelines de ML",
+              "description": "Framework de MLOps escalable para el entrenamiento, validación y despliegue automatizados de modelos, con capacidades de monitoreo.",
+              "image": "/ml-pipeline-dashboard.webp",
+              "tech": [
+                "Python",
+                "Docker",
+                "MLflow",
+                "AWS"
+              ],
+              "language": "Python",
+              "languageColor": "#3b82f6"
+            },
+            {
+              "title": "Kit de Herramientas de Ingeniería de Datos",
+              "description": "Colección de utilidades reutilizables de procesamiento de datos y pipelines ETL para diversas fuentes y formatos de datos.",
+              "image": "/data-engineering-etl-pipeline.webp",
+              "tech": [
+                "PySpark",
+                "SQL",
+                "Airflow",
+                "Kafka"
+              ],
+              "language": "Python",
+              "languageColor": "#eab308"
+            },
+            {
+              "title": "Suite de Analítica NLP",
+              "description": "Kit de herramientas avanzado de NLP con capacidades de análisis de sentimiento, reconocimiento de entidades y clasificación de texto.",
+              "image": "/nlp-analytics-suite.webp",
+              "tech": [
+                "Python",
+                "Transformers",
+                "spaCy",
+                "FastAPI"
+              ],
+              "language": "Python",
+              "languageColor": "#22c55e"
+            },
+            {
+              "title": "Pronóstico de Series de Tiempo",
+              "description": "Modelos integrales de análisis y pronóstico de series de tiempo con ingeniería de características automatizada.",
+              "image": "/time-series-forecasting.webp",
+              "tech": [
+                "Python",
+                "Prophet",
+                "ARIMA",
+                "Plotly"
+              ],
+              "language": "Jupyter Notebook",
+              "languageColor": "#a855f7"
+            },
+            {
+              "title": "Infraestructura Cloud",
+              "description": "Módulos de Terraform y plantillas de CloudFormation para infraestructura de datos escalable en AWS y Azure.",
+              "image": "/aws-cloud-architecture.webp",
+              "tech": [
+                "Terraform",
+                "AWS",
+                "Azure",
+                "Kubernetes"
+              ],
+              "language": "HCL",
+              "languageColor": "#f97316"
+            },
+            {
+              "title": "Modelos de Deep Learning",
+              "description": "Colección de arquitecturas de deep learning para tareas de visión por computadora y NLP con pesos preentrenados.",
+              "image": "/deep-learning-network.webp",
+              "tech": [
+                "PyTorch",
+                "TensorFlow",
+                "CUDA",
+                "OpenCV"
+              ],
+              "language": "Python",
+              "languageColor": "#ef4444"
+            }
+          ]
+        }
+      },
+      "title_es": "Proyectos Públicos"
     },
     {
       "slug": "research-projects",
@@ -76,29 +489,82 @@
       "position": 5,
       "visible": true,
       "data": {
-        "items": [
-          {
-            "title": "Brain-Computer Interface",
-            "description": "State-funded project, focused on the creation of an essential communication system for hemiplegic patients.",
-            "bullets": [
-              "Enhanced Brain-Computer Interface performance by 10% using advanced digital signal processing and ML algorithms.",
-              "Built a custom C++ user interface for brain signal acquisition based on ERP and sensorimotor rhythms.",
-              "Optimized EEG data acquisition and channel selection by applying Python's statistical and CSP methods."
-            ],
-            "tech": ["Python", "TensorFlow", "Torch", "C++", "MATLAB", "EEG Signals Analysis"]
-          },
-          {
-            "title": "Mining Robot",
-            "description": "State-funded project, focused on building an autonomous robot to detect toxic gases in underground mines.",
-            "bullets": [
-              "Improved the robotic exo-arm's movement precision by 5% by implementing Fuzzy Logic and Advanced Controllers.",
-              "Developed a real-time object recognition system for polygons and hand gestures using Python and OpenCV.",
-              "Designed and implemented robust navigation and route planning algorithms using both MATLAB and C++."
-            ],
-            "tech": ["Python", "Genetic Algorithms", "C++", "MATLAB", "Robotics"]
-          }
-        ]
-      }
+        "en": {
+          "items": [
+            {
+              "title": "Brain-Computer Interface",
+              "description": "State-funded project, focused on the creation of an essential communication system for hemiplegic patients.",
+              "bullets": [
+                "Enhanced Brain-Computer Interface performance by 10% using advanced digital signal processing and ML algorithms.",
+                "Built a custom C++ user interface for brain signal acquisition based on ERP and sensorimotor rhythms.",
+                "Optimized EEG data acquisition and channel selection by applying Python's statistical and CSP methods."
+              ],
+              "tech": [
+                "Python",
+                "TensorFlow",
+                "Torch",
+                "C++",
+                "MATLAB",
+                "EEG Signals Analysis"
+              ]
+            },
+            {
+              "title": "Mining Robot",
+              "description": "State-funded project, focused on building an autonomous robot to detect toxic gases in underground mines.",
+              "bullets": [
+                "Improved the robotic exo-arm's movement precision by 5% by implementing Fuzzy Logic and Advanced Controllers.",
+                "Developed a real-time object recognition system for polygons and hand gestures using Python and OpenCV.",
+                "Designed and implemented robust navigation and route planning algorithms using both MATLAB and C++."
+              ],
+              "tech": [
+                "Python",
+                "Genetic Algorithms",
+                "C++",
+                "MATLAB",
+                "Robotics"
+              ]
+            }
+          ]
+        },
+        "es": {
+          "items": [
+            {
+              "title": "Interfaz Cerebro-Computadora",
+              "description": "Proyecto financiado por el Estado, enfocado en la creación de un sistema de comunicación esencial para pacientes con hemiplejía.",
+              "bullets": [
+                "Mejoré el rendimiento de la Interfaz Cerebro-Computadora en un 10% utilizando procesamiento digital de señales avanzado y algoritmos de ML.",
+                "Construí una interfaz de usuario personalizada en C++ para la adquisición de señales cerebrales basada en ERP y ritmos sensoriomotores.",
+                "Optimicé la adquisición de datos EEG y la selección de canales aplicando métodos estadísticos y CSP en Python."
+              ],
+              "tech": [
+                "Python",
+                "TensorFlow",
+                "Torch",
+                "C++",
+                "MATLAB",
+                "EEG Signals Analysis"
+              ]
+            },
+            {
+              "title": "Robot Minero",
+              "description": "Proyecto financiado por el Estado, enfocado en la construcción de un robot autónomo para detectar gases tóxicos en minas subterráneas.",
+              "bullets": [
+                "Mejoré la precisión de movimiento del exobrazo robótico en un 5% implementando Lógica Difusa y controladores avanzados.",
+                "Desarrollé un sistema de reconocimiento de objetos en tiempo real para polígonos y gestos de manos utilizando Python y OpenCV.",
+                "Diseñé e implementé algoritmos robustos de navegación y planificación de rutas utilizando tanto MATLAB como C++."
+              ],
+              "tech": [
+                "Python",
+                "Genetic Algorithms",
+                "C++",
+                "MATLAB",
+                "Robotics"
+              ]
+            }
+          ]
+        }
+      },
+      "title_es": "Proyectos de Investigación"
     },
     {
       "slug": "experience",
@@ -107,78 +573,304 @@
       "position": 6,
       "visible": true,
       "data": {
-        "items": [
-          {
-            "role": "AIOps Specialist", "org": "Baufest", "period": "May 2025 - Present", "current": true,
-            "bullets": [
-              "Built AI chatbots for instant documentation retrieval and error analysis, reducing search and debugging time to seconds.",
-              "Automated Boomi documentation generation, standardizing integration artifacts and accelerating knowledge delivery.",
-              "Designed AI-driven unit test generation to automate validation and improve code quality and developer productivity.",
-              "Implemented AI video documentation that converts walkthroughs into structured docs with conversational guidance."
-            ],
-            "tech": ["Python", "Docker", "LLM", "RAG", "OpenAI", "Gemini", "Bedrock", "Boomi", "React", "AWS"]
-          },
-          {
-            "role": "AI Solutions Engineer", "org": "JobLeap AI", "period": "October 2024 - April 2025", "current": false,
-            "bullets": [
-              "Designed 10+ end-to-end data pipelines from multiple vendors using relational and vector databases.",
-              "Established automated testing frameworks for data pipelines, guaranteeing high reliability and superior data quality.",
-              "Applied advanced NLP and embedding techniques to enrich data transformations, boosting accuracy and relevance.",
-              "Used LangChain and LLMs to generate relevance scores and create resume and interview simulations."
-            ],
-            "tech": ["Python", "Docker", "LLM", "NLP", "OpenAI", "DeepSeek", "PostgreSQL", "Pinecone", "AWS"]
-          },
-          {
-            "role": "Senior Data Solutions Consultant", "org": "Antamina (via TIVIT)", "period": "November 2023 - September 2024", "current": false,
-            "bullets": [
-              "Migrated on-prem SQL to AWS RDS via DMS, enabling 3-min ingestion and cutting station refueling delays.",
-              "Deployed RDS monitoring with automated alerts for failures/overloads, reducing production downtime.",
-              "Built Databricks-based pipelines with Athena pipelines for ML-driven electricity-demand forecasts.",
-              "Delivered recommendation dashboards with automated stakeholder notifications, boosting operational efficiency."
-            ],
-            "tech": ["Python", "PySpark", "SQL", "PostgreSQL", "Databricks", "AWS"]
-          },
-          {
-            "role": "Manager Data Scientist", "org": "BBVA", "period": "June 2021 - October 2023", "current": false,
-            "bullets": [
-              "Achieved a 10% rise in debit card sales by creating a rule-based and ML-driven client profitability recommendation system.",
-              "Improved expert evaluation of billing accuracy by 50%, using forecasting and elasticity models in retail budgeting.",
-              "Boosted corporate customer acquisition by 15% through cost calculation system development.",
-              "Implemented the RORC threshold selection, resulting in a 5% monthly decrease in the number of high-risk clients."
-            ],
-            "tech": ["Machine Learning", "Python", "PySpark", "SQL", "Oracle", "Datio"]
-          },
-          {
-            "role": "Senior Data Scientist", "org": "Banco de Crédito del Peru (BCP)", "period": "November 2019 - May 2021", "current": false,
-            "bullets": [
-              "Slashed lead evaluation time from two days to under one minute using credit-score and income forecasts.",
-              "Improved customer acquisition accuracy by 10% by implementing advanced customer-transaction graph modeling.",
-              "Cut data analysis time by 30% by designing a reusable univariate and multivariate analysis toolkit.",
-              "Halved model metrics tracking time by 50% through the development of an IFRS-9 scoring toolkit.",
-              "Evaluated models via portfolio projections to forecast shifts up to 6 months ahead."
-            ],
-            "tech": ["Python", "PySpark", "SQL", "Oracle", "SAS", "Cloudera"]
-          },
-          {
-            "role": "Data Scientist", "org": "Rimac Seguros y Reaseguros", "period": "August 2018 - November 2019", "current": false,
-            "bullets": [
-              "Halved fraud investigation times from six to three months using graph modeling for vehicle policies.",
-              "Drove a 20% sales increase by implementing personalized, end-to-end pricing models for vehicle insurance.",
-              "Slashed model pre-processing time by a factor of 20x by effectively leveraging PySpark on AWS.",
-              "Automated the monthly and on-demand execution of predictive models, improving both efficiency and reliability."
-            ],
-            "tech": ["Machine Learning", "Python", "PySpark", "SQL", "Oracle", "AWS"]
-          },
-          {
-            "role": "Application Development Associate", "org": "Accenture", "period": "January 2018 - August 2018", "current": false,
-            "bullets": [
-              "Cut daily back-office data collection time from four hours to just ten minutes using Python.",
-              "Developed AI proof-of-concept business cases and custom applications across the full project lifecycle."
-            ],
-            "tech": ["Python", "SQL", "Automation Anywhere", "AWS"]
-          }
-        ]
-      }
+        "en": {
+          "items": [
+            {
+              "role": "AIOps Specialist",
+              "org": "Baufest",
+              "period": "May 2025 - Present",
+              "current": true,
+              "bullets": [
+                "Built AI chatbots for instant documentation retrieval and error analysis, reducing search and debugging time to seconds.",
+                "Automated Boomi documentation generation, standardizing integration artifacts and accelerating knowledge delivery.",
+                "Designed AI-driven unit test generation to automate validation and improve code quality and developer productivity.",
+                "Implemented AI video documentation that converts walkthroughs into structured docs with conversational guidance."
+              ],
+              "tech": [
+                "Python",
+                "Docker",
+                "LLM",
+                "RAG",
+                "OpenAI",
+                "Gemini",
+                "Bedrock",
+                "Boomi",
+                "React",
+                "AWS"
+              ]
+            },
+            {
+              "role": "AI Solutions Engineer",
+              "org": "JobLeap AI",
+              "period": "October 2024 - April 2025",
+              "current": false,
+              "bullets": [
+                "Designed 10+ end-to-end data pipelines from multiple vendors using relational and vector databases.",
+                "Established automated testing frameworks for data pipelines, guaranteeing high reliability and superior data quality.",
+                "Applied advanced NLP and embedding techniques to enrich data transformations, boosting accuracy and relevance.",
+                "Used LangChain and LLMs to generate relevance scores and create resume and interview simulations."
+              ],
+              "tech": [
+                "Python",
+                "Docker",
+                "LLM",
+                "NLP",
+                "OpenAI",
+                "DeepSeek",
+                "PostgreSQL",
+                "Pinecone",
+                "AWS"
+              ]
+            },
+            {
+              "role": "Senior Data Solutions Consultant",
+              "org": "Antamina (via TIVIT)",
+              "period": "November 2023 - September 2024",
+              "current": false,
+              "bullets": [
+                "Migrated on-prem SQL to AWS RDS via DMS, enabling 3-min ingestion and cutting station refueling delays.",
+                "Deployed RDS monitoring with automated alerts for failures/overloads, reducing production downtime.",
+                "Built Databricks-based pipelines with Athena pipelines for ML-driven electricity-demand forecasts.",
+                "Delivered recommendation dashboards with automated stakeholder notifications, boosting operational efficiency."
+              ],
+              "tech": [
+                "Python",
+                "PySpark",
+                "SQL",
+                "PostgreSQL",
+                "Databricks",
+                "AWS"
+              ]
+            },
+            {
+              "role": "Manager Data Scientist",
+              "org": "BBVA",
+              "period": "June 2021 - October 2023",
+              "current": false,
+              "bullets": [
+                "Achieved a 10% rise in debit card sales by creating a rule-based and ML-driven client profitability recommendation system.",
+                "Improved expert evaluation of billing accuracy by 50%, using forecasting and elasticity models in retail budgeting.",
+                "Boosted corporate customer acquisition by 15% through cost calculation system development.",
+                "Implemented the RORC threshold selection, resulting in a 5% monthly decrease in the number of high-risk clients."
+              ],
+              "tech": [
+                "Machine Learning",
+                "Python",
+                "PySpark",
+                "SQL",
+                "Oracle",
+                "Datio"
+              ]
+            },
+            {
+              "role": "Senior Data Scientist",
+              "org": "Banco de Crédito del Peru (BCP)",
+              "period": "November 2019 - May 2021",
+              "current": false,
+              "bullets": [
+                "Slashed lead evaluation time from two days to under one minute using credit-score and income forecasts.",
+                "Improved customer acquisition accuracy by 10% by implementing advanced customer-transaction graph modeling.",
+                "Cut data analysis time by 30% by designing a reusable univariate and multivariate analysis toolkit.",
+                "Halved model metrics tracking time by 50% through the development of an IFRS-9 scoring toolkit.",
+                "Evaluated models via portfolio projections to forecast shifts up to 6 months ahead."
+              ],
+              "tech": [
+                "Python",
+                "PySpark",
+                "SQL",
+                "Oracle",
+                "SAS",
+                "Cloudera"
+              ]
+            },
+            {
+              "role": "Data Scientist",
+              "org": "Rimac Seguros y Reaseguros",
+              "period": "August 2018 - November 2019",
+              "current": false,
+              "bullets": [
+                "Halved fraud investigation times from six to three months using graph modeling for vehicle policies.",
+                "Drove a 20% sales increase by implementing personalized, end-to-end pricing models for vehicle insurance.",
+                "Slashed model pre-processing time by a factor of 20x by effectively leveraging PySpark on AWS.",
+                "Automated the monthly and on-demand execution of predictive models, improving both efficiency and reliability."
+              ],
+              "tech": [
+                "Machine Learning",
+                "Python",
+                "PySpark",
+                "SQL",
+                "Oracle",
+                "AWS"
+              ]
+            },
+            {
+              "role": "Application Development Associate",
+              "org": "Accenture",
+              "period": "January 2018 - August 2018",
+              "current": false,
+              "bullets": [
+                "Cut daily back-office data collection time from four hours to just ten minutes using Python.",
+                "Developed AI proof-of-concept business cases and custom applications across the full project lifecycle."
+              ],
+              "tech": [
+                "Python",
+                "SQL",
+                "Automation Anywhere",
+                "AWS"
+              ]
+            }
+          ]
+        },
+        "es": {
+          "items": [
+            {
+              "role": "Especialista en AIOps",
+              "org": "Baufest",
+              "period": "Mayo 2025 - Presente",
+              "current": true,
+              "bullets": [
+                "Construí chatbots de IA para la consulta instantánea de documentación y el análisis de errores, reduciendo el tiempo de búsqueda y depuración a segundos.",
+                "Automaticé la generación de documentación de Boomi, estandarizando los artefactos de integración y acelerando la entrega de conocimiento.",
+                "Diseñé la generación de pruebas unitarias impulsada por IA para automatizar la validación y mejorar la calidad del código y la productividad de los desarrolladores.",
+                "Implementé documentación en video con IA que convierte recorridos guiados en documentos estructurados con orientación conversacional."
+              ],
+              "tech": [
+                "Python",
+                "Docker",
+                "LLM",
+                "RAG",
+                "OpenAI",
+                "Gemini",
+                "Bedrock",
+                "Boomi",
+                "React",
+                "AWS"
+              ]
+            },
+            {
+              "role": "Ingeniero de Soluciones de IA",
+              "org": "JobLeap AI",
+              "period": "Octubre 2024 - Abril 2025",
+              "current": false,
+              "bullets": [
+                "Diseñé más de 10 pipelines de datos end-to-end desde múltiples proveedores utilizando bases de datos relacionales y vectoriales.",
+                "Establecí frameworks de pruebas automatizadas para pipelines de datos, garantizando alta confiabilidad y una calidad de datos superior.",
+                "Apliqué técnicas avanzadas de NLP y embeddings para enriquecer las transformaciones de datos, incrementando la precisión y la relevancia.",
+                "Utilicé LangChain y LLMs para generar puntajes de relevancia y crear simulaciones de currículums y entrevistas."
+              ],
+              "tech": [
+                "Python",
+                "Docker",
+                "LLM",
+                "NLP",
+                "OpenAI",
+                "DeepSeek",
+                "PostgreSQL",
+                "Pinecone",
+                "AWS"
+              ]
+            },
+            {
+              "role": "Consultor Senior de Soluciones de Datos",
+              "org": "Antamina (via TIVIT)",
+              "period": "Noviembre 2023 - Septiembre 2024",
+              "current": false,
+              "bullets": [
+                "Migré SQL on-premises a AWS RDS mediante DMS, habilitando ingestas de 3 minutos y reduciendo las demoras de reabastecimiento en las estaciones.",
+                "Desplegué monitoreo de RDS con alertas automáticas ante fallas y sobrecargas, reduciendo el tiempo de inactividad en producción.",
+                "Construí pipelines basados en Databricks junto con pipelines en Athena para pronósticos de demanda eléctrica impulsados por ML.",
+                "Entregué dashboards de recomendaciones con notificaciones automáticas a los stakeholders, mejorando la eficiencia operativa."
+              ],
+              "tech": [
+                "Python",
+                "PySpark",
+                "SQL",
+                "PostgreSQL",
+                "Databricks",
+                "AWS"
+              ]
+            },
+            {
+              "role": "Científico de Datos Manager",
+              "org": "BBVA",
+              "period": "Junio 2021 - Octubre 2023",
+              "current": false,
+              "bullets": [
+                "Logré un aumento del 10% en las ventas de tarjetas de débito creando un sistema de recomendación de rentabilidad de clientes basado en reglas y ML.",
+                "Mejoré en un 50% la evaluación experta de la precisión de facturación, utilizando modelos de pronóstico y elasticidad en la presupuestación retail.",
+                "Incrementé la adquisición de clientes corporativos en un 15% mediante el desarrollo de un sistema de cálculo de costos.",
+                "Implementé la selección de umbrales de RORC, logrando una disminución mensual del 5% en el número de clientes de alto riesgo."
+              ],
+              "tech": [
+                "Machine Learning",
+                "Python",
+                "PySpark",
+                "SQL",
+                "Oracle",
+                "Datio"
+              ]
+            },
+            {
+              "role": "Científico de Datos Senior",
+              "org": "Banco de Crédito del Peru (BCP)",
+              "period": "Noviembre 2019 - Mayo 2021",
+              "current": false,
+              "bullets": [
+                "Reduje el tiempo de evaluación de leads de dos días a menos de un minuto utilizando pronósticos de score crediticio e ingresos.",
+                "Mejoré en un 10% la precisión en la adquisición de clientes implementando modelado avanzado de grafos de transacciones de clientes.",
+                "Reduje el tiempo de análisis de datos en un 30% diseñando un kit reutilizable de análisis univariado y multivariado.",
+                "Reduje en un 50% el tiempo de seguimiento de métricas de modelos mediante el desarrollo de un kit de herramientas de scoring IFRS-9.",
+                "Evalué modelos mediante proyecciones de portafolio para pronosticar variaciones con hasta 6 meses de anticipación."
+              ],
+              "tech": [
+                "Python",
+                "PySpark",
+                "SQL",
+                "Oracle",
+                "SAS",
+                "Cloudera"
+              ]
+            },
+            {
+              "role": "Científico de Datos",
+              "org": "Rimac Seguros y Reaseguros",
+              "period": "Agosto 2018 - Noviembre 2019",
+              "current": false,
+              "bullets": [
+                "Reduje a la mitad los tiempos de investigación de fraude, de seis a tres meses, utilizando modelado de grafos para pólizas vehiculares.",
+                "Impulsé un incremento del 20% en ventas implementando modelos de pricing personalizados y end-to-end para seguros vehiculares.",
+                "Reduje el tiempo de preprocesamiento de modelos en un factor de 20x aprovechando eficazmente PySpark en AWS.",
+                "Automaticé la ejecución mensual y bajo demanda de modelos predictivos, mejorando tanto la eficiencia como la confiabilidad."
+              ],
+              "tech": [
+                "Machine Learning",
+                "Python",
+                "PySpark",
+                "SQL",
+                "Oracle",
+                "AWS"
+              ]
+            },
+            {
+              "role": "Asociado de Desarrollo de Aplicaciones",
+              "org": "Accenture",
+              "period": "Enero 2018 - Agosto 2018",
+              "current": false,
+              "bullets": [
+                "Reduje el tiempo diario de recolección de datos de back-office de cuatro horas a solo diez minutos utilizando Python.",
+                "Desarrollé casos de negocio de prueba de concepto con IA y aplicaciones a medida a lo largo de todo el ciclo de vida del proyecto."
+              ],
+              "tech": [
+                "Python",
+                "SQL",
+                "Automation Anywhere",
+                "AWS"
+              ]
+            }
+          ]
+        }
+      },
+      "title_es": "Experiencia Profesional"
     },
     {
       "slug": "teaching",
@@ -187,77 +879,292 @@
       "position": 7,
       "visible": true,
       "data": {
-        "items": [
-          {
-            "role": "Data & AI Consultant", "org": "Coderio", "period": "October 2025 - Present", "current": true,
-            "bullets": [
-              "Built an end-to-end finance system for Andes Logistics, optimizing 9-country data consolidation from days to minutes.",
-              "Established Banco Basa's medallion lake governance by developing data lineage and automated quality/security KPIs.",
-              "Engineered an ML logistics forecasting model for Santillana, saving ~$50,000 in printing by predicting quote sales."
-            ],
-            "tech": ["Python", "DAMA", "SageMaker", "AWS"]
-          },
-          {
-            "role": "Machine Learning Engineer", "org": "Tottus (via Sapiens Digital Lab)", "period": "September 2025 - January 2026", "current": false,
-            "bullets": [
-              "Built Marketing Forecast pipelines and enhanced Demand models, refactoring code to automate production releases.",
-              "Engineered a GenAI error notification agent using Gemini and Google ADK, optimizing code for scalable integration.",
-              "Established MLOps standards in Vertex AI for Model Monitoring and Registry, ensuring observability of deployed models.",
-              "Modernized Datahub/VPX workflows and resolved CI/CD critical bugs, confirming Churn/CLV models ensuring stability."
-            ],
-            "tech": ["Python", "Docker", "LLMs", "Gemini", "Vertex AI", "GCP"]
-          },
-          {
-            "role": "LLM Data Scientist & Engineer", "org": "Apple (via Turing)", "period": "November 2024 - April 2025", "current": false,
-            "bullets": [
-              "Developed over 300 reasoning notebooks for training LLMs on complex subjects like ML, robotics, and control systems.",
-              "Covered prompt engineering, data structures, and data science with validated code and solution steps.",
-              "Implemented robust QA frameworks ensuring code and reasoning correctness across hundreds of generated datasets.",
-              "Built content generation pipelines using OpenAI, DeepSeek, and Gemini to ensure linguistic accuracy."
-            ],
-            "tech": ["Python", "LLMs", "OpenAI", "DeepSeek", "Gemini"]
-          },
-          {
-            "role": "Staff Data Architect", "org": "DELOSI", "period": "October 2024 - March 2025", "current": false,
-            "bullets": [
-              "Implemented monitoring and alerting for cloud state machines, reducing review and error-handling effort by 60%.",
-              "Automated the backup process for over 5,000 on-premises tables to the cloud, reducing development time by over 100%.",
-              "Created Cloud Formation templates for new pipelines using Step Functions, Glue, Lambdas, and other AWS services.",
-              "Implemented over 20 different architectures for different business units."
-            ],
-            "tech": ["Python", "PySpark", "SQL", "AWS"]
-          },
-          {
-            "role": "Senior Data Scientist Consultant", "org": "Fivvy", "period": "July 2023 - October 2023", "current": false,
-            "bullets": [
-              "Led data modeling for the \"Contextual Profiler\" app, leading to its acquisition by two businesses.",
-              "Developed a local Streamlit application to effectively visualize and present the performance of various models.",
-              "Formulated and deployed solvency and customer acquisition models for financial products using AWS Glue.",
-              "Modified complex budgetary models to accommodate new and requested functionalities within the application."
-            ],
-            "tech": ["Python", "Docker", "MySQL", "AWS"]
-          },
-          {
-            "role": "Professor", "org": "BPC Business School - La Molina National Agrarian University (UNALM)", "period": "November 2020 - Present", "current": true,
-            "bullets": [
-              "Directed and taught over 10 Advanced Analytics Specialization programs, developing all course materials.",
-              "Successfully trained more than 100 professionals from diverse industries in data analytics and Big Data concepts.",
-              "Provided personalized, in-depth feedback to guide professionals in advancing their unique analytical projects.",
-              "Delivered specializations in Big Data & Analytics, Data Science for Business and AI for Business."
-            ],
-            "tech": ["Python", "TensorFlow", "Torch", "LLMs", "LangChain", "LangGraph", "SQL"]
-          },
-          {
-            "role": "Professor", "org": "Data Mining Consulting (DMC)", "period": "October 2021 - Present", "current": true,
-            "bullets": [
-              "Authored and instructed over 20 advanced analytics programs, creating all original course material for each edition.",
-              "Established the institutional baseline for supporting and reviewing MLOps tests and cloud deployment projects.",
-              "Key programs delivered include Data Engineering (AWS & Azure), MLOps & ML Engineering, Deep Learning, Time Series & NLP, Big Data, and Advanced Python (ETL, Web Scraping)."
-            ],
-            "tech": ["Machine Learning", "Deep Learning", "Python", "PySpark", "TensorFlow", "Torch", "Git", "MLflow", "Docker", "AWS", "Azure", "GCP"]
-          }
-        ]
-      }
+        "en": {
+          "items": [
+            {
+              "role": "Data & AI Consultant",
+              "org": "Coderio",
+              "period": "October 2025 - Present",
+              "current": true,
+              "bullets": [
+                "Built an end-to-end finance system for Andes Logistics, optimizing 9-country data consolidation from days to minutes.",
+                "Established Banco Basa's medallion lake governance by developing data lineage and automated quality/security KPIs.",
+                "Engineered an ML logistics forecasting model for Santillana, saving ~$50,000 in printing by predicting quote sales."
+              ],
+              "tech": [
+                "Python",
+                "DAMA",
+                "SageMaker",
+                "AWS"
+              ]
+            },
+            {
+              "role": "Machine Learning Engineer",
+              "org": "Tottus (via Sapiens Digital Lab)",
+              "period": "September 2025 - January 2026",
+              "current": false,
+              "bullets": [
+                "Built Marketing Forecast pipelines and enhanced Demand models, refactoring code to automate production releases.",
+                "Engineered a GenAI error notification agent using Gemini and Google ADK, optimizing code for scalable integration.",
+                "Established MLOps standards in Vertex AI for Model Monitoring and Registry, ensuring observability of deployed models.",
+                "Modernized Datahub/VPX workflows and resolved CI/CD critical bugs, confirming Churn/CLV models ensuring stability."
+              ],
+              "tech": [
+                "Python",
+                "Docker",
+                "LLMs",
+                "Gemini",
+                "Vertex AI",
+                "GCP"
+              ]
+            },
+            {
+              "role": "LLM Data Scientist & Engineer",
+              "org": "Apple (via Turing)",
+              "period": "November 2024 - April 2025",
+              "current": false,
+              "bullets": [
+                "Developed over 300 reasoning notebooks for training LLMs on complex subjects like ML, robotics, and control systems.",
+                "Covered prompt engineering, data structures, and data science with validated code and solution steps.",
+                "Implemented robust QA frameworks ensuring code and reasoning correctness across hundreds of generated datasets.",
+                "Built content generation pipelines using OpenAI, DeepSeek, and Gemini to ensure linguistic accuracy."
+              ],
+              "tech": [
+                "Python",
+                "LLMs",
+                "OpenAI",
+                "DeepSeek",
+                "Gemini"
+              ]
+            },
+            {
+              "role": "Staff Data Architect",
+              "org": "DELOSI",
+              "period": "October 2024 - March 2025",
+              "current": false,
+              "bullets": [
+                "Implemented monitoring and alerting for cloud state machines, reducing review and error-handling effort by 60%.",
+                "Automated the backup process for over 5,000 on-premises tables to the cloud, reducing development time by over 100%.",
+                "Created Cloud Formation templates for new pipelines using Step Functions, Glue, Lambdas, and other AWS services.",
+                "Implemented over 20 different architectures for different business units."
+              ],
+              "tech": [
+                "Python",
+                "PySpark",
+                "SQL",
+                "AWS"
+              ]
+            },
+            {
+              "role": "Senior Data Scientist Consultant",
+              "org": "Fivvy",
+              "period": "July 2023 - October 2023",
+              "current": false,
+              "bullets": [
+                "Led data modeling for the \"Contextual Profiler\" app, leading to its acquisition by two businesses.",
+                "Developed a local Streamlit application to effectively visualize and present the performance of various models.",
+                "Formulated and deployed solvency and customer acquisition models for financial products using AWS Glue.",
+                "Modified complex budgetary models to accommodate new and requested functionalities within the application."
+              ],
+              "tech": [
+                "Python",
+                "Docker",
+                "MySQL",
+                "AWS"
+              ]
+            },
+            {
+              "role": "Professor",
+              "org": "BPC Business School - La Molina National Agrarian University (UNALM)",
+              "period": "November 2020 - Present",
+              "current": true,
+              "bullets": [
+                "Directed and taught over 10 Advanced Analytics Specialization programs, developing all course materials.",
+                "Successfully trained more than 100 professionals from diverse industries in data analytics and Big Data concepts.",
+                "Provided personalized, in-depth feedback to guide professionals in advancing their unique analytical projects.",
+                "Delivered specializations in Big Data & Analytics, Data Science for Business and AI for Business."
+              ],
+              "tech": [
+                "Python",
+                "TensorFlow",
+                "Torch",
+                "LLMs",
+                "LangChain",
+                "LangGraph",
+                "SQL"
+              ]
+            },
+            {
+              "role": "Professor",
+              "org": "Data Mining Consulting (DMC)",
+              "period": "October 2021 - Present",
+              "current": true,
+              "bullets": [
+                "Authored and instructed over 20 advanced analytics programs, creating all original course material for each edition.",
+                "Established the institutional baseline for supporting and reviewing MLOps tests and cloud deployment projects.",
+                "Key programs delivered include Data Engineering (AWS & Azure), MLOps & ML Engineering, Deep Learning, Time Series & NLP, Big Data, and Advanced Python (ETL, Web Scraping)."
+              ],
+              "tech": [
+                "Machine Learning",
+                "Deep Learning",
+                "Python",
+                "PySpark",
+                "TensorFlow",
+                "Torch",
+                "Git",
+                "MLflow",
+                "Docker",
+                "AWS",
+                "Azure",
+                "GCP"
+              ]
+            }
+          ]
+        },
+        "es": {
+          "items": [
+            {
+              "role": "Consultor de Datos e IA",
+              "org": "Coderio",
+              "period": "Octubre 2025 - Presente",
+              "current": true,
+              "bullets": [
+                "Construí un sistema financiero end-to-end para Andes Logistics, optimizando la consolidación de datos de 9 países de días a minutos.",
+                "Establecí la gobernanza del lake con arquitectura medallion de Banco Basa, desarrollando linaje de datos y KPIs automatizados de calidad y seguridad.",
+                "Desarrollé un modelo de ML de pronóstico logístico para Santillana, ahorrando ~$50,000 en impresión al predecir las ventas de cotizaciones."
+              ],
+              "tech": [
+                "Python",
+                "DAMA",
+                "SageMaker",
+                "AWS"
+              ]
+            },
+            {
+              "role": "Ingeniero de Machine Learning",
+              "org": "Tottus (via Sapiens Digital Lab)",
+              "period": "Septiembre 2025 - Enero 2026",
+              "current": false,
+              "bullets": [
+                "Construí pipelines de Marketing Forecast y mejoré modelos de Demanda, refactorizando el código para automatizar los despliegues a producción.",
+                "Desarrollé un agente de GenAI para notificación de errores usando Gemini y Google ADK, optimizando el código para una integración escalable.",
+                "Establecí estándares de MLOps en Vertex AI para Model Monitoring y Registry, asegurando la observabilidad de los modelos desplegados.",
+                "Modernicé los flujos de trabajo de Datahub/VPX y resolví bugs críticos de CI/CD, validando los modelos de Churn/CLV y asegurando su estabilidad."
+              ],
+              "tech": [
+                "Python",
+                "Docker",
+                "LLMs",
+                "Gemini",
+                "Vertex AI",
+                "GCP"
+              ]
+            },
+            {
+              "role": "Científico de Datos e Ingeniero de LLMs",
+              "org": "Apple (via Turing)",
+              "period": "Noviembre 2024 - Abril 2025",
+              "current": false,
+              "bullets": [
+                "Desarrollé más de 300 notebooks de razonamiento para entrenar LLMs en temas complejos como ML, robótica y sistemas de control.",
+                "Abordé prompt engineering, estructuras de datos y ciencia de datos con código validado y pasos de solución verificados.",
+                "Implementé frameworks robustos de QA que garantizan la corrección del código y del razonamiento en cientos de datasets generados.",
+                "Construí pipelines de generación de contenido utilizando OpenAI, DeepSeek y Gemini para asegurar la precisión lingüística."
+              ],
+              "tech": [
+                "Python",
+                "LLMs",
+                "OpenAI",
+                "DeepSeek",
+                "Gemini"
+              ]
+            },
+            {
+              "role": "Arquitecto de Datos Staff",
+              "org": "DELOSI",
+              "period": "Octubre 2024 - Marzo 2025",
+              "current": false,
+              "bullets": [
+                "Implementé monitoreo y alertas para máquinas de estado en la nube, reduciendo en un 60% el esfuerzo de revisión y manejo de errores.",
+                "Automaticé el proceso de respaldo de más de 5,000 tablas on-premises hacia la nube, reduciendo el tiempo de desarrollo en más de un 100%.",
+                "Creé plantillas de Cloud Formation para nuevos pipelines utilizando Step Functions, Glue, Lambdas y otros servicios de AWS.",
+                "Implementé más de 20 arquitecturas distintas para diferentes unidades de negocio."
+              ],
+              "tech": [
+                "Python",
+                "PySpark",
+                "SQL",
+                "AWS"
+              ]
+            },
+            {
+              "role": "Consultor Senior de Ciencia de Datos",
+              "org": "Fivvy",
+              "period": "Julio 2023 - Octubre 2023",
+              "current": false,
+              "bullets": [
+                "Lideré el modelado de datos de la aplicación \"Contextual Profiler\", lo que resultó en su adquisición por dos empresas.",
+                "Desarrollé una aplicación local en Streamlit para visualizar y presentar de manera efectiva el desempeño de diversos modelos.",
+                "Formulé y desplegué modelos de solvencia y adquisición de clientes para productos financieros utilizando AWS Glue.",
+                "Modifiqué modelos presupuestarios complejos para incorporar nuevas funcionalidades solicitadas dentro de la aplicación."
+              ],
+              "tech": [
+                "Python",
+                "Docker",
+                "MySQL",
+                "AWS"
+              ]
+            },
+            {
+              "role": "Profesor",
+              "org": "BPC Business School - La Molina National Agrarian University (UNALM)",
+              "period": "Noviembre 2020 - Presente",
+              "current": true,
+              "bullets": [
+                "Dirigí e impartí más de 10 programas de Especialización en Analítica Avanzada, desarrollando todos los materiales de los cursos.",
+                "Capacité con éxito a más de 100 profesionales de diversas industrias en analítica de datos y conceptos de Big Data.",
+                "Brindé retroalimentación personalizada y detallada para guiar a los profesionales en el avance de sus propios proyectos analíticos.",
+                "Impartí especializaciones en Big Data & Analytics, Data Science for Business y AI for Business."
+              ],
+              "tech": [
+                "Python",
+                "TensorFlow",
+                "Torch",
+                "LLMs",
+                "LangChain",
+                "LangGraph",
+                "SQL"
+              ]
+            },
+            {
+              "role": "Profesor",
+              "org": "Data Mining Consulting (DMC)",
+              "period": "Octubre 2021 - Presente",
+              "current": true,
+              "bullets": [
+                "Diseñé e impartí más de 20 programas de analítica avanzada, creando todo el material original de cada edición.",
+                "Establecí la línea base institucional para el soporte y la revisión de pruebas de MLOps y proyectos de despliegue en la nube.",
+                "Entre los programas principales impartidos se incluyen Data Engineering (AWS & Azure), MLOps & ML Engineering, Deep Learning, Time Series & NLP, Big Data y Advanced Python (ETL, Web Scraping)."
+              ],
+              "tech": [
+                "Machine Learning",
+                "Deep Learning",
+                "Python",
+                "PySpark",
+                "TensorFlow",
+                "Torch",
+                "Git",
+                "MLflow",
+                "Docker",
+                "AWS",
+                "Azure",
+                "GCP"
+              ]
+            }
+          ]
+        }
+      },
+      "title_es": "Consultoría y Docencia"
     }
   ]
 }

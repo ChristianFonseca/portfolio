@@ -2,15 +2,17 @@
 
 import { useEffect, useState, useTransition } from "react"
 import Link from "next/link"
-import { GripVertical, ChevronUp, ChevronDown, X, ExternalLink } from "lucide-react"
+import { GripVertical, ChevronUp, ChevronDown, X, ExternalLink, Sparkles, Loader2, AlertTriangle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { saveSection } from "@/app/admin/actions"
 import { TagsInput } from "@/components/admin/tags-input"
 import { ImageField } from "@/components/admin/image-field"
 import type { FieldSpec, SubFieldSpec } from "@/lib/content/specs"
+import type { SectionKind } from "@/lib/content/schemas"
+import type { Locale } from "@/lib/i18n/dictionaries"
 
 // Form model: como los datos reales, pero con bullets como texto multilínea
-// (un ítem por línea) para editarlos cómodo. Tags se editan como chips.
+// (un ítem por línea). Tags se editan como chips.
 type FormValue = string | boolean | string[] | FormItem[]
 type FormItem = Record<string, string | boolean | string[]>
 type FormModel = Record<string, FormValue>
@@ -18,7 +20,7 @@ type FormModel = Record<string, FormValue>
 function toFormModel(spec: FieldSpec[], data: Record<string, unknown>): FormModel {
   const model: FormModel = {}
   for (const field of spec) {
-    const value = data[field.key]
+    const value = data?.[field.key]
     if (field.type === "items") {
       const items = Array.isArray(value) ? (value as Record<string, unknown>[]) : []
       model[field.key] = items.map((item) => {
@@ -77,99 +79,184 @@ function emptyItem(fields: SubFieldSpec[]): FormItem {
 const inputClass =
   "w-full px-3 py-2 rounded-lg bg-background/50 border border-border text-sm text-foreground placeholder:text-muted-foreground/60 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
 
+const LOCALE_LABELS: Record<Locale, string> = { en: "English", es: "Español" }
+
 export function SectionEditor({
   slug,
+  kind,
   title,
+  titleEs,
   spec,
   initialData,
 }: {
   slug: string
+  kind: SectionKind
   title: string
+  titleEs: string
   spec: FieldSpec[]
-  initialData: Record<string, unknown>
+  initialData: { en?: Record<string, unknown>; es?: Record<string, unknown> }
 }) {
-  const [model, setModel] = useState<FormModel>(() => toFormModel(spec, initialData))
+  const [models, setModels] = useState<Record<Locale, FormModel>>(() => ({
+    en: toFormModel(spec, initialData.en ?? {}),
+    es: toFormModel(spec, initialData.es ?? initialData.en ?? {}),
+  }))
+  const [titles, setTitles] = useState<Record<Locale, string>>({ en: title, es: titleEs || title })
+  const [active, setActive] = useState<Locale>("en")
+  // stale[L] = el contenido de L quedó desactualizado respecto al otro idioma
+  const [stale, setStale] = useState<Record<Locale, boolean>>({ en: false, es: false })
   const [dirty, setDirty] = useState(false)
   const [saved, setSaved] = useState(false)
   const [toast, setToast] = useState<{ ok: boolean; text: string } | null>(null)
   const [pending, startTransition] = useTransition()
+  const [translating, setTranslating] = useState(false)
 
   useEffect(() => {
     if (!toast) return
-    const t = setTimeout(() => setToast(null), 4000)
+    const t = setTimeout(() => setToast(null), 5000)
     return () => clearTimeout(t)
   }, [toast])
 
+  const other: Locale = active === "en" ? "es" : "en"
+  const canSave = dirty && !stale.en && !stale.es && !pending && !translating
+
+  // Editar el idioma activo lo marca fresco y desactualiza el otro
   const touch = () => {
     setDirty(true)
     setSaved(false)
+    setStale((prev) => ({ ...prev, [active]: false, [other]: true }))
+  }
+  // Editar directamente el idioma "stale" cuenta como traducción manual
+  const touchSelfOnly = () => {
+    setDirty(true)
+    setSaved(false)
+    setStale((prev) => ({ ...prev, [active]: false }))
+  }
+  const handleTouch = () => {
+    if (stale[active]) touchSelfOnly()
+    else touch()
   }
 
+  const model = models[active]
   const setField = (key: string, value: FormValue) => {
-    setModel((prev) => ({ ...prev, [key]: value }))
-    touch()
+    setModels((prev) => ({ ...prev, [active]: { ...prev[active], [key]: value } }))
+    handleTouch()
   }
-
   const setItemField = (key: string, index: number, subKey: string, value: string | boolean | string[]) => {
-    setModel((prev) => {
-      const items = [...(prev[key] as FormItem[])]
+    setModels((prev) => {
+      const items = [...(prev[active][key] as FormItem[])]
       items[index] = { ...items[index], [subKey]: value }
-      return { ...prev, [key]: items }
+      return { ...prev, [active]: { ...prev[active], [key]: items } }
     })
-    touch()
+    handleTouch()
+  }
+  const mutateItems = (key: string, fn: (items: FormItem[]) => FormItem[]) => {
+    setModels((prev) => ({ ...prev, [active]: { ...prev[active], [key]: fn([...(prev[active][key] as FormItem[])]) } }))
+    handleTouch()
   }
 
-  const mutateItems = (key: string, fn: (items: FormItem[]) => FormItem[]) => {
-    setModel((prev) => ({ ...prev, [key]: fn([...(prev[key] as FormItem[])]) }))
-    touch()
+  const handleTranslate = async () => {
+    setTranslating(true)
+    setToast(null)
+    try {
+      const res = await fetch("/translate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ kind, from: active, to: other, data: fromFormModel(spec, models[active]) }),
+      })
+      const payload = await res.json().catch(() => ({}))
+      if (res.ok && payload.data) {
+        setModels((prev) => ({ ...prev, [other]: toFormModel(spec, payload.data) }))
+        setStale((prev) => ({ ...prev, [other]: false }))
+        setDirty(true)
+        setToast({
+          ok: true,
+          text: `Traducción a ${LOCALE_LABELS[other]} generada con ${payload.model}. Revísala en la pestaña ${other.toUpperCase()} y guarda.`,
+        })
+      } else {
+        setToast({ ok: false, text: payload.error ?? "Error al traducir" })
+      }
+    } catch {
+      setToast({ ok: false, text: "No se pudo conectar con el servidor" })
+    } finally {
+      setTranslating(false)
+    }
   }
 
   const handleSave = () => {
     startTransition(async () => {
-      const result = await saveSection(slug, fromFormModel(spec, model))
+      const result = await saveSection(slug, {
+        en: fromFormModel(spec, models.en),
+        es: fromFormModel(spec, models.es),
+        title: titles.en,
+        title_es: titles.es,
+      })
       if (result.ok) {
         setDirty(false)
         setSaved(true)
-        setToast({ ok: true, text: "Guardado — ya visible en christianfonseca.dev" })
+        setToast({ ok: true, text: "Guardado — ya visible en christianfonseca.dev y /es" })
       } else {
         setToast({ ok: false, text: result.error })
       }
     })
   }
 
+  const statusText = pending
+    ? "Guardando…"
+    : stale.en || stale.es
+      ? `Falta actualizar ${stale.en ? "EN" : "ES"} — tradúcelo con IA o edítalo a mano`
+      : dirty
+        ? "Cambios sin guardar"
+        : saved
+          ? "Guardado"
+          : "Sin cambios"
+
   return (
     <div>
       {/* Barra de acciones sticky */}
-      <div className="sticky top-0 z-20 -mx-6 mb-8 border-b border-border bg-[#0d0918]/90 px-6 py-3 backdrop-blur-md">
+      <div className="sticky top-0 z-20 -mx-6 mb-6 border-b border-border bg-background/85 px-6 py-3 backdrop-blur-md">
         <div className="flex flex-wrap items-center gap-3">
           <p className="text-sm text-muted-foreground">
             <Link href="/" className="hover:text-primary transition-colors">
               Secciones
             </Link>{" "}
-            / <span className="font-semibold text-foreground">{title}</span>
+            / <span className="font-semibold text-foreground">{active === "es" ? titles.es : titles.en}</span>
           </p>
-          <div className="ml-auto flex items-center gap-3">
+          <div className="ml-auto flex flex-wrap items-center gap-3">
             <span
               className={`flex items-center gap-1.5 text-xs ${
-                dirty ? "text-yellow-400" : saved ? "text-emerald-400" : "text-muted-foreground"
+                stale.en || stale.es
+                  ? "text-yellow-500"
+                  : dirty
+                    ? "text-yellow-500"
+                    : saved
+                      ? "text-emerald-500"
+                      : "text-muted-foreground"
               }`}
             >
-              <span
-                className={`h-1.5 w-1.5 rounded-full ${
-                  dirty ? "bg-yellow-400" : saved ? "bg-emerald-400" : "bg-muted-foreground/50"
-                }`}
-              />
-              {dirty ? "Cambios sin guardar" : saved ? "Guardado" : "Sin cambios"}
+              {stale.en || stale.es ? (
+                <AlertTriangle className="h-3.5 w-3.5" />
+              ) : (
+                <span
+                  className={`h-1.5 w-1.5 rounded-full ${
+                    dirty ? "bg-yellow-500" : saved ? "bg-emerald-500" : "bg-muted-foreground/50"
+                  }`}
+                />
+              )}
+              {statusText}
             </span>
             <Button variant="outline" size="sm" className="rounded-full text-xs bg-transparent" asChild>
-              <a href="https://christianfonseca.dev" target="_blank" rel="noopener noreferrer">
+              <a
+                href={active === "es" ? "https://christianfonseca.dev/es" : "https://christianfonseca.dev"}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 Ver landing <ExternalLink className="ml-1 h-3 w-3" />
               </a>
             </Button>
             <Button
               size="sm"
               onClick={handleSave}
-              disabled={pending || !dirty}
+              disabled={!canSave}
               className="rounded-full bg-gradient-to-r from-primary to-accent text-white shadow-[0_0_20px_-4px_rgba(168,85,247,0.6)] hover:brightness-110 disabled:opacity-50"
             >
               {pending ? "Guardando…" : "Guardar cambios"}
@@ -178,9 +265,88 @@ export function SectionEditor({
         </div>
       </div>
 
+      {/* Tabs de idioma + traducir con IA */}
+      <div className="mb-6 flex flex-wrap items-center gap-3">
+        <div className="flex rounded-full border border-border bg-card/40 p-1">
+          {(["en", "es"] as Locale[]).map((loc) => (
+            <button
+              key={loc}
+              type="button"
+              onClick={() => setActive(loc)}
+              className={`relative rounded-full px-4 py-1.5 text-sm font-semibold transition-colors ${
+                active === loc
+                  ? "bg-gradient-to-r from-primary/80 to-accent/80 text-white"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              {loc.toUpperCase()}
+              {stale[loc] && (
+                <span
+                  title="Desactualizado"
+                  className="absolute -right-0.5 -top-0.5 h-2.5 w-2.5 rounded-full border-2 border-background bg-yellow-500"
+                />
+              )}
+            </button>
+          ))}
+        </div>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={handleTranslate}
+          disabled={translating || pending}
+          className="rounded-full bg-transparent text-xs"
+        >
+          {translating ? (
+            <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />
+          ) : (
+            <Sparkles className="mr-1.5 h-3.5 w-3.5 text-primary" />
+          )}
+          {translating
+            ? "Traduciendo…"
+            : `Traducir ${active.toUpperCase()} → ${other.toUpperCase()} con IA`}
+        </Button>
+        <p className="text-xs text-muted-foreground">
+          Editas en {LOCALE_LABELS[active]}; la IA genera el otro idioma.
+        </p>
+      </div>
+
+      {/* Título de la sección por idioma */}
+      <div className="mb-8 grid gap-4 md:grid-cols-2">
+        <div>
+          <label className="mb-2 block text-[11px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+            Título de la sección (EN)
+          </label>
+          <input
+            type="text"
+            value={titles.en}
+            onChange={(e) => {
+              setTitles((prev) => ({ ...prev, en: e.target.value }))
+              setDirty(true)
+              setSaved(false)
+            }}
+            className={inputClass}
+          />
+        </div>
+        <div>
+          <label className="mb-2 block text-[11px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+            Título de la sección (ES)
+          </label>
+          <input
+            type="text"
+            value={titles.es}
+            onChange={(e) => {
+              setTitles((prev) => ({ ...prev, es: e.target.value }))
+              setDirty(true)
+              setSaved(false)
+            }}
+            className={inputClass}
+          />
+        </div>
+      </div>
+
       <div className="space-y-8">
         {spec.map((field) => (
-          <div key={field.key}>
+          <div key={`${active}-${field.key}`}>
             {field.type === "items" ? (
               <div>
                 <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
@@ -226,7 +392,7 @@ export function SectionEditor({
                           type="button"
                           aria-label="Eliminar"
                           onClick={() => {
-                            if (confirm(`¿Eliminar este ${field.itemName}?`)) {
+                            if (confirm(`¿Eliminar este ${field.itemName} (solo en ${active.toUpperCase()})?`)) {
                               mutateItems(field.key, (items) => items.filter((_, j) => j !== i))
                             }
                           }}
@@ -294,7 +460,7 @@ export function SectionEditor({
                     onClick={() => mutateItems(field.key, (items) => [...items, emptyItem(field.fields)])}
                     className="w-full rounded-2xl border border-dashed border-border py-3.5 text-sm text-muted-foreground hover:border-primary hover:text-primary transition-colors"
                   >
-                    + Agregar {field.itemName}
+                    + Agregar {field.itemName} ({active.toUpperCase()})
                   </button>
                 </div>
               </div>
@@ -312,10 +478,7 @@ export function SectionEditor({
                     className={`${inputClass} resize-y`}
                   />
                 ) : field.type === "image" ? (
-                  <ImageField
-                    value={String(model[field.key] ?? "")}
-                    onChange={(url) => setField(field.key, url)}
-                  />
+                  <ImageField value={String(model[field.key] ?? "")} onChange={(url) => setField(field.key, url)} />
                 ) : field.type === "tags" ? (
                   <TagsInput
                     value={(model[field.key] as string[]) ?? []}
@@ -341,8 +504,8 @@ export function SectionEditor({
           role="status"
           className={`fixed bottom-6 left-1/2 z-50 max-w-[92vw] -translate-x-1/2 rounded-xl border px-5 py-3 text-sm shadow-2xl backdrop-blur-md ${
             toast.ok
-              ? "border-emerald-500/40 bg-emerald-950/80 text-emerald-200"
-              : "border-red-500/40 bg-red-950/80 text-red-200"
+              ? "border-emerald-500/50 bg-emerald-100/95 text-emerald-900 dark:bg-emerald-950/85 dark:text-emerald-200"
+              : "border-red-500/50 bg-red-100/95 text-red-900 dark:bg-red-950/85 dark:text-red-200"
           }`}
         >
           {toast.text}

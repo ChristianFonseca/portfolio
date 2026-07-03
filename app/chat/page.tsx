@@ -6,8 +6,8 @@ import { useState, useRef, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { ArrowLeft, Send, Bot, User } from "lucide-react"
 import { BubbleCard } from "@/components/bubble-card"
-import Starfield from "@/components/starfield"
-import { FloatingShapes } from "@/components/floating-shapes"
+import { ThemedBackground } from "@/components/themed-background"
+import { ThemeToggle } from "@/components/theme-toggle"
 import { PageTransition } from "@/components/page-transition"
 import { useRouter } from "next/navigation"
 
@@ -109,23 +109,15 @@ export default function ChatPage() {
   }
 
   return (
-    <main className="min-h-screen relative dark flex flex-col animate-page-fade">
+    <main className="min-h-screen relative flex flex-col animate-page-fade">
       {isNavigating && <PageTransition />}
 
-      <Starfield />
-      <FloatingShapes />
+      <ThemedBackground />
 
       {/* Navigation */}
       <nav className="fixed top-0 left-0 right-0 z-50 h-24">
-        <div
-          className="absolute inset-0"
-          style={{
-            backdropFilter: "blur(8px)",
-            WebkitBackdropFilter: "blur(8px)",
-            backgroundColor: "rgba(0, 0, 0, 0.4)",
-          }}
-        />
-        <div className="relative h-full max-w-7xl mx-auto px-6 flex items-center">
+        <div className="absolute inset-0 bg-background/40 [backdrop-filter:blur(8px)]" />
+        <div className="relative h-full max-w-7xl mx-auto px-6 flex items-center justify-between">
           <Button
             variant="ghost"
             size="lg"
@@ -137,6 +129,7 @@ export default function ChatPage() {
               Back to Portfolio
             </a>
           </Button>
+          <ThemeToggle />
         </div>
       </nav>
 

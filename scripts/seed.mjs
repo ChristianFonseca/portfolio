@@ -24,13 +24,19 @@ console.log("esquema: OK")
 const { sections } = JSON.parse(readFileSync(join(root, "lib", "content", "static-data.json"), "utf8"))
 for (const s of sections) {
   const inserted = await sql`
-    insert into sections (slug, kind, title, position, visible, data)
-    values (${s.slug}, ${s.kind}, ${s.title}, ${s.position}, ${s.visible}, ${sql.json(s.data)})
+    insert into sections (slug, kind, title, title_es, position, visible, data)
+    values (${s.slug}, ${s.kind}, ${s.title}, ${s.title_es ?? ""}, ${s.position}, ${s.visible}, ${sql.json(s.data)})
     on conflict (slug) do nothing
     returning slug
   `
   console.log(`sección ${s.slug}: ${inserted.length ? "insertada" : "ya existía (no se toca)"}`)
 }
+
+await sql`
+  insert into settings (key, value) values ('gemini_model', '"gemini-2.5-flash-lite"'::jsonb)
+  on conflict (key) do nothing
+`
+console.log("setting gemini_model: OK")
 
 if (ADMIN_EMAIL && ADMIN_PASSWORD) {
   const salt = randomBytes(16).toString("hex")

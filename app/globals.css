@@ -183,8 +183,12 @@
 
   body {
     @apply text-foreground;
-    background: radial-gradient(ellipse at bottom, #1a0033 0%, #000000 100%);
+    background: radial-gradient(ellipse at bottom, #f0e9fb 0%, #fdfcff 100%);
     min-height: 100vh;
+  }
+
+  .dark body {
+    background: radial-gradient(ellipse at bottom, #1a0033 0%, #000000 100%);
   }
 
   main {

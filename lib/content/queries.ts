@@ -1,6 +1,7 @@
 import { unstable_cache } from "next/cache"
 import { sql } from "@/lib/db"
 import staticData from "./static-data.json"
+import type { Locale } from "@/lib/i18n/dictionaries"
 import type {
   AboutData,
   ExperienceData,
@@ -14,8 +15,16 @@ import type {
 
 export const STATIC_SECTIONS = staticData.sections as SectionRecord[]
 
-function buildContent(rows: SectionRecord[]): LandingContent {
-  // Base estática + overlay de lo que exista en DB, por slug
+// data puede ser { en, es } (formato actual) o plano (legacy) — resolvemos por locale
+function resolveData(raw: unknown, locale: Locale): unknown {
+  if (raw && typeof raw === "object" && "en" in (raw as Record<string, unknown>)) {
+    const localized = raw as Record<string, unknown>
+    return localized[locale] ?? localized.en
+  }
+  return raw
+}
+
+function buildContent(rows: SectionRecord[], locale: Locale): LandingContent {
   const bySlug = new Map<string, SectionRecord>()
   for (const s of STATIC_SECTIONS) bySlug.set(s.slug, s)
   for (const r of rows) bySlug.set(r.slug, r)
@@ -23,7 +32,8 @@ function buildContent(rows: SectionRecord[]): LandingContent {
   const entry = <T>(slug: string) => {
     const s = bySlug.get(slug)
     if (!s) throw new Error(`Sección faltante: ${slug}`)
-    return { title: s.title, visible: s.visible, data: s.data as T }
+    const title = locale === "es" ? s.title_es || s.title : s.title
+    return { title, visible: s.visible, data: resolveData(s.data, locale) as T }
   }
 
   return {
@@ -38,16 +48,16 @@ function buildContent(rows: SectionRecord[]): LandingContent {
 }
 
 export const getContent = unstable_cache(
-  async (): Promise<LandingContent> => {
+  async (locale: Locale): Promise<LandingContent> => {
     try {
       const rows = await sql<SectionRecord[]>`
-        select slug, kind, title, position, visible, data from sections order by position
+        select slug, kind, title, title_es, position, visible, data from sections order by position
       `
-      return buildContent(rows)
+      return buildContent(rows, locale)
     } catch (error) {
-      // Sin DB (build, dev sin túnel, o pg-dev caído) la landing sigue viva con el contenido estático
+      // Sin DB la landing sigue viva con el contenido estático
       console.error("getContent: DB no disponible, usando contenido estático:", error)
-      return buildContent([])
+      return buildContent([], locale)
     }
   },
   ["landing-content"],

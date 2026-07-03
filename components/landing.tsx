@@ -4,8 +4,7 @@ import type React from "react"
 
 import { Navigation } from "@/components/navigation"
 import { BubbleCard } from "@/components/bubble-card"
-import { FloatingShapes } from "@/components/floating-shapes"
-import Starfield from "@/components/starfield"
+import { ThemedBackground } from "@/components/themed-background"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { MapPin, Mail, Linkedin, Download, ExternalLink, Github, MessageCircle, Twitter, Instagram, Award } from "lucide-react"
@@ -14,16 +13,22 @@ import { SuccessModal } from "@/components/success-modal"
 import { PageTransition } from "@/components/page-transition"
 import { useRouter } from "next/navigation"
 import type { LandingContent } from "@/lib/content/schemas"
+import type { Dictionary, Locale } from "@/lib/i18n/dictionaries"
 
-// Clases completas por nombre de color (Tailwind no genera clases construidas dinámicamente)
+// Clases completas por nombre de color, con variantes light y dark
+// (Tailwind no genera clases construidas dinámicamente)
 const SKILL_BADGE_CLASSES: Record<string, string> = {
-  purple: "bg-purple-500/10 text-purple-300 border-purple-500/20 hover:bg-purple-500/20 hover:border-purple-500/50",
-  blue: "bg-blue-500/10 text-blue-300 border-blue-500/20 hover:bg-blue-500/20 hover:border-blue-500/50",
-  emerald: "bg-emerald-500/10 text-emerald-300 border-emerald-500/20 hover:bg-emerald-500/20 hover:border-emerald-500/50",
-  yellow: "bg-yellow-500/10 text-yellow-300 border-yellow-500/20 hover:bg-yellow-500/20 hover:border-yellow-500/50",
-  orange: "bg-orange-500/10 text-orange-300 border-orange-500/20 hover:bg-orange-500/20 hover:border-orange-500/50",
-  cyan: "bg-cyan-500/10 text-cyan-300 border-cyan-500/20 hover:bg-cyan-500/20 hover:border-cyan-500/50",
-  rose: "bg-rose-500/10 text-rose-300 border-rose-500/20 hover:bg-rose-500/20 hover:border-rose-500/50",
+  purple:
+    "bg-purple-500/10 text-purple-700 dark:text-purple-300 border-purple-500/30 dark:border-purple-500/20 hover:bg-purple-500/20 hover:border-purple-500/60",
+  blue: "bg-blue-500/10 text-blue-700 dark:text-blue-300 border-blue-500/30 dark:border-blue-500/20 hover:bg-blue-500/20 hover:border-blue-500/60",
+  emerald:
+    "bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-500/30 dark:border-emerald-500/20 hover:bg-emerald-500/20 hover:border-emerald-500/60",
+  yellow:
+    "bg-yellow-500/10 text-yellow-700 dark:text-yellow-300 border-yellow-500/30 dark:border-yellow-500/20 hover:bg-yellow-500/20 hover:border-yellow-500/60",
+  orange:
+    "bg-orange-500/10 text-orange-700 dark:text-orange-300 border-orange-500/30 dark:border-orange-500/20 hover:bg-orange-500/20 hover:border-orange-500/60",
+  cyan: "bg-cyan-500/10 text-cyan-700 dark:text-cyan-300 border-cyan-500/30 dark:border-cyan-500/20 hover:bg-cyan-500/20 hover:border-cyan-500/60",
+  rose: "bg-rose-500/10 text-rose-700 dark:text-rose-300 border-rose-500/30 dark:border-rose-500/20 hover:bg-rose-500/20 hover:border-rose-500/60",
 }
 
 const PROJECT_GRADIENTS = [
@@ -35,7 +40,15 @@ const PROJECT_GRADIENTS = [
   "from-red-500/20 to-pink-500/20",
 ]
 
-export function Landing({ content }: { content: LandingContent }) {
+export function Landing({
+  content,
+  locale,
+  dict,
+}: {
+  content: LandingContent
+  locale: Locale
+  dict: Dictionary
+}) {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -75,11 +88,11 @@ export function Landing({ content }: { content: LandingContent }) {
         setFormData({ name: "", email: "", subject: "", message: "" })
       } else {
         console.error("Error sending message:", data.error)
-        alert("Failed to send message. Please try again or contact directly via email.")
+        alert(dict.contact.sendError)
       }
     } catch (error) {
       console.error("Error submitting form:", error)
-      alert("Failed to send message. Please try again or contact directly via email.")
+      alert(dict.contact.sendError)
     } finally {
       setIsSubmitting(false)
     }
@@ -95,12 +108,11 @@ export function Landing({ content }: { content: LandingContent }) {
   const { hero, about, skills, publicProjects, researchProjects, experience, teaching } = content
 
   return (
-    <main className="min-h-screen relative dark animate-page-fade">
+    <main className="min-h-screen relative animate-page-fade">
       {isNavigating && <PageTransition />}
 
-      <Starfield />
-      <FloatingShapes />
-      <Navigation />
+      <ThemedBackground />
+      <Navigation locale={locale} dict={dict} />
 
       {/* Hero Section */}
       {hero.visible && (
@@ -212,13 +224,13 @@ export function Landing({ content }: { content: LandingContent }) {
                 >
                   <a href="/chat" onClick={handleNavigateToChat}>
                     <MessageCircle className="h-5 w-5 mr-2" />
-                    Try Chat!
+                    {dict.hero.tryChat}
                   </a>
                 </Button>
                 <Button size="lg" className="w-52 rounded-full glow-effect" asChild>
                   <a href="/cv.pdf" download="Christian-Fonseca-CV.pdf">
                     <Download className="h-4 w-4 mr-2" />
-                    Download CV
+                    {dict.hero.downloadCV}
                   </a>
                 </Button>
               </div>
@@ -232,7 +244,7 @@ export function Landing({ content }: { content: LandingContent }) {
         <section id="profile" className="py-20 px-6">
           <div className="max-w-6xl mx-auto">
             <h2 className="text-3xl md:text-4xl font-bold text-center mb-16 floating-element bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-              Professional Profile
+              {dict.profile.heading}
             </h2>
 
             {about.visible && (
@@ -243,7 +255,7 @@ export function Landing({ content }: { content: LandingContent }) {
                 </BubbleCard>
 
                 <BubbleCard size="lg" variant="accent" className="glow-effect">
-                  <h3 className="text-2xl font-semibold mb-4 text-primary">Connect</h3>
+                  <h3 className="text-2xl font-semibold mb-4 text-primary">{dict.profile.connect}</h3>
                   <div className="space-y-3">
                     <div className="flex items-center space-x-3">
                       <Twitter className="h-5 w-5 text-primary" />
@@ -326,7 +338,7 @@ export function Landing({ content }: { content: LandingContent }) {
                 ))}
 
                 <BubbleCard className="glow-effect flex flex-col h-full">
-                  <h4 className="text-lg font-semibold mb-4 text-primary">Languages</h4>
+                  <h4 className="text-lg font-semibold mb-4 text-primary">{dict.profile.languagesTitle}</h4>
                   <div className="flex flex-col gap-2">
                     {skills.data.languages.map((lang) => (
                       <div
@@ -458,10 +470,10 @@ export function Landing({ content }: { content: LandingContent }) {
       <section id="contact" className="py-20 px-6">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center floating-element bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-            Ready to collaborate?
+            {dict.contact.heading}
           </h2>
           <p className="text-xl text-muted-foreground mb-12 max-w-2xl mx-auto text-center">
-            I'm available for new projects and opportunities. Let's connect and build something incredible together.
+            {dict.contact.subheading}
           </p>
 
           <BubbleCard size="lg" className="glow-effect max-w-2xl mx-auto mb-12" noAnimation>
@@ -469,12 +481,12 @@ export function Landing({ content }: { content: LandingContent }) {
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <label htmlFor="name" className="text-sm font-medium text-foreground">
-                    Name
+                    {dict.contact.name}
                   </label>
                   <input
                     id="name"
                     type="text"
-                    placeholder="Your name"
+                    placeholder={dict.contact.namePlaceholder}
                     value={formData.name}
                     onChange={handleChange}
                     className="w-full px-4 py-3 rounded-2xl bg-background/50 border border-border focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
@@ -483,12 +495,12 @@ export function Landing({ content }: { content: LandingContent }) {
                 </div>
                 <div className="space-y-2">
                   <label htmlFor="email" className="text-sm font-medium text-foreground">
-                    Email
+                    {dict.contact.email}
                   </label>
                   <input
                     id="email"
                     type="email"
-                    placeholder="your.email@example.com"
+                    placeholder={dict.contact.emailPlaceholder}
                     value={formData.email}
                     onChange={handleChange}
                     className="w-full px-4 py-3 rounded-2xl bg-background/50 border border-border focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
@@ -498,12 +510,12 @@ export function Landing({ content }: { content: LandingContent }) {
               </div>
               <div className="space-y-2">
                 <label htmlFor="subject" className="text-sm font-medium text-foreground">
-                  Subject
+                  {dict.contact.subject}
                 </label>
                 <input
                   id="subject"
                   type="text"
-                  placeholder="What's this about?"
+                  placeholder={dict.contact.subjectPlaceholder}
                   value={formData.subject}
                   onChange={handleChange}
                   className="w-full px-4 py-3 rounded-2xl bg-background/50 border border-border focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
@@ -512,12 +524,12 @@ export function Landing({ content }: { content: LandingContent }) {
               </div>
               <div className="space-y-2">
                 <label htmlFor="message" className="text-sm font-medium text-foreground">
-                  Message
+                  {dict.contact.message}
                 </label>
                 <textarea
                   id="message"
                   rows={6}
-                  placeholder="Tell me about your project or opportunity..."
+                  placeholder={dict.contact.messagePlaceholder}
                   value={formData.message}
                   onChange={handleChange}
                   className="w-full px-4 py-3 rounded-2xl bg-background/50 border border-border focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all resize-none"
@@ -531,7 +543,7 @@ export function Landing({ content }: { content: LandingContent }) {
                 disabled={isSubmitting}
               >
                 <Mail className="h-5 w-5 mr-2" />
-                {isSubmitting ? "Sending..." : "Send Message"}
+                {isSubmitting ? dict.contact.sending : dict.contact.send}
               </Button>
             </form>
           </BubbleCard>
@@ -544,7 +556,7 @@ export function Landing({ content }: { content: LandingContent }) {
             >
               <a href="/chat" onClick={handleNavigateToChat}>
                 <MessageCircle className="h-5 w-5 mr-2" />
-                Try Chat!
+                {dict.hero.tryChat}
               </a>
             </Button>
             <Button
@@ -555,7 +567,7 @@ export function Landing({ content }: { content: LandingContent }) {
             >
               <a href="mailto:christian.fonseca.r@gmail.com">
                 <Mail className="h-5 w-5 mr-2" />
-                Direct Email
+                {dict.contact.directEmail}
               </a>
             </Button>
             <Button
@@ -581,7 +593,7 @@ export function Landing({ content }: { content: LandingContent }) {
                 rel="noopener noreferrer"
               >
                 <ExternalLink className="h-5 w-5 mr-2" />
-                Google Scholar
+                {dict.contact.scholar}
               </a>
             </Button>
           </div>
@@ -591,7 +603,9 @@ export function Landing({ content }: { content: LandingContent }) {
       {/* Footer */}
       <footer className="py-8 px-6 border-t border-border">
         <div className="max-w-6xl mx-auto text-center text-muted-foreground">
-          <p>&copy; {new Date().getFullYear()} Christian Fonseca. All rights reserved.</p>
+          <p>
+            &copy; {new Date().getFullYear()} Christian Fonseca. {dict.footer.rights}
+          </p>
         </div>
       </footer>
 
