@@ -1,0 +1,12 @@
+services:
+  portfolio-web:
+    build: .
+    container_name: portfolio-web
+    restart: unless-stopped
+    env_file: .env
+    ports: ["127.0.0.1:8001:3000"]
+    networks: [portfolio-net, pg-shared]
+
+networks:
+  portfolio-net: { name: portfolio-net }
+  pg-shared: { external: true }

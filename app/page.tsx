@@ -9,7 +9,6 @@ import Starfield from "@/components/starfield"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { MapPin, Mail, Linkedin, Download, ExternalLink, Github, MessageCircle, Twitter, Instagram, Award } from "lucide-react"
-import { InfiniteGallery } from "@/components/infinite-gallery"
 import { useState } from "react"
 import { SuccessModal } from "@/components/success-modal"
 import { PageTransition } from "@/components/page-transition"
@@ -54,11 +53,11 @@ export default function Home() {
         setShowSuccessModal(true)
         setFormData({ name: "", email: "", subject: "", message: "" })
       } else {
-        console.error("[v0] Error sending message:", data.error)
+        console.error("Error sending message:", data.error)
         alert("Failed to send message. Please try again or contact directly via email.")
       }
     } catch (error) {
-      console.error("[v0] Error submitting form:", error)
+      console.error("Error submitting form:", error)
       alert("Failed to send message. Please try again or contact directly via email.")
     } finally {
       setIsSubmitting(false)
@@ -95,7 +94,7 @@ export default function Home() {
                 <div className="absolute -inset-1 bg-gradient-to-r from-primary via-accent to-primary rounded-full blur-lg opacity-75 group-hover:opacity-100 transition duration-300 animate-gradient bg-[length:200%_100%]"></div>
                 <div className="relative">
                   <img
-                    src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/profile_4-MnyYeHmjkRrxt72ovUYNwlmHASV2Gl.webp"
+                    src="/profile.webp"
                     alt="Christian Fonseca"
                     className="w-56 h-56 md:w-64 md:h-64 rounded-full object-cover border-4 border-background"
                   />
@@ -191,7 +190,7 @@ export default function Home() {
                 </a>
               </Button>
               <Button size="lg" className="w-52 rounded-full glow-effect" asChild>
-                <a href="#">
+                <a href="/cv.pdf" download="Christian-Fonseca-CV.pdf">
                   <Download className="h-4 w-4 mr-2" />
                   Download CV
                 </a>
@@ -212,9 +211,11 @@ export default function Home() {
             <BubbleCard size="lg" className="glow-effect">
               <h3 className="text-2xl font-semibold mb-4 text-primary">About Me</h3>
               <p className="text-muted-foreground leading-relaxed">
-                AI Engineer with 10+ years of experience translating complex business needs into end-to-end
-                data solutions. Expert in building scalable data architectures, automated ETL/ELT pipelines, and
-                production-ready ML models (DataSecOps/MLOps).
+                Data & AI Engineer dedicated to solving enterprise challenges through advanced machine learning and
+                cloud infrastructure. With a decade of experience across diverse industries, I specialize in automating
+                data pipelines, deploying intelligent GenAI agents, and establishing MLOps standards. Leveraging deep
+                expertise in Python, PySpark, and multiple cloud platforms, I consistently deliver reliable technical
+                solutions that significantly reduce processing times and drive business growth.
               </p>
             </BubbleCard>
 
@@ -285,10 +286,10 @@ export default function Home() {
             {/* Generative AI & LLMs */}
             <BubbleCard className="glow-effect flex flex-col h-full">
               <h4 className="text-lg font-semibold mb-4 text-primary">
-                Generative AI & LLMs
+                GenAI, LLMs & Agents
               </h4>
               <div className="flex flex-wrap gap-2 ">
-                {["RAG Architectures", "LangChain", "OpenAI API", "Gemini", "Bedrock", "DeepSeek", "Prompt Engineering", "Pinecone", "FAISS"].map((skill) => (
+                {["RAG Architectures", "LangChain", "LangGraph", "Google ADK", "Prompt Engineering", "Pinecone", "FAISS", "Ollama", "Hugging Face", "OpenAI", "Gemini", "Anthropic", "Bedrock", "DeepSeek", "xAI"].map((skill) => (
                   <Badge key={skill} variant="outline" className="text-xs bg-purple-500/10 text-purple-300 border-purple-500/20 hover:bg-purple-500/20 hover:border-purple-500/50 hover:-translate-y-0.5 transition-all">
                     {skill}
                   </Badge>
@@ -302,7 +303,7 @@ export default function Home() {
                 Machine Learning & MLOps
               </h4>
               <div className="flex flex-wrap gap-2">
-                {["TensorFlow", "PyTorch", "Scikit-learn", "MLFlow", "Vertex AI", "Amazon SageMaker"].map((skill) => (
+                {["TensorFlow", "PyTorch", "Scikit-learn", "MLflow", "Vertex AI", "Amazon SageMaker"].map((skill) => (
                   <Badge key={skill} variant="outline" className="text-xs bg-blue-500/10 text-blue-300 border-blue-500/20 hover:bg-blue-500/20 hover:border-blue-500/50 hover:-translate-y-0.5 transition-all">
                     {skill}
                   </Badge>
@@ -316,7 +317,7 @@ export default function Home() {
                 Data Engineering & Databases
               </h4>
               <div className="flex flex-wrap gap-2">
-                {["SQL", "PySpark", "PostgreSQL", "Oracle", "Redshift", "SQL Server", "MongoDB", "Pinecone"].map((skill) => (
+                {["SQL", "PySpark", "Databricks", "PostgreSQL", "Oracle", "Redshift", "SQL Server", "MongoDB", "RDS/Aurora"].map((skill) => (
                   <Badge key={skill} variant="outline" className="text-xs bg-emerald-500/10 text-emerald-300 border-emerald-500/20 hover:bg-emerald-500/20 hover:border-emerald-500/50 hover:-translate-y-0.5 transition-all">
                     {skill}
                   </Badge>
@@ -330,8 +331,22 @@ export default function Home() {
                 Programming Languages
               </h4>
               <div className="flex flex-wrap gap-2">
-                {["Python", "R", "MATLAB", "C/C++", "C#", "Rust"].map((skill) => (
+                {["Python", "TypeScript", "R", "MATLAB", "C/C++", "C#", "Rust"].map((skill) => (
                   <Badge key={skill} variant="outline" className="text-xs bg-yellow-500/10 text-yellow-300 border-yellow-500/20 hover:bg-yellow-500/20 hover:border-yellow-500/50 hover:-translate-y-0.5 transition-all">
+                    {skill}
+                  </Badge>
+                ))}
+              </div>
+            </BubbleCard>
+
+            {/* Web & API Development */}
+            <BubbleCard className="glow-effect flex flex-col h-full">
+              <h4 className="text-lg font-semibold mb-4 text-primary">
+                Web & API Development
+              </h4>
+              <div className="flex flex-wrap gap-2">
+                {["React", "Next.js", "FastAPI", "RESTful APIs", "Microservices"].map((skill) => (
+                  <Badge key={skill} variant="outline" className="text-xs bg-orange-500/10 text-orange-300 border-orange-500/20 hover:bg-orange-500/20 hover:border-orange-500/50 hover:-translate-y-0.5 transition-all">
                     {skill}
                   </Badge>
                 ))}
@@ -344,7 +359,7 @@ export default function Home() {
                 Cloud Platforms
               </h4>
               <div className="flex flex-wrap gap-2">
-                {["AWS", "Azure", "GCP", "OCI", "Databricks"].map((skill) => (
+                {["AWS", "Azure", "GCP", "OCI"].map((skill) => (
                   <Badge key={skill} variant="outline" className="text-xs bg-cyan-500/10 text-cyan-300 border-cyan-500/20 hover:bg-cyan-500/20 hover:border-cyan-500/50 hover:-translate-y-0.5 transition-all">
                     {skill}
                   </Badge>
@@ -358,7 +373,7 @@ export default function Home() {
                 DevOps & Tools
               </h4>
               <div className="flex flex-wrap gap-2">
-                {["Docker", "Kubernetes", "Git", "GitLab/GitHub Actions", "Terraform", "CloudFormation"].map((skill) => (
+                {["Docker", "Kubernetes", "Git", "CI/CD (GitHub/GitLab/Bitbucket)", "Terraform", "CloudFormation"].map((skill) => (
                   <Badge key={skill} variant="outline" className="text-xs bg-rose-500/10 text-rose-300 border-rose-500/20 hover:bg-rose-500/20 hover:border-rose-500/50 hover:-translate-y-0.5 transition-all">
                     {skill}
                   </Badge>
@@ -406,11 +421,6 @@ export default function Home() {
               </div>
               <div className="flex items-start justify-between mb-4">
                 <h3 className="text-lg font-semibold text-primary">ML Pipeline Framework</h3>
-                <Button variant="ghost" size="sm" className="p-2" asChild>
-                  <a href="https://github.com/christianfonseca/ml-pipeline" target="_blank" rel="noopener noreferrer">
-                    <Github className="h-4 w-4" />
-                  </a>
-                </Button>
               </div>
               <p className="text-sm text-muted-foreground mb-4">
                 Scalable MLOps framework for automated model training, validation, and deployment with monitoring
@@ -439,11 +449,6 @@ export default function Home() {
               </div>
               <div className="flex items-start justify-between mb-4">
                 <h3 className="text-lg font-semibold text-primary">Data Engineering Toolkit</h3>
-                <Button variant="ghost" size="sm" className="p-2" asChild>
-                  <a href="https://github.com/christianfonseca/data-toolkit" target="_blank" rel="noopener noreferrer">
-                    <Github className="h-4 w-4" />
-                  </a>
-                </Button>
               </div>
               <p className="text-sm text-muted-foreground mb-4">
                 Collection of reusable data processing utilities and ETL pipelines for various data sources and formats.
@@ -467,11 +472,6 @@ export default function Home() {
               </div>
               <div className="flex items-start justify-between mb-4">
                 <h3 className="text-lg font-semibold text-primary">NLP Analytics Suite</h3>
-                <Button variant="ghost" size="sm" className="p-2" asChild>
-                  <a href="https://github.com/christianfonseca/nlp-suite" target="_blank" rel="noopener noreferrer">
-                    <Github className="h-4 w-4" />
-                  </a>
-                </Button>
               </div>
               <p className="text-sm text-muted-foreground mb-4">
                 Advanced NLP toolkit with sentiment analysis, entity recognition, and text classification capabilities.
@@ -499,15 +499,6 @@ export default function Home() {
               </div>
               <div className="flex items-start justify-between mb-4">
                 <h3 className="text-lg font-semibold text-primary">Time Series Forecasting</h3>
-                <Button variant="ghost" size="sm" className="p-2" asChild>
-                  <a
-                    href="https://github.com/christianfonseca/ts-forecasting"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <Github className="h-4 w-4" />
-                  </a>
-                </Button>
               </div>
               <p className="text-sm text-muted-foreground mb-4">
                 Comprehensive time series analysis and forecasting models with automated feature engineering.
@@ -535,11 +526,6 @@ export default function Home() {
               </div>
               <div className="flex items-start justify-between mb-4">
                 <h3 className="text-lg font-semibold text-primary">Cloud Infrastructure</h3>
-                <Button variant="ghost" size="sm" className="p-2" asChild>
-                  <a href="https://github.com/christianfonseca/cloud-infra" target="_blank" rel="noopener noreferrer">
-                    <Github className="h-4 w-4" />
-                  </a>
-                </Button>
               </div>
               <p className="text-sm text-muted-foreground mb-4">
                 Terraform modules and CloudFormation templates for scalable data infrastructure on AWS and Azure.
@@ -567,11 +553,6 @@ export default function Home() {
               </div>
               <div className="flex items-start justify-between mb-4">
                 <h3 className="text-lg font-semibold text-primary">Deep Learning Models</h3>
-                <Button variant="ghost" size="sm" className="p-2" asChild>
-                  <a href="https://github.com/christianfonseca/dl-models" target="_blank" rel="noopener noreferrer">
-                    <Github className="h-4 w-4" />
-                  </a>
-                </Button>
               </div>
               <p className="text-sm text-muted-foreground mb-4">
                 Collection of deep learning architectures for computer vision and NLP tasks with pre-trained weights.
@@ -727,73 +708,7 @@ export default function Home() {
                 </li>
               </ul>
               <div className="flex flex-wrap gap-2 mt-4">
-                {["Python", "LLM", "NLP", "OpenAI", "DeepSeek", "PostgreSQL", "Pinecone", "AWS"].map((tech) => (
-                  <Badge key={tech} variant="secondary" className="text-xs">
-                    {tech}
-                  </Badge>
-                ))}
-              </div>
-            </BubbleCard>
-
-            {/* Freelance/Consulting Experiences */}
-            <BubbleCard size="lg" className="glow-effect">
-              <div className="flex flex-col md:flex-row md:items-start md:justify-between mb-4">
-                <div>
-                  <h3 className="text-xl font-semibold text-primary">LLM Data Scientist & Engineer</h3>
-                  <p className="text-lg font-medium text-foreground">Turing (Consultant at Apple)</p>
-                </div>
-                <Badge className="mt-2 md:mt-0 bg-primary text-primary-foreground">November 2024 – April 2025</Badge>
-              </div>
-              <ul className="text-muted-foreground space-y-2 text-sm">
-                <li>
-                  • Developed over 300 advanced reasoning notebooks for complex subjects like ML, robotics, and control
-                  systems.
-                </li>
-                <li>
-                  • Covered prompt engineering, data structures, and data science with validated code and solution
-                  steps.
-                </li>
-                <li>
-                  • Implemented robust QA frameworks to test 200+ notebooks for clarity, reasoning, and code
-                  correctness.
-                </li>
-                <li>
-                  • Built content generation pipelines using OpenAI, DeepSeek, and Gemini to ensure linguistic accuracy.
-                </li>
-              </ul>
-              <div className="flex flex-wrap gap-2 mt-4">
-                {["Python", "LLMs", "OpenAI", "DeepSeek", "Gemini"].map((tech) => (
-                  <Badge key={tech} variant="secondary" className="text-xs">
-                    {tech}
-                  </Badge>
-                ))}
-              </div>
-            </BubbleCard>
-
-            <BubbleCard size="lg" className="glow-effect">
-              <div className="flex flex-col md:flex-row md:items-start md:justify-between mb-4">
-                <div>
-                  <h3 className="text-xl font-semibold text-primary">Staff Data Architect</h3>
-                  <p className="text-lg font-medium text-foreground">DELOSI</p>
-                </div>
-                <Badge className="mt-2 md:mt-0 bg-primary text-primary-foreground">October 2024 – March 2025</Badge>
-              </div>
-              <ul className="text-muted-foreground space-y-2 text-sm">
-                <li>• Cut data flow review and error handling times by 60% with a new monitoring architecture.</li>
-                <li>
-                  • Reduced development time by 100% by automating cloud backups for over 5,000 on-premise tables.
-                </li>
-                <li>
-                  • Created reusable Cloud Formation templates for pipelines using AWS Step Functions, Glue, and
-                  Lambdas.
-                </li>
-                <li>
-                  • Designed and successfully implemented more than 20 unique data architectures for various business
-                  units.
-                </li>
-              </ul>
-              <div className="flex flex-wrap gap-2 mt-4">
-                {["Python", "PySpark", "SQL", "AWS"].map((tech) => (
+                {["Python", "Docker", "LLM", "NLP", "OpenAI", "DeepSeek", "PostgreSQL", "Pinecone", "AWS"].map((tech) => (
                   <Badge key={tech} variant="secondary" className="text-xs">
                     {tech}
                   </Badge>
@@ -806,7 +721,7 @@ export default function Home() {
               <div className="flex flex-col md:flex-row md:items-start md:justify-between mb-4">
                 <div>
                   <h3 className="text-xl font-semibold text-primary">Senior Data Solutions Consultant</h3>
-                  <p className="text-lg font-medium text-foreground">TIVIT LATAM</p>
+                  <p className="text-lg font-medium text-foreground">Antamina (via TIVIT)</p>
                 </div>
                 <Badge variant="outline" className="mt-2 md:mt-0 border-primary text-primary">
                   November 2023 – September 2024
@@ -840,42 +755,6 @@ export default function Home() {
             <BubbleCard size="lg" className="glow-effect">
               <div className="flex flex-col md:flex-row md:items-start md:justify-between mb-4">
                 <div>
-                  <h3 className="text-xl font-semibold text-primary">Senior Data Scientist Consultant</h3>
-                  <p className="text-lg font-medium text-foreground">Fivvy</p>
-                </div>
-                <Badge variant="outline" className="mt-2 md:mt-0 border-primary text-primary">
-                  July 2023 – October 2023
-                </Badge>
-              </div>
-              <ul className="text-muted-foreground space-y-2 text-sm">
-                <li>
-                  • Led data modeling for the "Contextual Profiler" app, leading to its acquisition by two businesses.
-                </li>
-                <li>
-                  • Developed a local Streamlit application to effectively visualize and present the performance of
-                  various models.
-                </li>
-                <li>
-                  • Formulated and deployed solvency and customer acquisition models for financial products using AWS
-                  Glue.
-                </li>
-                <li>
-                  • Modified complex budgetary models to accommodate new and requested functionalities within the
-                  application.
-                </li>
-              </ul>
-              <div className="flex flex-wrap gap-2 mt-4">
-                {["Python", "MySQL", "AWS"].map((tech) => (
-                  <Badge key={tech} variant="secondary" className="text-xs">
-                    {tech}
-                  </Badge>
-                ))}
-              </div>
-            </BubbleCard>
-
-            <BubbleCard size="lg" className="glow-effect">
-              <div className="flex flex-col md:flex-row md:items-start md:justify-between mb-4">
-                <div>
                   <h3 className="text-xl font-semibold text-primary">Manager Data Scientist</h3>
                   <p className="text-lg font-medium text-foreground">BBVA</p>
                 </div>
@@ -885,8 +764,8 @@ export default function Home() {
               </div>
               <ul className="text-muted-foreground space-y-2 text-sm">
                 <li>
-                  • Drove a 10% rise in debit card sales by creating a hybrid client profitability recommendation
-                  system.
+                  • Achieved a 10% rise in debit card sales by creating a rule-based and ML-driven client profitability
+                  recommendation system.
                 </li>
                 <li>
                   • Improved expert evaluation of billing accuracy by 50%, using forecasting and elasticity models in
@@ -906,8 +785,6 @@ export default function Home() {
                 ))}
               </div>
             </BubbleCard>
-
-            {/* Professor/Teaching Experiences */}
 
             {/* BCP Experience */}
             <BubbleCard size="lg" className="glow-effect">
@@ -996,12 +873,8 @@ export default function Home() {
               <ul className="text-muted-foreground space-y-2 text-sm">
                 <li>• Cut daily back-office data collection time from four hours to just ten minutes using Python.</li>
                 <li>
-                  • Developed proof-of-concept business cases by implementing AI solutions and custom application
-                  development.
-                </li>
-                <li>
-                  • Contributed to the full lifecycle (analysis, design, development) of various cutting-edge innovation
-                  projects.
+                  • Developed AI proof-of-concept business cases and custom applications across the full project
+                  lifecycle.
                 </li>
               </ul>
               <div className="flex flex-wrap gap-2 mt-4">
@@ -1016,56 +889,181 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Teaching Experience Section */}
+      {/* Consulting & Teaching Experience Section */}
       <section id="teaching" className="py-20 px-6">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-16 floating-element bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-            Teaching Experience
+            Consulting & Teaching
           </h2>
 
           <div className="space-y-8">
-            {/* Professor/Teaching Experiences */}
             <BubbleCard size="lg" className="glow-effect">
               <div className="flex flex-col md:flex-row md:items-start md:justify-between mb-4">
                 <div>
-                  <h3 className="text-xl font-semibold text-primary">Professor</h3>
-                  <p className="text-lg font-medium text-foreground">Data Mining Consulting (DMC)</p>
+                  <h3 className="text-xl font-semibold text-primary">Data & AI Consultant</h3>
+                  <p className="text-lg font-medium text-foreground">Coderio</p>
                 </div>
-                <Badge className="mt-2 md:mt-0 bg-primary text-primary-foreground">October 2021 – Present</Badge>
+                <Badge className="mt-2 md:mt-0 bg-primary text-primary-foreground">October 2025 – Present</Badge>
               </div>
               <ul className="text-muted-foreground space-y-2 text-sm">
                 <li>
-                  • Authored and instructed over 20 advanced analytics programs, creating all original course material
-                  for each edition.
+                  • Built an end-to-end finance system for Andes Logistics, optimizing 9-country data consolidation from
+                  days to minutes.
                 </li>
                 <li>
-                  • Established the institutional baseline for supporting and reviewing MLOps tests and cloud deployment
-                  projects.
+                  • Established Banco Basa's medallion lake governance by developing data lineage and automated
+                  quality/security KPIs.
                 </li>
                 <li>
-                  • Developed technical interview exams with diverse questions to assess candidates on advanced
-                  programming topics.
-                </li>
-                <li>
-                  • Key programs delivered include Data Engineering (AWS & Azure), MLOps & ML Engineering, Deep
-                  Learning, Time Series & NLP, Big Data, and Advanced Python (ETL, Web Scraping).
+                  • Engineered an ML logistics forecasting model for Santillana, saving ~$50,000 in printing by
+                  predicting quote sales.
                 </li>
               </ul>
               <div className="flex flex-wrap gap-2 mt-4">
-                {[
-                  "Machine Learning",
-                  "Deep Learning",
-                  "Python",
-                  "PySpark",
-                  "TensorFlow",
-                  "Torch",
-                  "Git",
-                  "MLFlow",
-                  "Docker",
-                  "AWS",
-                  "Azure",
-                  "GCP",
-                ].map((tech) => (
+                {["Python", "DAMA", "SageMaker", "AWS"].map((tech) => (
+                  <Badge key={tech} variant="secondary" className="text-xs">
+                    {tech}
+                  </Badge>
+                ))}
+              </div>
+            </BubbleCard>
+
+            <BubbleCard size="lg" className="glow-effect">
+              <div className="flex flex-col md:flex-row md:items-start md:justify-between mb-4">
+                <div>
+                  <h3 className="text-xl font-semibold text-primary">Machine Learning Engineer</h3>
+                  <p className="text-lg font-medium text-foreground">Tottus (via Sapiens Digital Lab)</p>
+                </div>
+                <Badge variant="outline" className="mt-2 md:mt-0 border-primary text-primary">
+                  September 2025 – January 2026
+                </Badge>
+              </div>
+              <ul className="text-muted-foreground space-y-2 text-sm">
+                <li>
+                  • Built Marketing Forecast pipelines and enhanced Demand models, refactoring code to automate
+                  production releases.
+                </li>
+                <li>
+                  • Engineered a GenAI error notification agent using Gemini and Google ADK, optimizing code for
+                  scalable integration.
+                </li>
+                <li>
+                  • Established MLOps standards in Vertex AI for Model Monitoring and Registry, ensuring observability
+                  of deployed models.
+                </li>
+                <li>
+                  • Modernized Datahub/VPX workflows and resolved CI/CD critical bugs, confirming Churn/CLV models
+                  ensuring stability.
+                </li>
+              </ul>
+              <div className="flex flex-wrap gap-2 mt-4">
+                {["Python", "Docker", "LLMs", "Gemini", "Vertex AI", "GCP"].map((tech) => (
+                  <Badge key={tech} variant="secondary" className="text-xs">
+                    {tech}
+                  </Badge>
+                ))}
+              </div>
+            </BubbleCard>
+
+            <BubbleCard size="lg" className="glow-effect">
+              <div className="flex flex-col md:flex-row md:items-start md:justify-between mb-4">
+                <div>
+                  <h3 className="text-xl font-semibold text-primary">LLM Data Scientist & Engineer</h3>
+                  <p className="text-lg font-medium text-foreground">Apple (via Turing)</p>
+                </div>
+                <Badge variant="outline" className="mt-2 md:mt-0 border-primary text-primary">
+                  November 2024 – April 2025
+                </Badge>
+              </div>
+              <ul className="text-muted-foreground space-y-2 text-sm">
+                <li>
+                  • Developed over 300 reasoning notebooks for training LLMs on complex subjects like ML, robotics, and
+                  control systems.
+                </li>
+                <li>
+                  • Covered prompt engineering, data structures, and data science with validated code and solution
+                  steps.
+                </li>
+                <li>
+                  • Implemented robust QA frameworks ensuring code and reasoning correctness across hundreds of
+                  generated datasets.
+                </li>
+                <li>
+                  • Built content generation pipelines using OpenAI, DeepSeek, and Gemini to ensure linguistic accuracy.
+                </li>
+              </ul>
+              <div className="flex flex-wrap gap-2 mt-4">
+                {["Python", "LLMs", "OpenAI", "DeepSeek", "Gemini"].map((tech) => (
+                  <Badge key={tech} variant="secondary" className="text-xs">
+                    {tech}
+                  </Badge>
+                ))}
+              </div>
+            </BubbleCard>
+
+            <BubbleCard size="lg" className="glow-effect">
+              <div className="flex flex-col md:flex-row md:items-start md:justify-between mb-4">
+                <div>
+                  <h3 className="text-xl font-semibold text-primary">Staff Data Architect</h3>
+                  <p className="text-lg font-medium text-foreground">DELOSI</p>
+                </div>
+                <Badge variant="outline" className="mt-2 md:mt-0 border-primary text-primary">
+                  October 2024 – March 2025
+                </Badge>
+              </div>
+              <ul className="text-muted-foreground space-y-2 text-sm">
+                <li>
+                  • Implemented monitoring and alerting for cloud state machines, reducing review and error-handling
+                  effort by 60%.
+                </li>
+                <li>
+                  • Automated the backup process for over 5,000 on-premises tables to the cloud, reducing development
+                  time by over 100%.
+                </li>
+                <li>
+                  • Created Cloud Formation templates for new pipelines using Step Functions, Glue, Lambdas, and other
+                  AWS services.
+                </li>
+                <li>• Implemented over 20 different architectures for different business units.</li>
+              </ul>
+              <div className="flex flex-wrap gap-2 mt-4">
+                {["Python", "PySpark", "SQL", "AWS"].map((tech) => (
+                  <Badge key={tech} variant="secondary" className="text-xs">
+                    {tech}
+                  </Badge>
+                ))}
+              </div>
+            </BubbleCard>
+
+            <BubbleCard size="lg" className="glow-effect">
+              <div className="flex flex-col md:flex-row md:items-start md:justify-between mb-4">
+                <div>
+                  <h3 className="text-xl font-semibold text-primary">Senior Data Scientist Consultant</h3>
+                  <p className="text-lg font-medium text-foreground">Fivvy</p>
+                </div>
+                <Badge variant="outline" className="mt-2 md:mt-0 border-primary text-primary">
+                  July 2023 – October 2023
+                </Badge>
+              </div>
+              <ul className="text-muted-foreground space-y-2 text-sm">
+                <li>
+                  • Led data modeling for the "Contextual Profiler" app, leading to its acquisition by two businesses.
+                </li>
+                <li>
+                  • Developed a local Streamlit application to effectively visualize and present the performance of
+                  various models.
+                </li>
+                <li>
+                  • Formulated and deployed solvency and customer acquisition models for financial products using AWS
+                  Glue.
+                </li>
+                <li>
+                  • Modified complex budgetary models to accommodate new and requested functionalities within the
+                  application.
+                </li>
+              </ul>
+              <div className="flex flex-wrap gap-2 mt-4">
+                {["Python", "Docker", "MySQL", "AWS"].map((tech) => (
                   <Badge key={tech} variant="secondary" className="text-xs">
                     {tech}
                   </Badge>
@@ -1097,12 +1095,55 @@ export default function Home() {
                   projects.
                 </li>
                 <li>
-                  • Key programs delivered include specializations in Big Data & Analytics and Data Science for
-                  Business.
+                  • Delivered specializations in Big Data & Analytics, Data Science for Business and AI for Business.
                 </li>
               </ul>
               <div className="flex flex-wrap gap-2 mt-4">
-                {["Python", "SQL"].map((tech) => (
+                {["Python", "TensorFlow", "Torch", "LLMs", "LangChain", "LangGraph", "SQL"].map((tech) => (
+                  <Badge key={tech} variant="secondary" className="text-xs">
+                    {tech}
+                  </Badge>
+                ))}
+              </div>
+            </BubbleCard>
+
+            <BubbleCard size="lg" className="glow-effect">
+              <div className="flex flex-col md:flex-row md:items-start md:justify-between mb-4">
+                <div>
+                  <h3 className="text-xl font-semibold text-primary">Professor</h3>
+                  <p className="text-lg font-medium text-foreground">Data Mining Consulting (DMC)</p>
+                </div>
+                <Badge className="mt-2 md:mt-0 bg-primary text-primary-foreground">October 2021 – Present</Badge>
+              </div>
+              <ul className="text-muted-foreground space-y-2 text-sm">
+                <li>
+                  • Authored and instructed over 20 advanced analytics programs, creating all original course material
+                  for each edition.
+                </li>
+                <li>
+                  • Established the institutional baseline for supporting and reviewing MLOps tests and cloud deployment
+                  projects.
+                </li>
+                <li>
+                  • Key programs delivered include Data Engineering (AWS & Azure), MLOps & ML Engineering, Deep
+                  Learning, Time Series & NLP, Big Data, and Advanced Python (ETL, Web Scraping).
+                </li>
+              </ul>
+              <div className="flex flex-wrap gap-2 mt-4">
+                {[
+                  "Machine Learning",
+                  "Deep Learning",
+                  "Python",
+                  "PySpark",
+                  "TensorFlow",
+                  "Torch",
+                  "Git",
+                  "MLflow",
+                  "Docker",
+                  "AWS",
+                  "Azure",
+                  "GCP",
+                ].map((tech) => (
                   <Badge key={tech} variant="secondary" className="text-xs">
                     {tech}
                   </Badge>
@@ -1110,16 +1151,6 @@ export default function Home() {
               </div>
             </BubbleCard>
           </div>
-        </div>
-      </section>
-
-      {/* Gallery Section */}
-      <section id="gallery" className="py-20 px-6">
-        <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-16 floating-element bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-            Gallery
-          </h2>
-          <InfiniteGallery />
         </div>
       </section>
 
@@ -1245,12 +1276,12 @@ export default function Home() {
               asChild
             >
               <a
-                href="https://scholar.google.com/citations?user=YOUR_USER_ID"
+                href="https://scholar.google.com/citations?user=95NzphUAAAAJ&hl=es"
                 target="_blank"
                 rel="noopener noreferrer"
               >
                 <ExternalLink className="h-5 w-5 mr-2" />
-                View Full CV
+                Google Scholar
               </a>
             </Button>
           </div>
@@ -1260,7 +1291,7 @@ export default function Home() {
       {/* Footer */}
       <footer className="py-8 px-6 border-t border-border">
         <div className="max-w-6xl mx-auto text-center text-muted-foreground">
-          <p>&copy; 2025 Christian Fonseca. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} Christian Fonseca. All rights reserved.</p>
         </div>
       </footer>
 

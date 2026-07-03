@@ -4,8 +4,7 @@ import type React from "react"
 
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
-// Fixed icon import - ImageIcon instead of Image
-import { Menu, X, Home, User, Briefcase, Code, ImageIcon, Mail } from "lucide-react"
+import { Menu, X, Home, User, Briefcase, Code, Mail } from "lucide-react"
 
 export function Navigation() {
   const [isOpen, setIsOpen] = useState(false)
@@ -35,8 +34,6 @@ export function Navigation() {
     { icon: User, label: "Profile", href: "#profile" },
     { icon: Code, label: "Projects", href: "#public-projects" },
     { icon: Briefcase, label: "Experience", href: "#experience" },
-    // Fixed icon reference from Image to ImageIcon
-    { icon: ImageIcon, label: "Gallery", href: "#gallery" },
     { icon: Mail, label: "Contact", href: "#contact" },
   ]
 
@@ -48,6 +45,8 @@ export function Navigation() {
         size="icon"
         className="fixed top-6 right-6 z-[100] md:hidden bg-primary/90 hover:bg-primary text-primary-foreground backdrop-blur-md border-2 border-primary shadow-lg shadow-primary/50 w-12 h-12"
         onClick={() => setIsOpen(!isOpen)}
+        aria-label={isOpen ? "Close menu" : "Open menu"}
+        aria-expanded={isOpen}
       >
         {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
       </Button>
