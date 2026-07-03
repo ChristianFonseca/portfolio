@@ -4,7 +4,11 @@ services:
     container_name: portfolio-web
     restart: unless-stopped
     env_file: .env
+    environment:
+      UPLOADS_DIR: /data/uploads
     ports: ["127.0.0.1:8001:3000"]
+    volumes:
+      - /var/lib/portfolio/uploads:/data/uploads
     networks: [portfolio-net, pg-shared]
 
 networks:

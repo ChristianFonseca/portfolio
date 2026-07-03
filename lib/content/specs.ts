@@ -6,12 +6,12 @@ import type { SectionKind } from "./schemas"
 export type SubFieldSpec = {
   key: string
   label: string
-  type: "text" | "textarea" | "tags" | "bullets" | "checkbox"
+  type: "text" | "textarea" | "tags" | "bullets" | "checkbox" | "image"
   hint?: string
 }
 
 export type FieldSpec =
-  | { key: string; label: string; type: "text" | "textarea"; hint?: string }
+  | { key: string; label: string; type: "text" | "textarea" | "image"; hint?: string }
   | { key: string; label: string; type: "tags"; hint?: string }
   | { key: string; label: string; type: "items"; itemName: string; titleKey: string; fields: SubFieldSpec[] }
 
@@ -20,6 +20,7 @@ export const kindSpecs: Record<SectionKind, FieldSpec[]> = {
     { key: "name", label: "Nombre", type: "text" },
     { key: "tagline", label: "Tagline", type: "text" },
     { key: "location", label: "Ubicación", type: "text" },
+    { key: "photo", label: "Foto de perfil", type: "image" },
     {
       key: "certs",
       label: "Credenciales",
@@ -68,7 +69,7 @@ export const kindSpecs: Record<SectionKind, FieldSpec[]> = {
       fields: [
         { key: "title", label: "Título", type: "text" },
         { key: "description", label: "Descripción", type: "textarea" },
-        { key: "image", label: "Imagen", type: "text", hint: "ruta en /public, ej. /mi-proyecto.webp" },
+        { key: "image", label: "Imagen", type: "image" },
         { key: "tech", label: "Tecnologías", type: "tags", hint: "separadas por comas" },
         { key: "language", label: "Lenguaje principal", type: "text" },
         { key: "languageColor", label: "Color del lenguaje", type: "text", hint: "hex, ej. #3b82f6" },

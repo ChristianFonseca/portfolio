@@ -116,7 +116,7 @@ export function Landing({ content }: { content: LandingContent }) {
                   <div className="absolute -inset-1 bg-gradient-to-r from-primary via-accent to-primary rounded-full blur-lg opacity-75 group-hover:opacity-100 transition duration-300 animate-gradient bg-[length:200%_100%]"></div>
                   <div className="relative">
                     <img
-                      src="/profile.webp"
+                      src={hero.data.photo || "/profile.webp"}
                       alt={hero.data.name}
                       className="w-56 h-56 md:w-64 md:h-64 rounded-full object-cover border-4 border-background"
                     />

@@ -20,6 +20,17 @@ CREATE TABLE IF NOT EXISTS sections (
 
 CREATE INDEX IF NOT EXISTS sections_order_idx ON sections (visible, position);
 
+CREATE TABLE IF NOT EXISTS assets (
+  id            bigserial PRIMARY KEY,
+  filename      text UNIQUE NOT NULL,
+  original_name text NOT NULL DEFAULT '',
+  mime          text NOT NULL DEFAULT 'image/webp',
+  width         int,
+  height        int,
+  size_bytes    int,
+  created_at    timestamptz NOT NULL DEFAULT now()
+);
+
 CREATE TABLE IF NOT EXISTS section_revisions (
   id         bigserial PRIMARY KEY,
   section_id int NOT NULL REFERENCES sections(id) ON DELETE CASCADE,

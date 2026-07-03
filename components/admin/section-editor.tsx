@@ -6,6 +6,7 @@ import { GripVertical, ChevronUp, ChevronDown, X, ExternalLink } from "lucide-re
 import { Button } from "@/components/ui/button"
 import { saveSection } from "@/app/admin/actions"
 import { TagsInput } from "@/components/admin/tags-input"
+import { ImageField } from "@/components/admin/image-field"
 import type { FieldSpec, SubFieldSpec } from "@/lib/content/specs"
 
 // Form model: como los datos reales, pero con bullets como texto multilínea
@@ -239,7 +240,7 @@ export function SectionEditor({
                           <div
                             key={sub.key}
                             className={
-                              sub.type === "textarea" || sub.type === "bullets" || sub.type === "tags"
+                              sub.type === "textarea" || sub.type === "bullets" || sub.type === "tags" || sub.type === "image"
                                 ? "md:col-span-2"
                                 : ""
                             }
@@ -258,6 +259,11 @@ export function SectionEditor({
                                 />
                                 <span className="text-sm text-foreground">Sí</span>
                               </label>
+                            ) : sub.type === "image" ? (
+                              <ImageField
+                                value={String(item[sub.key] ?? "")}
+                                onChange={(url) => setItemField(field.key, i, sub.key, url)}
+                              />
                             ) : sub.type === "tags" ? (
                               <TagsInput
                                 value={(item[sub.key] as string[]) ?? []}
@@ -304,6 +310,11 @@ export function SectionEditor({
                     value={String(model[field.key] ?? "")}
                     onChange={(e) => setField(field.key, e.target.value)}
                     className={`${inputClass} resize-y`}
+                  />
+                ) : field.type === "image" ? (
+                  <ImageField
+                    value={String(model[field.key] ?? "")}
+                    onChange={(url) => setField(field.key, url)}
                   />
                 ) : field.type === "tags" ? (
                   <TagsInput

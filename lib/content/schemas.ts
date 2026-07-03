@@ -4,6 +4,7 @@ export const heroSchema = z.object({
   name: z.string().min(1).max(120),
   tagline: z.string().min(1).max(200),
   location: z.string().max(120),
+  photo: z.string().max(300).optional(),
   certs: z.array(z.object({ count: z.string().max(20), label: z.string().min(1).max(60) })).max(20),
 })
 

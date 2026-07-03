@@ -26,6 +26,9 @@ yarn-error.log*
 # claude local session files
 .claude/
 
+# imagenes subidas en dev local (en el VPS van al volumen /var/lib/portfolio/uploads)
+/public/uploads/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

@@ -10,6 +10,7 @@
         "name": "Christian Fonseca",
         "tagline": "AI Engineer | Data Architect | Data Scientist",
         "location": "Lima, Peru",
+        "photo": "/profile.webp",
         "certs": [
           { "count": "13x", "label": "AWS" },
           { "count": "4x", "label": "Azure" },
