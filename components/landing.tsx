@@ -60,11 +60,12 @@ export function Landing({
   const [isNavigating, setIsNavigating] = useState(false)
   const router = useRouter()
 
+  const chatHref = locale === "es" ? "/es/chat" : "/chat"
   const handleNavigateToChat = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault()
     setIsNavigating(true)
     setTimeout(() => {
-      router.push("/chat")
+      router.push(chatHref)
     }, 1500)
   }
 
@@ -235,7 +236,7 @@ export function Landing({
                   className="w-52"
                   asChild
                 >
-                  <a href="/chat" onClick={handleNavigateToChat}>
+                  <a href={chatHref} onClick={handleNavigateToChat}>
                     <MessageCircle className="h-5 w-5 mr-2" />
                     {dict.hero.tryChat}
                   </a>
@@ -588,7 +589,7 @@ export function Landing({
 
           <div className="flex flex-wrap justify-center gap-6">
             <Button variant="outline" size="lg" asChild>
-              <a href="/chat" onClick={handleNavigateToChat}>
+              <a href={chatHref} onClick={handleNavigateToChat}>
                 <MessageCircle className="h-5 w-5 mr-2" />
                 {dict.hero.tryChat}
               </a>

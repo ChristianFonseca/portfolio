@@ -44,6 +44,18 @@ export const dictionaries = {
     footer: {
       rights: "All rights reserved.",
     },
+    chat: {
+      title: "Chat with AI Assistant",
+      subtitle: "Ask anything about Christian's experience, skills or projects — answers are grounded in his real profile.",
+      greeting:
+        "Hello! I'm Christian's AI assistant. I can help you learn more about his experience, skills, and projects. What would you like to know?",
+      placeholder: "Ask me anything about Christian's experience...",
+      back: "Back to Portfolio",
+      questionsLeftOne: "question left today.",
+      questionsLeftMany: "questions left today.",
+      unavailable: "The assistant is unavailable right now. Please try again in a minute.",
+      connectionError: "Connection error. Please try again.",
+    },
   },
   es: {
     nav: {
@@ -83,6 +95,19 @@ export const dictionaries = {
     },
     footer: {
       rights: "Todos los derechos reservados.",
+    },
+    chat: {
+      title: "Chat con Asistente de IA",
+      subtitle:
+        "Pregunta lo que quieras sobre la experiencia, habilidades o proyectos de Christian — las respuestas se basan en su perfil real.",
+      greeting:
+        "¡Hola! Soy el asistente de IA de Christian. Puedo ayudarte a conocer más sobre su experiencia, habilidades y proyectos. ¿Qué te gustaría saber?",
+      placeholder: "Pregúntame lo que quieras sobre la experiencia de Christian...",
+      back: "Volver al Portafolio",
+      questionsLeftOne: "pregunta restante hoy.",
+      questionsLeftMany: "preguntas restantes hoy.",
+      unavailable: "El asistente no está disponible en este momento. Intenta de nuevo en un minuto.",
+      connectionError: "Error de conexión. Intenta de nuevo.",
     },
   },
 } as const
