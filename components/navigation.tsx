@@ -94,7 +94,7 @@ export function Navigation({ locale, dict }: { locale: Locale; dict: Dictionary 
           aria-label="Christian Fonseca"
           className="absolute left-6 top-1/2 z-10 -translate-y-1/2 transition-opacity hover:opacity-80"
         >
-          <BrandLogo variant="lockup" className="h-7 w-auto" />
+          <BrandLogo variant="simbolo" className="h-9 w-auto" />
         </Link>
         <nav className="relative flex items-center justify-center h-full">
           <div className="flex items-center space-x-6 px-6 py-3">

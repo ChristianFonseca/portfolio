@@ -13,7 +13,7 @@ export function BlogHeader({ locale, altHref }: { locale: Locale; altHref: strin
     <header className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur-md">
       <div className="mx-auto flex h-14 max-w-3xl items-center gap-5 px-6">
         <Link href={home} aria-label="Christian Fonseca" className="transition-opacity hover:opacity-80">
-          <BrandLogo variant="lockup" className="h-5 w-auto" />
+          <BrandLogo variant="simbolo" className="h-8 w-auto" />
         </Link>
         <nav className="flex items-center gap-4 text-sm">
           <Link

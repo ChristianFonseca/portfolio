@@ -29,7 +29,7 @@ export default async function PanelLayout({ children }: { children: React.ReactN
       <header className="sticky top-0 z-30 border-b border-border bg-background/85 backdrop-blur-md">
         <div className="flex h-14 items-center gap-4 px-5">
           <Link href="/" className="flex items-center gap-2.5 transition-opacity hover:opacity-80">
-            <BrandLogo variant="lockup" className="h-5 w-auto" />
+            <BrandLogo variant="simbolo" className="h-8 w-auto" />
             <span className="rounded-full border border-primary/40 bg-primary/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-primary">
               admin
             </span>
