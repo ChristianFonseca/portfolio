@@ -7,7 +7,7 @@ import { BubbleCard } from "@/components/bubble-card"
 import { ThemedBackground } from "@/components/themed-background"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { MapPin, Mail, Linkedin, Download, ExternalLink, Github, GraduationCap, MessageCircle, Twitter, Instagram, Award } from "lucide-react"
+import { MapPin, Mail, Linkedin, Download, ExternalLink, Github, GraduationCap, MessageCircle, Award } from "lucide-react"
 import { useState } from "react"
 import { SuccessModal } from "@/components/success-modal"
 import { PageTransition } from "@/components/page-transition"
@@ -233,71 +233,10 @@ export function Landing({
             </h2>
 
             {about.visible && (
-              <div className="grid md:grid-cols-2 gap-8 mb-16">
+              <div className="mb-16">
                 <BubbleCard size="lg" className="glow-effect">
                   <h3 className="text-2xl font-semibold mb-4 text-primary">{about.title}</h3>
-                  <p className="text-muted-foreground leading-relaxed">{about.data.text}</p>
-                </BubbleCard>
-
-                <BubbleCard size="lg" variant="accent" className="glow-effect">
-                  <h3 className="text-2xl font-semibold mb-4 text-primary">{dict.profile.connect}</h3>
-                  <div className="space-y-3">
-                    <div className="flex items-center space-x-3">
-                      <Twitter className="h-5 w-5 text-primary" />
-                      <a
-                        href="https://x.com/christianfonseca"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="hover:text-primary transition-colors"
-                      >
-                        @christianfonseca
-                      </a>
-                    </div>
-                    <div className="flex items-center space-x-3">
-                      <Instagram className="h-5 w-5 text-primary" />
-                      <a
-                        href="https://instagram.com/christianfonseca"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="hover:text-primary transition-colors"
-                      >
-                        @christianfonseca
-                      </a>
-                    </div>
-                    <div className="flex items-center space-x-3">
-                      <svg
-                        className="h-5 w-5 text-primary"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <path d="M21 2H3v20l4-4h14V2z" />
-                        <path d="M7 8h10M7 12h6" />
-                      </svg>
-                      <a
-                        href="https://kick.com/christianfonseca"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="hover:text-primary transition-colors"
-                      >
-                        kick.com/christianfonseca
-                      </a>
-                    </div>
-                    <div className="flex items-center space-x-3">
-                      <Linkedin className="h-5 w-5 text-primary" />
-                      <a
-                        href="https://linkedin.com/in/christian-fonseca-rodriguez"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="hover:text-primary transition-colors"
-                      >
-                        LinkedIn Profile
-                      </a>
-                    </div>
-                  </div>
+                  <p className="text-lg md:text-xl text-muted-foreground leading-relaxed">{about.data.text}</p>
                 </BubbleCard>
               </div>
             )}
