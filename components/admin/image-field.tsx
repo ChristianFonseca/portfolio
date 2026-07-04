@@ -78,7 +78,7 @@ export function ImageField({ value, onChange }: { value: string; onChange: (url:
               type="button"
               variant="outline"
               size="sm"
-              className="rounded-full bg-transparent text-xs"
+              className="text-xs"
               disabled={busy}
               onClick={() => fileRef.current?.click()}
             >
@@ -89,7 +89,7 @@ export function ImageField({ value, onChange }: { value: string; onChange: (url:
               type="button"
               variant="outline"
               size="sm"
-              className="rounded-full bg-transparent text-xs"
+              className="text-xs"
               onClick={openPicker}
             >
               <FolderOpen className="mr-1.5 h-3.5 w-3.5" />

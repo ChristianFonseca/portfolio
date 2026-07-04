@@ -151,7 +151,7 @@ export function PostEditor({ id, initial }: { id: number; initial: PostEditorDat
               {pending ? "Guardando…" : dirty ? "Cambios sin guardar" : "Sin cambios"}
             </span>
             {fields.published && (
-              <Button variant="outline" size="sm" className="rounded-full bg-transparent text-xs" asChild>
+              <Button variant="outline" size="sm" className="text-xs" asChild>
                 <a
                   href={`https://christianfonseca.dev${active === "es" ? "/es" : ""}/blog/${fields.slug}`}
                   target="_blank"
@@ -167,7 +167,7 @@ export function PostEditor({ id, initial }: { id: number; initial: PostEditorDat
               onClick={handleTogglePublish}
               disabled={pending || dirty}
               title={dirty ? "Guarda los cambios primero" : ""}
-              className="rounded-full bg-transparent text-xs"
+              className="text-xs"
             >
               {fields.published ? "Despublicar" : "Publicar"}
             </Button>
@@ -175,7 +175,7 @@ export function PostEditor({ id, initial }: { id: number; initial: PostEditorDat
               size="sm"
               onClick={handleSave}
               disabled={pending || !dirty}
-              className="rounded-full bg-gradient-to-r from-primary to-accent text-white shadow-[0_0_20px_-4px_rgba(168,85,247,0.6)] hover:brightness-110 disabled:opacity-50"
+              className=""
             >
               Guardar
             </Button>
@@ -206,7 +206,7 @@ export function PostEditor({ id, initial }: { id: number; initial: PostEditorDat
           size="sm"
           onClick={handleTranslate}
           disabled={translating || pending || !get("title", active).trim()}
-          className="rounded-full bg-transparent text-xs"
+          className="text-xs"
         >
           {translating ? (
             <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />

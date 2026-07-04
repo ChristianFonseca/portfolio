@@ -179,7 +179,7 @@ export function Landing({
                 <Button
                   variant="outline"
                   size="lg"
-                  className="rounded-full bg-transparent glow-effect border-primary text-primary hover:bg-primary/20 hover:text-foreground hover:shadow-[0_0_20px_rgba(168,85,247,0.4)] hover:-translate-y-1 transition-all duration-300"
+                 
                   asChild
                 >
                   <a href="https://linkedin.com/in/christian-fonseca-rodriguez" target="_blank" rel="noopener noreferrer">
@@ -190,7 +190,7 @@ export function Landing({
                 <Button
                   variant="outline"
                   size="lg"
-                  className="rounded-full bg-transparent glow-effect border-primary text-primary hover:bg-primary/20 hover:text-foreground hover:shadow-[0_0_20px_rgba(168,85,247,0.4)] hover:-translate-y-1 transition-all duration-300"
+                 
                   asChild
                 >
                   <a href="https://github.com/christianfonseca" target="_blank" rel="noopener noreferrer">
@@ -201,7 +201,7 @@ export function Landing({
                 <Button
                   variant="outline"
                   size="lg"
-                  className="rounded-full bg-transparent glow-effect border-primary text-primary hover:bg-primary/20 hover:text-foreground hover:shadow-[0_0_20px_rgba(168,85,247,0.4)] hover:-translate-y-1 transition-all duration-300"
+                 
                   asChild
                 >
                   <a
@@ -216,7 +216,7 @@ export function Landing({
                 <Button
                   variant="outline"
                   size="lg"
-                  className="rounded-full bg-transparent glow-effect border-primary text-primary hover:bg-primary/20 hover:text-foreground hover:shadow-[0_0_20px_rgba(168,85,247,0.4)] hover:-translate-y-1 transition-all duration-300"
+                 
                   asChild
                 >
                   <a
@@ -232,7 +232,7 @@ export function Landing({
               <div className="flex flex-wrap justify-center gap-4">
                 <Button
                   size="lg"
-                  className="w-52 rounded-full bg-gradient-to-r from-primary via-accent to-primary bg-[length:200%_100%] animate-gradient glow-effect hover:shadow-[0_0_50px_rgba(168,85,247,1)] hover:scale-110 transition-all duration-300 shadow-[0_0_30px_rgba(168,85,247,0.5)]"
+                  className="w-52"
                   asChild
                 >
                   <a href="/chat" onClick={handleNavigateToChat}>
@@ -240,7 +240,7 @@ export function Landing({
                     {dict.hero.tryChat}
                   </a>
                 </Button>
-                <Button size="lg" className="w-52 rounded-full glow-effect" asChild>
+                <Button variant="outline" size="lg" className="w-52" asChild>
                   <a href="/cv.pdf" download="Christian-Fonseca-CV.pdf">
                     <Download className="h-4 w-4 mr-2" />
                     {dict.hero.downloadCV}
@@ -577,7 +577,7 @@ export function Landing({
               <Button
                 type="submit"
                 size="lg"
-                className="w-full rounded-full glow-effect hover:shadow-[0_0_30px_rgba(168,85,247,0.6)] hover:scale-105 transition-all duration-300"
+                className="w-full"
                 disabled={isSubmitting}
               >
                 <Mail className="h-5 w-5 mr-2" />
@@ -587,11 +587,7 @@ export function Landing({
           </BubbleCard>
 
           <div className="flex flex-wrap justify-center gap-6">
-            <Button
-              size="lg"
-              className="rounded-full glow-effect hover:shadow-[0_0_30px_rgba(168,85,247,0.6)] hover:scale-105 transition-all duration-300"
-              asChild
-            >
+            <Button variant="outline" size="lg" asChild>
               <a href="/chat" onClick={handleNavigateToChat}>
                 <MessageCircle className="h-5 w-5 mr-2" />
                 {dict.hero.tryChat}
@@ -600,7 +596,7 @@ export function Landing({
             <Button
               variant="outline"
               size="lg"
-              className="rounded-full bg-transparent glow-effect border-primary text-primary hover:bg-primary hover:text-primary-foreground"
+             
               asChild
             >
               <a href="mailto:christian.fonseca.r@gmail.com">
@@ -611,7 +607,7 @@ export function Landing({
             <Button
               variant="outline"
               size="lg"
-              className="rounded-full bg-transparent glow-effect border-primary text-primary hover:bg-primary hover:text-primary-foreground"
+             
               asChild
             >
               <a href="https://linkedin.com/in/christian-fonseca-rodriguez" target="_blank" rel="noopener noreferrer">
@@ -622,7 +618,7 @@ export function Landing({
             <Button
               variant="outline"
               size="lg"
-              className="rounded-full bg-transparent glow-effect border-primary text-primary hover:bg-primary hover:text-primary-foreground"
+             
               asChild
             >
               <a

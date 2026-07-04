@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=STIX+Two+Text:ital,wght@1,400&display=swap" rel="stylesheet"><style>body{background:#000;color:#eeeeee;font-family:'Space Grotesk',sans-serif;margin:0}
+.sg{font-family:'Space Grotesk',sans-serif}.jm{font-family:'JetBrains Mono',monospace}.is{font-family:'Instrument Serif','STIX Two Text',serif;font-style:italic}
+.wrap{max-width:1180px;margin:0 auto;padding:0 44px}
+.nav{position:sticky;top:0;z-index:50;background:rgba(0,0,0,.78);backdrop-filter:blur(14px);border-bottom:1px solid #1e0f33}
+.navin{display:flex;align-items:center;justify-content:space-between;height:58px}
+.navl{color:#9a8fb0;text-decoration:none;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.06em}.navl:hover{color:#eeeeee}
+.logoS{font-family:'JetBrains Mono',monospace;font-weight:500;color:#eeeeee;font-size:20px}
+.gradt{background:linear-gradient(135deg,#a855f7,#ec4899);-webkit-background-clip:text;background-clip:text;color:transparent}
+.gradtv{background:linear-gradient(180deg,#a855f7,#ec4899);-webkit-background-clip:text;background-clip:text;color:transparent}
+.cover{min-height:92vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:30px;background:radial-gradient(circle at 50% 42%,#1a0033,#000 78%);text-align:center}
+.dep{display:inline-block;overflow:visible;white-space:nowrap;vertical-align:baseline;box-sizing:border-box;clip-path:inset(-0.15em 0)}
+.lswap{display:inline-block;position:relative;vertical-align:baseline;white-space:nowrap;clip-path:inset(-0.02em -0.25em)}
+.lgl{position:absolute;left:0;top:0;white-space:nowrap}
+.strutv{visibility:hidden}
+.lF{animation:lF 12s ease-in-out infinite}.lC{animation:lC 12s ease-in-out infinite}
+@keyframes lF{0%,44%{transform:translateY(0)}50%{transform:translateY(-125%)}50.05%{transform:translateY(125%)}94%{transform:translateY(125%)}100%{transform:translateY(0)}}
+@keyframes lC{0%,44%{transform:translateY(125%)}50%,94%{transform:translateY(0)}100%{transform:translateY(-125%)}}
+@media (prefers-reduced-motion: reduce){.lF{animation:none;transform:translateY(0)}.lC{animation:none;transform:translateY(125%)}}
+.depC{animation:depC 7s ease-in-out infinite;padding-right:.32em}
+.depF{animation:depF 7s ease-in-out infinite}
+@keyframes depC{0%,8%{max-width:0}20%,60%{max-width:340px}76%,100%{max-width:0}}
+@keyframes depF{0%,14%{max-width:0;margin-left:0}26%,54%{max-width:260px;margin-left:-.1em}70%,100%{max-width:0;margin-left:0}}
+@media (prefers-reduced-motion: reduce){.depC{animation:none;max-width:340px}.depF{animation:none;max-width:260px}}
+.aF{animation:aF 12s ease-in-out infinite}.aFx{animation:aFx 12s ease-in-out infinite}.aC{animation:aC 12s ease-in-out infinite}.aCx{animation:aCx 12s ease-in-out infinite}
+@keyframes aF{0%,44%{max-width:70px}50%,94%{max-width:0}100%{max-width:70px}}
+@keyframes aFx{0%,4%{max-width:0;margin-left:0}12%,34%{max-width:280px;margin-left:-.1em}42%,100%{max-width:0;margin-left:0}}
+@keyframes aC{0%,46%{max-width:0}52%,96%{max-width:60px}100%{max-width:0}}
+@keyframes aCx{0%,54%{max-width:0;margin-left:0}62%,86%{max-width:320px;margin-left:-.06em}92%,100%{max-width:0;margin-left:0}}
+@media (prefers-reduced-motion: reduce){.aF{animation:none;max-width:70px}.aFx{animation:none;max-width:280px;margin-left:-.1em}.aC{animation:none;max-width:0}.aCx{animation:none;max-width:0}}
+.lockb{font-family:'JetBrains Mono',monospace;font-weight:500}
+.lockl{color:#eeeeee}.lockx{color:#cbbfdd}
+.tagline{font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:.3em;text-transform:uppercase;color:#9a8fb0}
+.sec{padding:92px 0;border-top:1px solid #170b28}
+.secn{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.3em;color:#ec4899;text-transform:uppercase;margin:0 0 12px}
+.h2s{font-size:38px;font-weight:700;letter-spacing:-.02em;margin:0 0 6px}
+.en{color:#6f5f8f;font-size:15px;font-style:italic;font-family:'Instrument Serif',serif;letter-spacing:.01em}
+.lead{color:#9a8fb0;font-size:15px;line-height:1.65;max-width:760px;margin:14px 0 44px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.panel{background:#0d0118;border:1px solid #241040;border-radius:18px;padding:30px;position:relative}
+.pdark{background:radial-gradient(circle at 50% 30%,#1a0033,#050008);display:flex;align-items:center;justify-content:center;min-height:210px}
+.plight{background:radial-gradient(circle at 50% 30%,#f0e9fb,#fdfcff);color:#0b0b0b;display:flex;align-items:center;justify-content:center;min-height:210px;border:1px solid #e2d5f5}
+.cap{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#6f5f8f;margin-top:14px}
+.tok{border-radius:14px;overflow:hidden;border:1px solid #241040}
+.sw{height:84px}
+.tokm{padding:12px 14px;background:#0d0118}
+.tokn{font-weight:600;font-size:14px}
+.tokh{font-family:'JetBrains Mono',monospace;font-size:12px;color:#9a8fb0;margin-top:2px}
+.toku{font-size:12px;color:#6f5f8f;margin-top:6px;line-height:1.45}
+.ratio{display:flex;height:46px;border-radius:12px;overflow:hidden;border:1px solid #241040}
+.rlbl{font-family:'JetBrains Mono',monospace;font-size:11px;color:#9a8fb0;margin-top:8px;display:flex;justify-content:space-between}
+.spec{border-bottom:1px solid #1e0f33;padding:22px 0;display:grid;grid-template-columns:220px 1fr;gap:24px;align-items:baseline}
+.speclbl{font-family:'JetBrains Mono',monospace;font-size:12px;color:#9a8fb0;letter-spacing:.08em}
+.btnP{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,#a855f7,#ec4899);color:#fdfcff;font-weight:600;font-size:15px;padding:13px 26px;border-radius:12px;border:none;cursor:pointer;font-family:'Space Grotesk',sans-serif;box-shadow:0 8px 24px rgba(168,85,247,.32);transition:all .2s;white-space:nowrap}.btnP:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(236,72,153,.42)}
+.btnS{display:inline-flex;align-items:center;gap:8px;background:transparent;color:#e9defc;font-weight:600;font-size:15px;padding:12px 25px;border-radius:12px;border:1px solid rgba(168,85,247,.6);cursor:pointer;font-family:'Space Grotesk',sans-serif;transition:all .2s;white-space:nowrap}.btnS:hover{background:rgba(168,85,247,.14)}
+.btnG{display:inline-flex;align-items:center;gap:6px;background:transparent;color:#a855f7;font-weight:600;font-size:15px;padding:13px 8px;border:none;cursor:pointer;font-family:'Space Grotesk',sans-serif;white-space:nowrap}.btnG:hover{color:#ec4899}
+.btnM{font-family:'JetBrains Mono',monospace;font-size:13px;background:#12041f;border:1px solid #2a1445;color:#e9defc;padding:12px 18px;border-radius:10px;cursor:pointer;transition:all .2s;white-space:nowrap}.btnM:hover{border-color:#a855f7}
+.chip{font-family:'JetBrains Mono',monospace;font-size:12px;color:#d5b8f7;background:rgba(168,85,247,.13);border:1px solid rgba(168,85,247,.4);padding:5px 12px;border-radius:999px}
+.badgeC{display:inline-flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.06em;padding:7px 14px;border-radius:999px;background:#12041f;border:1px solid #ec4899;color:#ffd6ec;white-space:nowrap}
+.dotm{width:7px;height:7px;border-radius:50%;background:#ec4899;display:inline-block}
+.pcard{background:linear-gradient(160deg,#12041f,#0a0114);border:1px solid #2a1445;border-radius:16px;padding:24px;transition:all .25s}.pcard:hover{border-color:#a855f7;transform:translateY(-3px)}
+.plink{color:#a855f7;text-decoration:underline;text-underline-offset:4px}.plink:hover{color:#ec4899}
+.inp{background:#0d0118;border:1px solid #2a1445;border-radius:10px;padding:12px 14px;color:#eeeeee;font-family:'Space Grotesk',sans-serif;font-size:14px;width:100%;box-sizing:border-box}
+.inpF{border-color:#a855f7;box-shadow:0 0 0 3px rgba(168,85,247,.25)}
+.flbl{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#9a8fb0;margin-bottom:8px;display:block}
+.dont{border:1px solid #241040;border-radius:14px;background:#0d0118;overflow:hidden}
+.dontt{height:130px;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 30%,#16062a,#070010)}
+.dontl{padding:12px 14px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.08em;color:#ff9ec7;border-top:1px solid #241040}
+.guide{position:absolute;border:1px dashed #5b3b8a}
+.glbl{position:absolute;font-family:'JetBrains Mono',monospace;font-size:10px;color:#8a6ab5;letter-spacing:.08em}
+.voz{background:#0d0118;border:1px solid #241040;border-radius:18px;padding:28px}
+.vozt{font-family:'Instrument Serif',serif;font-style:italic;font-size:24px;margin:0 0 10px}
+.vozp{color:#9a8fb0;font-size:14px;line-height:1.6;margin:0}
+.vozen{color:#6f5f8f;font-size:13px;font-style:italic;margin:8px 0 0}
+.ex{border-radius:12px;padding:16px 18px;font-size:14px;line-height:1.55}
+.exsi{background:rgba(168,85,247,.1);border:1px solid rgba(168,85,247,.4)}
+.exno{background:rgba(236,72,153,.07);border:1px solid rgba(236,72,153,.35);color:#b39ac4}
+.exlbl{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;margin-bottom:8px}
+.fav{background:linear-gradient(135deg,#a855f7,#ec4899);color:#fdfcff;display:flex;align-items:center;justify-content:center;border-radius:24%;font-family:'JetBrains Mono',monospace;font-weight:500}
+.kitrow{display:flex;flex-wrap:wrap;gap:16px;align-items:center}
+.mt24{margin-top:24px}.mt32{margin-top:32px}.mt40{margin-top:40px}
+.foot{padding:56px 0;border-top:1px solid #170b28;text-align:center;color:#6f5f8f;font-family:'JetBrains Mono',monospace;font-size:12px}</style></helmet>
+<nav class="nav"><div class="wrap navin"><span class="logoS">{<span class="is gradt" style="margin:0 2px">ƒ</span>}</span><div class="fx ac gap16"><a class="navl" href="#s01">01 Símbolo</a><a class="navl" href="#s02">02 Logo</a><a class="navl" href="#s03">03 Motion</a><a class="navl" href="#s04">04 Color</a><a class="navl" href="#s05">05 Tipo</a><a class="navl" href="#s06">06 Voz</a><a class="navl" href="#s07">07 UI</a><a class="navl" href="#s08">08 Aplicaciones</a></div></div></nav>
+<header class="cover" data-screen-label="Portada">
+<sc-if value="{{ animar }}" hint-placeholder-val="{{ true }}"><div class="fx nowrap" style="align-items:baseline"><span class="lockb gradtv" style="font-size:72px">{</span><span class="lswap" style="font-size:64px"><span class="dep aF is strutv">ƒ</span><span class="dep aC is strutv">c</span><span class="lgl lF is lockl">ƒ</span><span class="lgl lC is lockl">c</span></span><span class="dep aCx is lockx" style="font-size:64px">hristian</span><span class="dep aFx is lockx" style="font-size:64px">onseca</span><span class="lockb gradtv" style="font-size:72px">}</span></div></sc-if>
+<sc-if value="{{ animarNo }}" hint-placeholder-val="{{ false }}"><div class="fx nowrap" style="align-items:baseline"><span class="lockb gradtv" style="font-size:72px">{</span><span class="is lockl" style="font-size:64px">christian <span class="lockl">ƒonseca</span></span><span class="lockb gradtv" style="font-size:72px">}</span></div></sc-if>
+<div class="tagline">Manual de marca · Brand guidelines · v1.0 — 2026</div>
+<div class="jm" style="font-size:13px;color:#6f5f8f">AI Engineer · Data Architect · Educador</div>
+</header>
+<section class="sec" id="s01" data-screen-label="01 Símbolo">
+<div class="wrap">
+<p class="secn">01 — El símbolo</p>
+<h2 class="h2s">Una función llamada Fonseca <span class="en">/ A function called Fonseca</span></h2>
+<p class="lead">La marca es una expresión: <strong style="color:#eeeeee">{ƒ}</strong>. Las llaves — JetBrains Mono — son el código y la ingeniería; la ƒ itálica — Instrument Serif — es la matemática, la firma de autor y la docencia. Datos que entran, valor que sale. / The brand is an expression: braces are engineering, the italic ƒ is math, authorship and teaching.</p>
+<div class="grid2">
+<div class="panel pdark" style="min-height:300px"><div class="posrel" style="padding:52px 64px"><sc-if value="{{ guias }}" hint-placeholder-val="{{ true }}"><span class="guide" style="inset:0"></span><span class="glbl" style="top:-16px;left:0">área de reserva = ½ x</span><span class="guide" style="top:52px;bottom:52px;left:64px;right:64px;border-color:#3b2560"></span><span class="glbl" style="bottom:-16px;right:0">x = altura de ƒ</span></sc-if><div class="jm fx ac nowrap" style="font-size:96px;font-weight:500"><span class="gradtv">{</span><span class="is" style="color:#eeeeee;margin:0 14px">ƒ</span><span class="gradtv">}</span></div></div></div>
+<div class="col fx gap16" style="justify-content:center">
+<div class="spec" style="border-top:1px solid #1e0f33"><span class="speclbl">Llaves / Braces</span><span style="font-size:14px;color:#cbbfdd">JetBrains Mono 500 — siempre en gradiente vertical púrpura→magenta o color plano de marca.</span></div>
+<div class="spec"><span class="speclbl">La ƒ</span><span style="font-size:14px;color:#cbbfdd">La ƒ (florin) viene de STIX Two Text Italic; las demás letras, Instrument Serif Italic. Siempre itálica, nunca enderezada. Blanco #EEEEEE en oscuro, tinta #0B0B0B en claro.</span></div>
+<div class="spec"><span class="speclbl">Proporción</span><span style="font-size:14px;color:#cbbfdd">Llaves ≈ 1.12× la altura de la ƒ. Separación interna: 0.14em por lado.</span></div>
+<div class="spec"><span class="speclbl">Tamaño mínimo</span><span class="fx ac gap16" style="flex-wrap:wrap"><span class="jm nowrap" style="font-size:64px;font-weight:500"><span class="gradtv">{</span><span class="is" style="color:#eeeeee;margin:0 8px">ƒ</span><span class="gradtv">}</span></span><span class="jm nowrap" style="font-size:40px;font-weight:500"><span class="gradtv">{</span><span class="is" style="color:#eeeeee;margin:0 5px">ƒ</span><span class="gradtv">}</span></span><span class="jm nowrap" style="font-size:24px;font-weight:500"><span class="gradtv">{</span><span class="is" style="color:#eeeeee;margin:0 3px">ƒ</span><span class="gradtv">}</span></span><span class="jm" style="font-size:11px;color:#6f5f8f">mín. 24px digital / 8mm impreso</span></span></div>
+</div>
+</div>
+</div>
+</section>
+<section class="sec" id="s02" data-screen-label="02 Sistema de logo">
+<div class="wrap">
+<p class="secn">02 — Sistema de logo</p>
+<h2 class="h2s">Tres niveles, una marca <span class="en">/ Three levels, one brand</span></h2>
+<p class="lead">Símbolo para espacios mínimos, wordmark para el día a día, lockup completo para portadas y momentos de presentación. El nombre vive <em>dentro</em> de la función.</p>
+<div class="panel pdark" style="min-height:260px;margin-bottom:24px"><div class="col fx ac gap12"><div class="fx nowrap" style="align-items:baseline"><span class="lockb gradtv" style="font-size:64px">{</span><span class="lswap" style="font-size:56px"><span class="dep aF is strutv">ƒ</span><span class="dep aC is strutv">c</span><span class="lgl lF is lockl">ƒ</span><span class="lgl lC is lockl">c</span></span><span class="dep aCx is lockx" style="font-size:56px">hristian</span><span class="dep aFx is lockx" style="font-size:56px">onseca</span><span class="lockb gradtv" style="font-size:64px">}</span></div><span class="cap">Lockup animado — {ƒ} se extiende a {ƒonseca}, se recoge, cambia a {c} y se extiende a {christian}</span></div></div>
+<div class="grid3">
+<div class="panel pdark"><div class="col fx ac gap10"><span class="jm nowrap" style="font-size:56px;font-weight:500"><span class="gradtv">{</span><span class="is" style="color:#eeeeee;margin:0 8px">ƒ</span><span class="gradtv">}</span></span><span class="cap">Símbolo — avatar, favicon, bullets</span></div></div>
+<div class="panel pdark"><div class="col fx ac gap10"><div class="fx nowrap" style="align-items:baseline"><span class="lockb gradtv" style="font-size:38px">{</span><span class="is lockl" style="font-size:34px">ƒ</span><span class="dep depF is lockx" style="font-size:34px">onseca</span><span class="lockb gradtv" style="font-size:38px">}</span></div><span class="cap">Wordmark — header del sitio, firmas</span></div></div>
+<div class="panel plight"><div class="col fx ac gap10"><span class="jm nowrap" style="font-size:34px;font-weight:500"><span style="color:#6928b0">{</span><span class="is" style="color:#0b0b0b;margin:0 5px">c</span><span class="is" style="color:#0b0b0b">ƒ</span><span style="color:#ec4899">}</span></span><span class="cap" style="color:#8a6ab5">Fondo claro — púrpura #6928B0 + magenta</span></div></div>
+</div>
+<h3 class="mt40" style="font-size:20px;font-weight:600;margin-bottom:16px">Usos incorrectos <span class="en" style="font-size:14px">/ Misuse</span></h3>
+<div class="grid4">
+<div class="dont"><div class="dontt"><span class="jm nowrap" style="font-size:40px;font-weight:500;color:#4ade80">{<span class="is" style="margin:0 5px">ƒ</span>}</span></div><div class="dontl">✗ No recolorear fuera de la paleta</div></div>
+<div class="dont"><div class="dontt"><span class="jm nowrap" style="font-size:40px;font-weight:500"><span class="gradtv">{</span><span style="color:#eeeeee;margin:0 5px;font-family:'Space Grotesk',sans-serif;font-style:normal">f</span><span class="gradtv">}</span></span></div><div class="dontl">✗ No enderezar ni cambiar la ƒ</div></div>
+<div class="dont"><div class="dontt"><span class="jm nowrap" style="font-size:40px;font-weight:500;text-shadow:0 0 22px #ec4899,0 0 40px #a855f7"><span class="gradtv">{</span><span class="is" style="color:#eeeeee;margin:0 5px">ƒ</span><span class="gradtv">}</span></span></div><div class="dontl">✗ No aplicar glow ni sombras pesadas</div></div>
+<div class="dont"><div class="dontt"><span class="jm nowrap" style="font-size:40px;font-weight:500;display:inline-block;transform:rotate(-18deg)"><span class="gradtv">{</span><span class="is" style="color:#eeeeee;margin:0 5px">ƒ</span><span class="gradtv">}</span></span></div><div class="dontl">✗ No rotar ni distorsionar</div></div>
+</div>
+</div>
+</section>
+<section class="sec" id="s03" data-screen-label="03 Motion">
+<div class="wrap">
+<p class="secn">03 — Motion</p>
+<h2 class="h2s">El despliegue <span class="en">/ The deploy</span></h2>
+<p class="lead">La firma animada de la marca alterna las dos identidades: {ƒ} se extiende a {ƒonseca}, se recoge al símbolo, muta a {c} y se extiende a {christian}. Un nombre a la vez, nunca los dos juntos.</p>
+<div class="grid3">
+<div class="panel pdark"><div class="col fx ac gap10"><span class="jm nowrap" style="font-size:40px;font-weight:500"><span class="gradtv">{</span><span class="is" style="color:#eeeeee;margin:0 6px">ƒ</span><span class="gradtv">}</span></span><span class="cap">Reposo — símbolo {ƒ}</span></div></div>
+<div class="panel pdark"><div class="col fx ac gap10"><div class="fx nowrap" style="align-items:baseline"><span class="lockb gradtv" style="font-size:40px">{</span><span class="is lockl" style="font-size:36px">ƒ</span><span class="is lockx" style="font-size:36px">onseca</span><span class="lockb gradtv" style="font-size:40px">}</span></div><span class="cap">Fase 1 — la ƒ despliega «onseca»</span></div></div>
+<div class="panel pdark"><div class="col fx ac gap10"><div class="fx nowrap" style="align-items:baseline"><span class="lockb gradtv" style="font-size:40px">{</span><span class="is lockl" style="font-size:36px">c</span><span class="is lockx" style="font-size:36px">hristian</span><span class="lockb gradtv" style="font-size:40px">}</span></div><span class="cap">Fase 2 — la c despliega «hristian»</span></div></div>
+</div>
+<div class="grid2 mt24">
+<div class="panel"><span class="flbl">Especificación</span><div class="jm" style="font-size:13px;line-height:2;color:#cbbfdd">duración: 12s loop · curva: ease-in-out<br>secuencia: {ƒ}→{ƒonseca}→{ƒ}→{c}→{christian}→{c}→{ƒ}<br>cambio de letra: sale hacia ↑, la siguiente entra desde ↓<br>hold expandido: ~2.6s por nombre<br>propiedad animada: max-width (clip)</div></div>
+<div class="panel"><span class="flbl">Cuándo usarlo</span><div style="font-size:14px;line-height:1.9;color:#cbbfdd">Carga inicial del sitio (1 ciclo) · hover en el logo del header · intros de video y slides · loading states.<br><span style="color:#6f5f8f;font-size:13px">Respeta prefers-reduced-motion: versión estática expandida.</span></div></div>
+</div>
+</div>
+</section>
+<section class="sec" id="s04" data-screen-label="04 Color">
+<div class="wrap">
+<p class="secn">04 — Color</p>
+<h2 class="h2s">Nebulosa <span class="en">/ Nebula</span></h2>
+<p class="lead">Fondo casi-negro con corazón púrpura, dos acentos vivos y un tema claro lavanda. El gradiente púrpura→magenta es exclusivo de la marca: logo, CTAs y titulares clave — nunca en texto largo.</p>
+<div class="grid4">
+<div class="tok"><div class="sw" style="background:#000000"></div><div class="tokm"><div class="tokn">Void</div><div class="tokh">#000000</div><div class="toku">Fondo base oscuro</div></div></div>
+<div class="tok"><div class="sw" style="background:#1a0033"></div><div class="tokm"><div class="tokn">Nebula</div><div class="tokh">#1A0033</div><div class="toku">Centro del fondo radial</div></div></div>
+<div class="tok"><div class="sw" style="background:#a855f7"></div><div class="tokm"><div class="tokn">Púrpura</div><div class="tokh">#A855F7</div><div class="toku">Primario — links, foco, llaves</div></div></div>
+<div class="tok"><div class="sw" style="background:#ec4899"></div><div class="tokm"><div class="tokn">Magenta</div><div class="tokh">#EC4899</div><div class="toku">Acento — CTAs, highlights</div></div></div>
+<div class="tok"><div class="sw" style="background:#6928b0"></div><div class="tokm"><div class="tokn">Púrpura profundo</div><div class="tokh">#6928B0</div><div class="toku">Primario sobre fondo claro</div></div></div>
+<div class="tok"><div class="sw" style="background:#f0e9fb"></div><div class="tokm"><div class="tokn">Lavanda</div><div class="tokh">#F0E9FB</div><div class="toku">Fondo claro</div></div></div>
+<div class="tok"><div class="sw" style="background:#eeeeee"></div><div class="tokm"><div class="tokn">Niebla</div><div class="tokh">#EEEEEE</div><div class="toku">Texto sobre oscuro</div></div></div>
+<div class="tok"><div class="sw" style="background:#0b0b0b"></div><div class="tokm"><div class="tokn">Tinta</div><div class="tokh">#0B0B0B</div><div class="toku">Texto sobre claro</div></div></div>
+</div>
+<div class="grid2 mt24">
+<div><div style="height:64px;border-radius:14px;background:linear-gradient(135deg,#a855f7,#ec4899)"></div><div class="rlbl"><span>Gradiente de marca — 135° #A855F7 → #EC4899</span></div><div style="height:64px;border-radius:14px;background:radial-gradient(circle at 50% 40%,#1a0033,#000000);margin-top:14px;border:1px solid #241040"></div><div class="rlbl"><span>Fondo radial — circle 50% 40%, #1A0033 → #000000</span></div></div>
+<div><div class="ratio"><span style="flex:62;background:#0a0114"></span><span style="flex:20;background:#eeeeee"></span><span style="flex:10;background:#a855f7"></span><span style="flex:8;background:#ec4899"></span></div><div class="rlbl"><span>62% fondo</span><span>20% texto</span><span>10% púrpura</span><span>8% magenta</span></div><div class="jm mt24" style="font-size:12px;line-height:2;color:#9a8fb0">Contraste AA/AAA:<br>#EEEEEE / #1A0033 → 15.9:1 ✓ texto largo<br>#A855F7 / #000000 → 6.9:1 ✓ texto ≥14px<br>#FDFCFF / #EC4899 → 3.6:1 ✓ solo ≥24px o bold<br>#0B0B0B / #F0E9FB → 17.4:1 ✓ texto largo</div></div>
+</div>
+</div>
+</section>
+<section class="sec" id="s05" data-screen-label="05 Tipografía">
+<div class="wrap">
+<p class="secn">05 — Tipografía</p>
+<h2 class="h2s">Tres voces <span class="en">/ Three voices</span></h2>
+<p class="lead">Space Grotesk habla al público, JetBrains Mono habla a las máquinas, Instrument Serif firma. Nunca más de las tres en una pieza.</p>
+<div class="spec" style="border-top:1px solid #1e0f33"><span class="speclbl">Space Grotesk<br>400 · 500 · 600 · 700</span><div><div style="font-size:34px;font-weight:700;letter-spacing:-.02em">Construyo sistemas que aprenden.</div><div class="toku" style="font-size:13px;margin-top:8px">Titulares, UI, cuerpo — Aa Bb Cc 0123456789</div></div></div>
+<div class="spec"><span class="speclbl">JetBrains Mono<br>400 · 500 · 600</span><div><div class="jm" style="font-size:22px;color:#d5b8f7">model.fit(experiencia, resultados)</div><div class="toku" style="font-size:13px;margin-top:8px">Código, etiquetas, metadatos, cifras — 0123456789</div></div></div>
+<div class="spec"><span class="speclbl">Instrument Serif<br>Italic</span><div><div class="is" style="font-size:34px">La ƒ es la firma — y el acento editorial.</div><div class="toku" style="font-size:13px;margin-top:8px">Citas y énfasis puntual, nunca párrafos. El glifo ƒ del logo lo aporta STIX Two Text Italic (stack: Instrument Serif → STIX Two Text).</div></div></div>
+<div class="spec"><span class="speclbl">Escala</span><div class="fx gap24" style="flex-wrap:wrap;align-items:baseline"><span style="font-size:56px;font-weight:700">H1 56</span><span style="font-size:38px;font-weight:700">H2 38</span><span style="font-size:24px;font-weight:600">H3 24</span><span style="font-size:16px">Body 16/1.65</span><span class="jm" style="font-size:13px;color:#9a8fb0">Label 13</span></div></div>
+</div>
+</section>
+<section class="sec" id="s06" data-screen-label="06 Voz y tono">
+<div class="wrap">
+<p class="secn">06 — Voz y tono</p>
+<h2 class="h2s">Enseña, no presumas <span class="en">/ Teach, don't boast</span></h2>
+<p class="lead">La voz de un ingeniero que da clases: precisa, generosa, sin humo. Bilingüe por diseño — español cercano, inglés directo.</p>
+<div class="grid2">
+<div class="voz"><h4 class="vozt gradt">Preciso, no críptico</h4><p class="vozp">Números concretos, nombres de tecnologías reales, cero adjetivos vacíos. «Reduje el costo de inferencia 40%» vale más que «soluciones innovadoras».</p><p class="vozen">Precise, not cryptic — concrete numbers over empty adjectives.</p></div>
+<div class="voz"><h4 class="vozt gradt">Docente, no vendedor</h4><p class="vozp">Explica el porqué. Si un reclutador y un alumno leen la misma frase, ambos deben entenderla y aprender algo.</p><p class="vozen">A teacher's voice: if a recruiter and a student read it, both learn.</p></div>
+<div class="voz"><h4 class="vozt gradt">Resultados, luego stack</h4><p class="vozp">Primero el problema resuelto y su impacto; las herramientas van después, como chips, no como protagonistas.</p><p class="vozen">Outcome first, tools second — tech belongs in chips, not headlines.</p></div>
+<div class="voz"><h4 class="vozt gradt">Humano, con humor fino</h4><p class="vozp">Se permite un guiño ({ƒ} es uno), nunca un meme. Cercano en español, sobrio en inglés.</p><p class="vozen">Warm, with a subtle wink — never a meme.</p></div>
+</div>
+<div class="grid2 mt24">
+<div class="ex exsi"><div class="exlbl" style="color:#d5b8f7">✓ ASÍ</div>Pipeline de RAG para 2M de documentos legales: latencia p95 de 800ms y −40% de costo por consulta. Stack: Bedrock, OpenSearch, Lambda.</div>
+<div class="ex exno"><div class="exlbl" style="color:#ff9ec7">✗ ASÍ NO</div>Solución integral e innovadora de IA generativa de última generación que revoluciona la gestión documental con tecnología cutting-edge.</div>
+</div>
+</div>
+</section>
+<section class="sec" id="s07" data-screen-label="07 UI Kit">
+<div class="wrap">
+<p class="secn">07 — UI Kit</p>
+<h2 class="h2s">Componentes <span class="en">/ Components</span></h2>
+<p class="lead">El sistema que unifica el portfolio: una sola familia de botones, chips y cards en todo el sitio. Radios 10–16px, bordes #2A1445, hover siempre con transición 0.2s.</p>
+<div class="panel"><span class="flbl">Botones</span><div class="kitrow"><button class="btnP">Ver proyectos →</button><button class="btnS">Descargar CV</button><button class="btnM">$ git clone fonseca</button><button class="btnG">Leer más →</button></div><div class="cap">Primario (gradiente, 1 por vista) · Secundario (borde) · Mono (código) · Ghost</div></div>
+<div class="grid2 mt24">
+<div class="panel"><span class="flbl">Chips de tecnología</span><div class="kitrow"><span class="chip">Python</span><span class="chip">AWS</span><span class="chip">Terraform</span><span class="chip">LangChain</span><span class="chip">Spark</span></div><span class="flbl" style="margin-top:22px">Badge de certificación</span><div class="kitrow"><span class="badgeC"><span class="dotm"></span>13× AWS Certified</span><span class="badgeC" style="border-color:#a855f7;color:#d5b8f7"><span class="dotm" style="background:#a855f7"></span>Scholar · Docente</span></div><span class="flbl" style="margin-top:22px">Enlaces</span><div style="font-size:15px">Consulta el <a class="plink" href="#s07">caso completo</a> o escríbeme por <a class="plink" href="#s07">LinkedIn</a>.</div></div>
+<div class="panel"><span class="flbl">Formulario</span><label class="flbl" style="margin-top:10px">Email</label><input class="inp" type="text" value="hola@christianfonseca.dev"><label class="flbl" style="margin-top:14px">Estado focus</label><input class="inp inpF" type="text" value="Anillo púrpura 3px al 25%"></div>
+</div>
+<div class="grid2 mt24">
+<div class="pcard"><div class="fx ac jb"><strong style="font-size:17px">Asistente RAG legal</strong><span class="jm" style="font-size:11px;color:#ec4899">2025</span></div><p style="color:#9a8fb0;font-size:14px;line-height:1.6;margin:10px 0 16px">2M de documentos indexados, p95 800ms, −40% costo por consulta para estudio jurídico enterprise.</p><div class="kitrow" style="gap:8px"><span class="chip">Bedrock</span><span class="chip">OpenSearch</span><span class="chip">Lambda</span></div></div>
+<div class="pcard"><div class="fx ac jb"><strong style="font-size:17px">Data platform minera</strong><span class="jm" style="font-size:11px;color:#ec4899">2024</span></div><p style="color:#9a8fb0;font-size:14px;line-height:1.6;margin:10px 0 16px">Lakehouse para telemetría de planta: 12TB/día, alertas en tiempo real y ahorro de 6 cifras anuales.</p><div class="kitrow" style="gap:8px"><span class="chip">Databricks</span><span class="chip">Kafka</span><span class="chip">Delta</span></div></div>
+</div>
+<div class="panel plight mt24" style="min-height:0;display:block"><span class="flbl" style="color:#8a6ab5">Tema claro</span><div class="kitrow mt24" style="margin-top:16px"><button class="btnP" style="box-shadow:0 8px 24px rgba(105,40,176,.25)">Ver proyectos →</button><button class="btnS" style="color:#6928b0;border-color:rgba(105,40,176,.5)">Descargar CV</button><span class="chip" style="color:#6928b0;background:rgba(105,40,176,.08);border-color:rgba(105,40,176,.35)">Python</span><span class="badgeC" style="background:#fdfcff;color:#a3155f"><span class="dotm"></span>13× AWS</span><span style="font-size:15px;color:#0b0b0b">Texto con <a class="plink" style="color:#6928b0" href="#s07">enlace</a> incluido.</span></div></div>
+</div>
+</section>
+<section class="sec" id="s08" data-screen-label="08 Aplicaciones">
+<div class="wrap">
+<p class="secn">08 — Aplicaciones</p>
+<h2 class="h2s">La marca en uso <span class="en">/ Brand in use</span></h2>
+<p class="lead">Avatar, banner, CV, slides y firma: mismas reglas en todas partes — fondo nebulosa o papel lavanda, {ƒ} presente, mono para los metadatos.</p>
+<div class="grid3">
+<div class="panel pdark" style="flex-direction:column;gap:18px"><div class="fav" style="width:96px;height:96px;font-size:40px">{<span class="is" style="margin:0 3px">ƒ</span>}</div><div class="fx ac gap12"><span class="fav" style="width:48px;height:48px;font-size:20px">{<span class="is" style="margin:0 2px">ƒ</span>}</span><span class="fav" style="width:32px;height:32px;font-size:13px">{<span class="is" style="margin:0 1px">ƒ</span>}</span><span class="fav" style="width:16px;height:16px;font-size:7px">{ƒ}</span></div><span class="cap">Avatar + favicon 48 / 32 / 16</span></div>
+<div class="panel" style="grid-column:span 2;padding:0;overflow:hidden"><div style="background:radial-gradient(circle at 30% 50%,#1a0033,#000);padding:34px 38px;display:flex;align-items:center;justify-content:space-between"><div class="fx nowrap" style="align-items:baseline"><span class="lockb gradtv" style="font-size:34px">{</span><span class="is lockl" style="font-size:30px">christian ƒonseca</span><span class="lockb gradtv" style="font-size:34px">}</span></div><div class="jm" style="font-size:12px;color:#9a8fb0;text-align:right;line-height:1.9">AI Engineer · Data Architect<br>13× AWS · Educador · christianfonseca.dev</div></div><div class="cap" style="padding:12px 16px">Banner LinkedIn 1584×396 — lockup expandido a la izquierda, metadatos mono a la derecha</div></div>
+</div>
+<div class="grid2 mt24">
+<div class="panel plight" style="display:block;min-height:0"><div class="fx ac jb"><div><div style="font-size:26px;font-weight:700;color:#0b0b0b;letter-spacing:-.02em">Christian Fonseca</div><div class="jm" style="font-size:12px;color:#6928b0;margin-top:4px">AI ENGINEER · DATA ARCHITECT</div></div><span class="jm nowrap" style="font-size:30px;font-weight:500"><span style="color:#6928b0">{</span><span class="is" style="color:#0b0b0b;margin:0 4px">ƒ</span><span style="color:#ec4899">}</span></span></div><div style="height:1px;background:linear-gradient(90deg,#6928b0,#ec4899);margin:16px 0"></div><div class="jm" style="font-size:11px;color:#5a4a75"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="6e0601020f2e0d061c071d1a070f000801001d0b0d0f400a0b18">[email&#160;protected]</a> · linkedin/in/fonseca · Lima, PE</div><div class="cap" style="color:#8a6ab5">Cabecera de CV — papel, tinta y una sola línea de gradiente</div></div>
+<div class="panel" style="padding:0;overflow:hidden"><div style="aspect-ratio:16/9;background:radial-gradient(circle at 50% 45%,#1a0033,#000);padding:30px 34px;display:flex;flex-direction:column;justify-content:space-between;box-sizing:border-box"><span class="jm" style="font-size:10px;letter-spacing:.28em;color:#ec4899">WORKSHOP · 2026</span><div style="font-size:30px;font-weight:700;letter-spacing:-.02em;line-height:1.15">Arquitecturas RAG<br><span class="gradt">en producción</span></div><div class="fx ac jb"><span class="jm nowrap" style="font-size:15px"><span class="gradtv">{</span><span class="is" style="color:#eeeeee;margin:0 2px">ƒ</span><span class="gradtv">}</span></span><span class="jm" style="font-size:10px;color:#6f5f8f">christianfonseca.dev — 01</span></div></div><div class="cap" style="padding:12px 16px">Slide título 16:9 — eyebrow mono, titular con gradiente solo en el remate</div></div>
+</div>
+<div class="panel mt24" style="display:flex;align-items:center;gap:18px"><span class="fav" style="width:52px;height:52px;font-size:22px">{<span class="is" style="margin:0 2px">ƒ</span>}</span><div><div style="font-weight:600;font-size:15px">Christian Fonseca</div><div class="jm" style="font-size:11px;color:#9a8fb0;margin-top:2px">AI Engineer · Data Architect — christianfonseca.dev</div></div><div style="width:1px;height:36px;background:#241040"></div><div class="jm" style="font-size:11px;color:#a855f7;line-height:1.8"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="e880878489a88b809a819b9c8189868e87869b8d8b89c68c8d9e">[email&#160;protected]</a><br><span style="color:#ec4899">cal.com/fonseca</span></div><span class="cap" style="margin:0;margin-left:auto">Firma de email</span></div>
+</div>
+</section>
+<footer class="foot"><span class="jm nowrap" style="font-size:20px;font-weight:500"><span class="gradtv">{</span><span class="is" style="color:#eeeeee;margin:0 3px">ƒ</span><span class="gradtv">}</span></span><div style="margin-top:12px">Manual de marca v1.0 · julio 2026 · hecho para christianfonseca.dev</div></footer>
+</x-dc>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script type="text/x-dc" data-dc-script data-props="{&quot;guias&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Especificaciones&quot;},&quot;animar&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Portada&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    const animar = this.props.animar ?? true;
+    return { guias: this.props.guias ?? true, animar: animar, animarNo: !animar };
+  }
+}
+</script>
+</body>
+</html>

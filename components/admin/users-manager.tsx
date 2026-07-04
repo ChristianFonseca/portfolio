@@ -145,7 +145,7 @@ export function UsersManager({ users, currentUserId }: { users: UserSummary[]; c
             <Button
               variant="outline"
               size="sm"
-              className="rounded-full bg-transparent text-xs"
+              className="text-xs"
               disabled={pending || user.id === currentUserId}
               onClick={() => handleRoleChange(user)}
             >
@@ -154,7 +154,7 @@ export function UsersManager({ users, currentUserId }: { users: UserSummary[]; c
             <Button
               variant="outline"
               size="sm"
-              className="rounded-full bg-transparent text-xs"
+              className="text-xs"
               disabled={pending}
               onClick={() => handleReset(user)}
             >
@@ -164,7 +164,7 @@ export function UsersManager({ users, currentUserId }: { users: UserSummary[]; c
             <Button
               variant="outline"
               size="sm"
-              className="rounded-full border-red-500/40 bg-transparent text-xs text-red-400 hover:bg-red-500/10 hover:text-red-300"
+              className="border-red-500/40 text-xs text-red-400 hover:bg-red-500/10 hover:text-red-300"
               disabled={pending || user.id === currentUserId}
               onClick={() => handleDelete(user)}
             >
@@ -239,7 +239,7 @@ export function UsersManager({ users, currentUserId }: { users: UserSummary[]; c
               <Button
                 variant="outline"
                 size="sm"
-                className="h-auto shrink-0 rounded-lg bg-transparent text-xs"
+                className="h-auto shrink-0 text-xs"
                 onClick={() => setPassword(generatePassword())}
               >
                 <Wand2 className="mr-1 h-3.5 w-3.5" />
@@ -248,7 +248,7 @@ export function UsersManager({ users, currentUserId }: { users: UserSummary[]; c
             </div>
           </div>
           <Button
-            className="w-full rounded-lg bg-gradient-to-r from-primary to-accent text-white shadow-[0_0_20px_-6px_rgba(168,85,247,0.6)] hover:brightness-110 disabled:opacity-50"
+            className="w-full"
             disabled={pending || !email || password.length < 10}
             onClick={handleCreate}
           >

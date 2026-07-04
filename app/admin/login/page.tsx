@@ -93,7 +93,7 @@ export default function AdminLoginPage() {
 
           <Button
             type="submit"
-            className="w-full rounded-xl bg-gradient-to-r from-primary to-accent text-white shadow-[0_0_24px_-6px_rgba(168,85,247,0.7)] hover:brightness-110"
+            className="w-full"
             disabled={loading}
           >
             {loading ? "Entrando…" : "Entrar"}

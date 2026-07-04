@@ -121,7 +121,7 @@ export default function ChatPage() {
           <Button
             variant="ghost"
             size="lg"
-            className="rounded-full glow-effect hover:bg-primary/20 text-primary"
+            className=""
             asChild
           >
             <a href="/" onClick={handleNavigateBack}>
@@ -216,7 +216,7 @@ export default function ChatPage() {
           <Button
             type="submit"
             size="lg"
-            className="rounded-full px-8 glow-effect hover:shadow-[0_0_30px_rgba(168,85,247,0.6)] hover:scale-105 transition-all duration-300"
+            className="px-8"
             disabled={isTyping || !input.trim()}
           >
             <Send className="h-5 w-5" />

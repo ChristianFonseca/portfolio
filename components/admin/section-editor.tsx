@@ -255,12 +255,12 @@ export function SectionEditor({
                 variant="outline"
                 size="sm"
                 onClick={markUpToDate}
-                className="rounded-full border-yellow-500/50 bg-transparent text-xs text-yellow-600 hover:bg-yellow-500/10 dark:text-yellow-400"
+                className="border-yellow-500/50 text-xs text-yellow-600 hover:bg-yellow-500/10 dark:text-yellow-400"
               >
                 Marcar al día
               </Button>
             )}
-            <Button variant="outline" size="sm" className="rounded-full text-xs bg-transparent" asChild>
+            <Button variant="outline" size="sm" className="text-xs" asChild>
               <a
                 href={active === "es" ? "https://christianfonseca.dev/es" : "https://christianfonseca.dev"}
                 target="_blank"
@@ -273,7 +273,7 @@ export function SectionEditor({
               size="sm"
               onClick={handleSave}
               disabled={!canSave}
-              className="rounded-full bg-gradient-to-r from-primary to-accent text-white shadow-[0_0_20px_-4px_rgba(168,85,247,0.6)] hover:brightness-110 disabled:opacity-50"
+              className=""
             >
               {pending ? "Guardando…" : "Guardar cambios"}
             </Button>
@@ -310,7 +310,7 @@ export function SectionEditor({
           size="sm"
           onClick={handleTranslate}
           disabled={translating || pending}
-          className="rounded-full bg-transparent text-xs"
+          className="text-xs"
         >
           {translating ? (
             <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />

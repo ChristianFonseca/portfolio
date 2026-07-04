@@ -8,7 +8,7 @@ export function LogoutButton() {
     window.location.href = "/login"
   }
   return (
-    <Button variant="outline" size="sm" className="rounded-full text-xs bg-transparent" onClick={handleLogout}>
+    <Button variant="outline" size="sm" className="text-xs" onClick={handleLogout}>
       Salir
     </Button>
   )

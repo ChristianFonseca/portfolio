@@ -93,7 +93,7 @@ export function ConfigForm({
         <Button
           onClick={handleSave}
           disabled={pending || !effectiveModel}
-          className="rounded-full bg-gradient-to-r from-primary to-accent text-white hover:brightness-110"
+          className=""
         >
           {pending ? "Guardando…" : "Guardar configuración"}
         </Button>

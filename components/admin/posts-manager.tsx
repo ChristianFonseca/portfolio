@@ -105,19 +105,19 @@ export function PostsManager({ posts }: { posts: PostSummary[] }) {
             <Button
               variant="outline"
               size="sm"
-              className="rounded-full bg-transparent text-xs"
+              className="text-xs"
               disabled={pending}
               onClick={() => handleTogglePublish(post)}
             >
               {post.published ? "Despublicar" : "Publicar"}
             </Button>
-            <Button size="sm" className="rounded-full text-xs" asChild>
+            <Button size="sm" className="text-xs" asChild>
               <Link href={`/blog/${post.id}`}>Editar</Link>
             </Button>
             <Button
               variant="outline"
               size="sm"
-              className="rounded-full border-red-500/40 bg-transparent text-xs text-red-400 hover:bg-red-500/10"
+              className="border-red-500/40 text-xs text-red-400 hover:bg-red-500/10"
               disabled={pending}
               onClick={() => handleDelete(post)}
             >
@@ -165,7 +165,7 @@ export function PostsManager({ posts }: { posts: PostSummary[] }) {
             />
           </div>
           <Button
-            className="w-full rounded-lg bg-gradient-to-r from-primary to-accent text-white hover:brightness-110 disabled:opacity-50"
+            className="w-full"
             disabled={pending || !title.trim() || slug.length < 3}
             onClick={handleCreate}
           >
