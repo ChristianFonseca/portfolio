@@ -1,8 +1,9 @@
 "use client"
 
 import Link from "next/link"
-import { ArrowLeft, BookOpen, Mail, Languages } from "lucide-react"
+import { BookOpen, Mail, Languages } from "lucide-react"
 import { ThemeToggle } from "@/components/theme-toggle"
+import { BrandLogo } from "@/components/brand-logo"
 import type { Locale } from "@/lib/i18n/dictionaries"
 
 export function BlogHeader({ locale, altHref }: { locale: Locale; altHref: string }) {
@@ -11,14 +12,8 @@ export function BlogHeader({ locale, altHref }: { locale: Locale; altHref: strin
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur-md">
       <div className="mx-auto flex h-14 max-w-3xl items-center gap-5 px-6">
-        <Link
-          href={home}
-          className="flex items-center gap-1.5 text-sm font-semibold transition-colors hover:text-primary"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-            Christian Fonseca
-          </span>
+        <Link href={home} aria-label="Christian Fonseca" className="transition-opacity hover:opacity-80">
+          <BrandLogo variant="lockup" className="h-5 w-auto" />
         </Link>
         <nav className="flex items-center gap-4 text-sm">
           <Link

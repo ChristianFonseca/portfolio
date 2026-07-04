@@ -1,15 +1,31 @@
 import type React from "react"
 import type { Metadata } from "next"
 import { headers } from "next/headers"
-import { DM_Sans } from "next/font/google"
+import { Space_Grotesk, JetBrains_Mono, Instrument_Serif } from "next/font/google"
 import { ThemeProvider } from "@/components/theme-provider"
 import "./globals.css"
 
-const dmSans = DM_Sans({
+// Tipografías de marca (Brand Assets v1.0): Space Grotesk (sans),
+// JetBrains Mono (código/datos), Instrument Serif itálica (acentos de marca)
+const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
   display: "swap",
-  variable: "--font-dm-sans",
-  weight: ["400", "500", "600", "700"],
+  variable: "--font-space-grotesk",
+})
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-jetbrains-mono",
+  weight: ["400", "500", "700"],
+})
+
+const instrumentSerif = Instrument_Serif({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-instrument-serif",
+  weight: "400",
+  style: "italic",
 })
 
 const siteDescription =
@@ -51,7 +67,11 @@ export default async function RootLayout({
   const lang = requestHeaders.get("x-locale") === "es" ? "es" : "en"
 
   return (
-    <html lang={lang} className={`${dmSans.variable} antialiased`} suppressHydrationWarning>
+    <html
+      lang={lang}
+      className={`${spaceGrotesk.variable} ${jetbrainsMono.variable} ${instrumentSerif.variable} antialiased`}
+      suppressHydrationWarning
+    >
       <body className="font-sans" suppressHydrationWarning>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false} disableTransitionOnChange>
           {children}

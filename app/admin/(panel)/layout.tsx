@@ -5,6 +5,7 @@ import { ThemeToggle } from "@/components/theme-toggle"
 import { getSessionUser } from "@/lib/auth"
 import { sql } from "@/lib/db"
 import { LogoutButton } from "@/components/admin/logout-button"
+import { BrandLogo } from "@/components/brand-logo"
 import { SidebarSections, type SidebarSection } from "@/components/admin/sidebar-sections"
 
 export const dynamic = "force-dynamic"
@@ -27,11 +28,11 @@ export default async function PanelLayout({ children }: { children: React.ReactN
       {/* Topbar */}
       <header className="sticky top-0 z-30 border-b border-border bg-background/85 backdrop-blur-md">
         <div className="flex h-14 items-center gap-4 px-5">
-          <Link
-            href="/"
-            className="bg-gradient-to-r from-primary to-accent bg-clip-text text-sm font-bold text-transparent"
-          >
-            christianfonseca.dev — admin
+          <Link href="/" className="flex items-center gap-2.5 transition-opacity hover:opacity-80">
+            <BrandLogo variant="lockup" className="h-5 w-auto" />
+            <span className="rounded-full border border-primary/40 bg-primary/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-primary">
+              admin
+            </span>
           </Link>
           <div className="ml-auto flex items-center gap-3">
             <ThemeToggle />

@@ -1,0 +1,20 @@
+/* Christian Fonseca - brand tokens v1.0 */
+:root{
+  --cf-void:#000000;
+  --cf-nebula:#1A0033;
+  --cf-purple:#A855F7;
+  --cf-magenta:#EC4899;
+  --cf-purple-deep:#6928B0;
+  --cf-lavender:#F0E9FB;
+  --cf-paper:#FDFCFF;
+  --cf-ink:#0B0B0B;
+  --cf-fog:#EEEEEE;
+  --cf-muted:#9A8FB0;
+  --cf-gradient:linear-gradient(135deg,var(--cf-purple),var(--cf-magenta));
+  --cf-gradient-v:linear-gradient(180deg,var(--cf-purple),var(--cf-magenta));
+  --cf-bg-radial:radial-gradient(circle at 50% 40%,var(--cf-nebula),var(--cf-void));
+  --cf-font-sans:'Space Grotesk',sans-serif;
+  --cf-font-mono:'JetBrains Mono',monospace;
+  --cf-font-serif:'Instrument Serif',serif;
+  --cf-radius-s:10px;--cf-radius-m:12px;--cf-radius-l:16px;
+}

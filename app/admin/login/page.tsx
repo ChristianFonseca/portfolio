@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { Eye, EyeOff } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { BrandLogo } from "@/components/brand-logo"
 
 export default function AdminLoginPage() {
   const [email, setEmail] = useState("")
@@ -37,10 +38,8 @@ export default function AdminLoginPage() {
   return (
     <main className="flex min-h-screen items-center justify-center px-6 text-foreground">
       <div className="w-full max-w-sm rounded-3xl border border-border bg-card/50 p-8 shadow-[0_30px_80px_-30px_rgba(0,0,0,0.8),0_0_60px_-30px_rgba(168,85,247,0.4)] backdrop-blur-md">
-        <h1 className="bg-gradient-to-r from-primary to-accent bg-clip-text text-xl font-bold text-transparent">
-          christianfonseca.dev
-        </h1>
-        <p className="mb-7 mt-0.5 text-sm text-muted-foreground">Panel de administración</p>
+        <BrandLogo variant="lockup" className="h-6 w-auto" />
+        <p className="mb-7 mt-2 text-sm text-muted-foreground">Panel de administración</p>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-1.5">

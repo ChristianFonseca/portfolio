@@ -7,6 +7,7 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Menu, X, Home, User, Briefcase, Code, Mail, Languages, BookOpen } from "lucide-react"
 import { ThemeToggle } from "@/components/theme-toggle"
+import { BrandLogo } from "@/components/brand-logo"
 import type { Dictionary, Locale } from "@/lib/i18n/dictionaries"
 
 export function Navigation({ locale, dict }: { locale: Locale; dict: Dictionary }) {
@@ -53,6 +54,15 @@ export function Navigation({ locale, dict }: { locale: Locale; dict: Dictionary 
 
   return (
     <>
+      {/* Mobile: símbolo de marca a la izquierda */}
+      <Link
+        href={locale === "es" ? "/es" : "/"}
+        aria-label="Christian Fonseca"
+        className="fixed top-6 left-6 z-[100] md:hidden"
+      >
+        <BrandLogo variant="simbolo" className="h-10 w-auto drop-shadow-[0_0_12px_rgba(168,85,247,0.4)]" />
+      </Link>
+
       {/* Mobile: toggles de tema/idioma + botón de menú */}
       <div className="fixed top-6 right-6 z-[100] flex items-center gap-2 md:hidden">
         <ThemeToggle />
@@ -78,6 +88,14 @@ export function Navigation({ locale, dict }: { locale: Locale; dict: Dictionary 
 
       <div className="hidden md:block fixed top-0 left-0 right-0 z-50 h-24">
         <div className="absolute inset-0 bg-background/40 [backdrop-filter:blur(8px)]" />
+        {/* Lockup de marca a la izquierda */}
+        <Link
+          href={locale === "es" ? "/es" : "/"}
+          aria-label="Christian Fonseca"
+          className="absolute left-6 top-1/2 z-10 -translate-y-1/2 transition-opacity hover:opacity-80"
+        >
+          <BrandLogo variant="lockup" className="h-7 w-auto" />
+        </Link>
         <nav className="relative flex items-center justify-center h-full">
           <div className="flex items-center space-x-6 px-6 py-3">
             {navItems.map((item) => (

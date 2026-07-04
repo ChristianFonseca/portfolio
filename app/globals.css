@@ -29,8 +29,8 @@
   /* Light muted background */
   --muted-foreground: oklch(0.4 0 0);
   /* Medium gray muted text */
-  --accent: oklch(0.7 0.12 320);
-  /* Magenta accent (#d946ef) */
+  --accent: oklch(0.656 0.212 354.3);
+  /* Brand magenta #EC4899 */
   --accent-foreground: oklch(0.05 0 0);
   /* Almost black text on accent */
   --destructive: oklch(0.577 0.245 27.325);
@@ -85,8 +85,8 @@
   /* Almost black popover */
   --popover-foreground: oklch(0.95 0 0);
   /* Off-white popover text */
-  --primary: oklch(0.65 0.18 300);
-  /* Brighter purple for dark mode (#8b5cf6) */
+  --primary: oklch(0.627 0.233 303.9);
+  /* Brand purple #A855F7 */
   --primary-foreground: oklch(0.05 0 0);
   /* Almost black text on primary */
   --secondary: oklch(0.55 0.2 280);
@@ -95,10 +95,10 @@
   /* Off-white text on secondary */
   --muted: oklch(0.1 0 0);
   /* Very dark muted background */
-  --muted-foreground: oklch(0.7 0 0);
-  /* Light gray muted text */
-  --accent: oklch(0.75 0.15 320);
-  /* Bright magenta accent (#e879f9) */
+  --muted-foreground: oklch(0.671 0.05 300.3);
+  /* Brand muted #9A8FB0 (gris lavanda) */
+  --accent: oklch(0.656 0.212 354.3);
+  /* Brand magenta #EC4899 */
   --accent-foreground: oklch(0.05 0 0);
   /* Almost black text on accent */
   --destructive: oklch(0.396 0.141 25.723);
@@ -107,8 +107,8 @@
   /* Very dark border */
   --input: oklch(0.08 0 0);
   /* Very dark input background */
-  --ring: oklch(0.65 0.18 300 / 0.4);
-  /* Bright purple ring */
+  --ring: oklch(0.627 0.233 303.9 / 0.4);
+  /* Brand purple ring */
   --chart-1: oklch(0.65 0.18 300);
   /* Bright purple for dark charts */
   --chart-2: oklch(0.55 0.2 280);
@@ -138,6 +138,10 @@
 }
 
 @theme inline {
+  /* Tipografías de marca — sans/mono/serif mapeadas a las variables de next/font */
+  --font-sans: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, "JetBrains Mono", monospace;
+  --font-serif: var(--font-instrument-serif), "STIX Two Text", Georgia, serif;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);

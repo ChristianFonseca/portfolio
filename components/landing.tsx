@@ -119,8 +119,21 @@ export function Landing({
         <section id="home" className="pt-32 pb-20 px-6">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16">
-              <h1 className="text-5xl md:text-7xl font-bold mb-15 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent floating-element">
-                {hero.data.name}
+              {/* Nombre en estilo lockup de marca: llaves en gradiente + serif itálica */}
+              <h1 className="text-5xl md:text-7xl mb-15 floating-element font-serif italic lowercase tracking-tight">
+                <span
+                  aria-hidden
+                  className="bg-gradient-to-b from-primary to-accent bg-clip-text text-transparent font-normal"
+                >
+                  {"{ "}
+                </span>
+                <span className="text-foreground">{hero.data.name}</span>
+                <span
+                  aria-hidden
+                  className="bg-gradient-to-b from-primary to-accent bg-clip-text text-transparent font-normal"
+                >
+                  {" }"}
+                </span>
               </h1>
 
               <div className="flex justify-center mb-15">
