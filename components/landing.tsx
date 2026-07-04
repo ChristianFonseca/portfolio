@@ -7,7 +7,7 @@ import { BubbleCard } from "@/components/bubble-card"
 import { ThemedBackground } from "@/components/themed-background"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { MapPin, Mail, Linkedin, Download, ExternalLink, Github, MessageCircle, Twitter, Instagram, Award } from "lucide-react"
+import { MapPin, Mail, Linkedin, Download, ExternalLink, Github, GraduationCap, MessageCircle, Twitter, Instagram, Award } from "lucide-react"
 import { useState } from "react"
 import { SuccessModal } from "@/components/success-modal"
 import { PageTransition } from "@/components/page-transition"
@@ -176,59 +176,30 @@ export function Landing({
                   {hero.data.location}
                 </Badge>
               </div>
-              <div className="flex flex-wrap justify-center gap-4 mb-8">
-                <Button
-                  variant="outline"
-                  size="lg"
-                 
-                  asChild
-                >
-                  <a href="https://linkedin.com/in/christian-fonseca-rodriguez" target="_blank" rel="noopener noreferrer">
-                    <Linkedin className="h-5 w-5 mr-2" />
-                    LinkedIn
-                  </a>
-                </Button>
-                <Button
-                  variant="outline"
-                  size="lg"
-                 
-                  asChild
-                >
-                  <a href="https://github.com/christianfonseca" target="_blank" rel="noopener noreferrer">
-                    <Github className="h-5 w-5 mr-2" />
-                    GitHub
-                  </a>
-                </Button>
-                <Button
-                  variant="outline"
-                  size="lg"
-                 
-                  asChild
-                >
+              {/* Redes: iconos grandes sin chrome de botón — las marcas ya son reconocibles */}
+              <div className="mb-8 flex flex-wrap items-center justify-center gap-7">
+                {[
+                  { icon: Linkedin, label: "LinkedIn", href: "https://linkedin.com/in/christian-fonseca-rodriguez" },
+                  { icon: Github, label: "GitHub", href: "https://github.com/christianfonseca" },
+                  {
+                    icon: GraduationCap,
+                    label: "Google Scholar",
+                    href: "https://scholar.google.com/citations?user=95NzphUAAAAJ&hl=es",
+                  },
+                  { icon: Award, label: "Credly", href: "https://www.credly.com/users/christian-fonseca-rodriguez" },
+                ].map((social) => (
                   <a
-                    href="https://scholar.google.com/citations?user=95NzphUAAAAJ&hl=es"
+                    key={social.label}
+                    href={social.href}
                     target="_blank"
                     rel="noopener noreferrer"
+                    aria-label={social.label}
+                    title={social.label}
+                    className="text-muted-foreground transition-all duration-200 hover:-translate-y-1 hover:text-primary hover:drop-shadow-[0_0_14px_rgba(168,85,247,0.65)]"
                   >
-                    <ExternalLink className="h-5 w-5 mr-2" />
-                    Scholar
+                    <social.icon className="h-8 w-8" strokeWidth={1.75} />
                   </a>
-                </Button>
-                <Button
-                  variant="outline"
-                  size="lg"
-                 
-                  asChild
-                >
-                  <a
-                    href="https://www.credly.com/users/christian-fonseca-rodriguez"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <Award className="h-5 w-5 mr-2" />
-                    Credly
-                  </a>
-                </Button>
+                ))}
               </div>
               <div className="flex flex-wrap justify-center gap-4">
                 <Button
