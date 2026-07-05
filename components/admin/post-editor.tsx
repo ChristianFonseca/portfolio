@@ -269,7 +269,7 @@ export function PostEditor({ id, initial }: { id: number; initial: PostEditorDat
           </div>
           <div>
             <label className="mb-1.5 block text-xs text-muted-foreground">Imagen de portada</label>
-            <ImageField value={fields.cover_image} onChange={(url) => set("cover_image", url)} />
+            <ImageField value={fields.cover_image} onChange={(url) => set("cover_image", url)} aspect={16 / 9} />
           </div>
           <div>
             <label className="mb-1.5 block text-xs text-muted-foreground">Tags</label>

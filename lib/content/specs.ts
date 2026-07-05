@@ -8,10 +8,12 @@ export type SubFieldSpec = {
   label: string
   type: "text" | "textarea" | "tags" | "bullets" | "checkbox" | "image"
   hint?: string
+  // Para type "image": proporción del editor de recorte (ancho/alto). Sin ella, sube sin recortar.
+  aspect?: number
 }
 
 export type FieldSpec =
-  | { key: string; label: string; type: "text" | "textarea" | "image"; hint?: string }
+  | { key: string; label: string; type: "text" | "textarea" | "image"; hint?: string; aspect?: number }
   | { key: string; label: string; type: "tags"; hint?: string }
   | { key: string; label: string; type: "items"; itemName: string; titleKey: string; fields: SubFieldSpec[] }
 
@@ -20,7 +22,7 @@ export const kindSpecs: Record<SectionKind, FieldSpec[]> = {
     { key: "name", label: "Nombre", type: "text" },
     { key: "tagline", label: "Tagline", type: "text" },
     { key: "location", label: "Ubicación", type: "text" },
-    { key: "photo", label: "Foto de perfil", type: "image" },
+    { key: "photo", label: "Foto de perfil", type: "image", aspect: 1 },
     {
       key: "certs",
       label: "Credenciales",
@@ -69,7 +71,7 @@ export const kindSpecs: Record<SectionKind, FieldSpec[]> = {
       fields: [
         { key: "title", label: "Título", type: "text" },
         { key: "description", label: "Descripción", type: "textarea" },
-        { key: "image", label: "Imagen", type: "image" },
+        { key: "image", label: "Imagen", type: "image", aspect: 16 / 9 },
         {
           key: "repoUrl",
           label: "Repositorio (GitHub)",

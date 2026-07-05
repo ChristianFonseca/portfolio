@@ -457,6 +457,7 @@ export function SectionEditor({
                               <ImageField
                                 value={String(item[sub.key] ?? "")}
                                 onChange={(url) => setItemField(field.key, i, sub.key, url)}
+                                aspect={sub.aspect}
                               />
                             ) : sub.type === "tags" ? (
                               <TagsInput
@@ -506,7 +507,11 @@ export function SectionEditor({
                     className={`${inputClass} resize-y`}
                   />
                 ) : field.type === "image" ? (
-                  <ImageField value={String(model[field.key] ?? "")} onChange={(url) => setField(field.key, url)} />
+                  <ImageField
+                    value={String(model[field.key] ?? "")}
+                    onChange={(url) => setField(field.key, url)}
+                    aspect={field.type === "image" ? field.aspect : undefined}
+                  />
                 ) : field.type === "tags" ? (
                   <TagsInput
                     value={(model[field.key] as string[]) ?? []}

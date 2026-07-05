@@ -112,7 +112,7 @@ export function ProjectsSection({ section, dict }: { section: SectionEntry<Proje
                 className="group flex flex-1 flex-col text-left"
               >
                 <div
-                  className={`relative w-full h-40 mb-4 rounded-lg overflow-hidden bg-gradient-to-br ${
+                  className={`relative w-full aspect-[16/9] mb-4 rounded-lg overflow-hidden bg-gradient-to-br ${
                     CARD_GRADIENTS[i % CARD_GRADIENTS.length]
                   }`}
                 >
