@@ -24,7 +24,8 @@ export const dictionaries = {
       languagesTitle: "Languages",
     },
     projects: {
-      public: "Public",
+      live: "Live",
+      openSource: "Open source",
       private: "Private",
       details: "View details",
       sourceCode: "Source code",
@@ -85,7 +86,8 @@ export const dictionaries = {
       languagesTitle: "Idiomas",
     },
     projects: {
-      public: "Público",
+      live: "En vivo",
+      openSource: "Código abierto",
       private: "Privado",
       details: "Ver detalles",
       sourceCode: "Código fuente",

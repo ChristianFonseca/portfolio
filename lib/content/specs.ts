@@ -6,9 +6,8 @@ import type { SectionKind } from "./schemas"
 export type SubFieldSpec = {
   key: string
   label: string
-  type: "text" | "textarea" | "tags" | "bullets" | "checkbox" | "image" | "select"
+  type: "text" | "textarea" | "tags" | "bullets" | "checkbox" | "image"
   hint?: string
-  options?: string[]
 }
 
 export type FieldSpec =
@@ -72,14 +71,17 @@ export const kindSpecs: Record<SectionKind, FieldSpec[]> = {
         { key: "description", label: "Descripción", type: "textarea" },
         { key: "image", label: "Imagen", type: "image" },
         {
-          key: "visibility",
-          label: "Visibilidad",
-          type: "select",
-          options: ["public", "private"],
-          hint: "public muestra el ícono de GitHub con el repo",
+          key: "repoUrl",
+          label: "Repositorio (GitHub)",
+          type: "text",
+          hint: "si lo llenas, muestra el chip 'Open source' con enlace al repo",
         },
-        { key: "repoUrl", label: "Repositorio (GitHub)", type: "text", hint: "solo si es público" },
-        { key: "liveUrl", label: "Sitio en vivo", type: "text", hint: "opcional, ej. https://furtale.pet" },
+        {
+          key: "liveUrl",
+          label: "Sitio en vivo",
+          type: "text",
+          hint: "si lo llenas, muestra el chip 'Live' (ej. https://furtale.pet). Sin sitio ni repo = 'Private'",
+        },
         { key: "tech", label: "Tecnologías", type: "tags", hint: "separadas por comas" },
         { key: "bullets", label: "Detalle (modal)", type: "bullets", hint: "uno por línea — se muestran al abrir el proyecto" },
         { key: "language", label: "Lenguaje principal", type: "text" },

@@ -5,13 +5,7 @@ import { Github, ExternalLink, Lock, Globe, ArrowUpRight } from "lucide-react"
 import { BubbleCard } from "@/components/bubble-card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-} from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
 import type { ProjectsData, SectionEntry } from "@/lib/content/schemas"
 import type { Dictionary } from "@/lib/i18n/dictionaries"
 
@@ -26,29 +20,74 @@ const CARD_GRADIENTS = [
   "from-red-500/20 to-pink-500/20",
 ]
 
-function VisibilityBadge({ project, dict }: { project: Project; dict: Dictionary }) {
-  const isPublic = project.visibility !== "private"
+// Chips derivados de los datos: Live si hay sitio, Open source si hay repo,
+// Private si no hay ninguno. Los dos primeros son enlaces; Private es solo estado.
+// Ambos ejes son independientes (un proyecto puede ser Live + Open source).
+function StatusChips({
+  project,
+  dict,
+  asLinks = true,
+}: {
+  project: Project
+  dict: Dictionary
+  asLinks?: boolean
+}) {
+  const chip =
+    "inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide"
+  const liveCls = "border-emerald-500/40 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+  const repoCls = "border-primary/40 bg-primary/10 text-primary"
+  const privateCls = "border-border bg-muted/40 text-muted-foreground"
+
+  if (!project.liveUrl && !project.repoUrl) {
+    return (
+      <span className={`${chip} ${privateCls}`}>
+        <Lock className="h-3 w-3" />
+        {dict.projects.private}
+      </span>
+    )
+  }
+
   return (
-    <span
-      className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${
-        isPublic
-          ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
-          : "border-border bg-muted/40 text-muted-foreground"
-      }`}
-    >
-      {isPublic ? <Globe className="h-3 w-3" /> : <Lock className="h-3 w-3" />}
-      {isPublic ? dict.projects.public : dict.projects.private}
-    </span>
+    <>
+      {project.liveUrl &&
+        (asLinks ? (
+          <a
+            href={project.liveUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`${chip} ${liveCls} transition-transform hover:-translate-y-0.5`}
+          >
+            <Globe className="h-3 w-3" />
+            {dict.projects.live}
+          </a>
+        ) : (
+          <span className={`${chip} ${liveCls}`}>
+            <Globe className="h-3 w-3" />
+            {dict.projects.live}
+          </span>
+        ))}
+      {project.repoUrl &&
+        (asLinks ? (
+          <a
+            href={project.repoUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`${chip} ${repoCls} transition-transform hover:-translate-y-0.5`}
+          >
+            <Github className="h-3 w-3" />
+            {dict.projects.openSource}
+          </a>
+        ) : (
+          <span className={`${chip} ${repoCls}`}>
+            <Github className="h-3 w-3" />
+            {dict.projects.openSource}
+          </span>
+        ))}
+    </>
   )
 }
 
-export function ProjectsSection({
-  section,
-  dict,
-}: {
-  section: SectionEntry<ProjectsData>
-  dict: Dictionary
-}) {
+export function ProjectsSection({ section, dict }: { section: SectionEntry<ProjectsData>; dict: Dictionary }) {
   const [selected, setSelected] = useState<Project | null>(null)
 
   return (
@@ -60,7 +99,12 @@ export function ProjectsSection({
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {section.data.items.map((project, i) => (
-            <BubbleCard key={`${project.title}-${i}`} className="glow-effect flex flex-col">
+            <BubbleCard key={`${project.title}-${i}`} className="glow-effect relative flex flex-col">
+              {/* Chips de estado: siblings del botón (no anidados) para poder ser enlaces */}
+              <div className="absolute right-3 top-3 z-10 flex flex-col items-end gap-1.5">
+                <StatusChips project={project} dict={dict} />
+              </div>
+
               <button
                 type="button"
                 onClick={() => setSelected(project)}
@@ -80,9 +124,6 @@ export function ProjectsSection({
                       {project.title.charAt(0)}
                     </span>
                   )}
-                  <span className="absolute right-2 top-2">
-                    <VisibilityBadge project={project} dict={dict} />
-                  </span>
                 </div>
                 <div className="flex items-start justify-between gap-2 mb-2">
                   <h3 className="text-lg font-semibold text-primary group-hover:underline underline-offset-4">
@@ -111,35 +152,6 @@ export function ProjectsSection({
                   {project.language}
                 </div>
               </button>
-
-              {/* Enlaces directos en la card cuando existen */}
-              {(project.repoUrl || project.liveUrl) && (
-                <div className="mt-4 flex items-center gap-3 border-t border-border/60 pt-3">
-                  {project.repoUrl && (
-                    <a
-                      href={project.repoUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label={`${dict.projects.sourceCode}: ${project.title}`}
-                      className="inline-flex items-center gap-1.5 text-xs text-muted-foreground transition-colors hover:text-primary"
-                    >
-                      <Github className="h-4 w-4" />
-                      {dict.projects.sourceCode}
-                    </a>
-                  )}
-                  {project.liveUrl && (
-                    <a
-                      href={project.liveUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 text-xs text-muted-foreground transition-colors hover:text-primary"
-                    >
-                      <ExternalLink className="h-4 w-4" />
-                      {dict.projects.visitSite}
-                    </a>
-                  )}
-                </div>
-              )}
             </BubbleCard>
           ))}
         </div>
@@ -150,8 +162,8 @@ export function ProjectsSection({
           {selected && (
             <>
               <DialogHeader>
-                <div className="mb-1 flex items-center gap-3">
-                  <VisibilityBadge project={selected} dict={dict} />
+                <div className="mb-1 flex flex-wrap items-center gap-2">
+                  <StatusChips project={selected} dict={dict} asLinks={false} />
                   <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
                     <span
                       className="h-2.5 w-2.5 rounded-full"
