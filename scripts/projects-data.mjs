@@ -1,7 +1,5 @@
 // Datos de los 4 proyectos reales (bilingüe). Fuente única compartida por
 // scripts/seed-projects.mjs (DB) y el actualizador de static-data.json.
-const TS = { language: "TypeScript", languageColor: "#3178c6" }
-const PY = { language: "Python", languageColor: "#3776ab" }
 
 export const projectsEn = [
   {
@@ -9,7 +7,6 @@ export const projectsEn = [
     description:
       "A full-stack platform for managing pet health records. Owners keep their pets' profiles, photos and veterinary documents in one place, share them read-only with a vet, and query an AI assistant grounded in each pet's real medical history.",
     image: "",
-    ...TS,
     repoUrl: "",
     liveUrl: "https://furtale.pet",
     tech: ["TypeScript", "Next.js", "React", "Python", "FastAPI", "PostgreSQL", "pgvector", "Anthropic Claude", "Google Gemini", "S3 / MinIO", "Docker"],
@@ -26,7 +23,6 @@ export const projectsEn = [
     description:
       "A multi-country financial reporting and consolidation platform for a corporate finance office (CFO). Local entities submit standardized P&L data through a multi-tier approval workflow that consolidates into group-level reports with derived metrics like EBITDA and budget-vs-actuals.",
     image: "",
-    ...TS,
     repoUrl: "",
     liveUrl: "",
     tech: ["TypeScript", "Next.js", "React", "Node.js", "Prisma", "PostgreSQL", "Auth.js", "Azure AD SSO", "Keycloak", "Material UI", "Zod", "ExcelJS", "PDFKit", "Docker"],
@@ -43,7 +39,6 @@ export const projectsEn = [
     description:
       "An AI tool that turns videos into structured documentation. Upload an mp4 or paste a YouTube link and Gemini produces a document with time-stamped sections, extracted screenshots and a mindmap, exportable to Word.",
     image: "",
-    ...TS,
     repoUrl: "",
     liveUrl: "",
     tech: ["Next.js", "React", "TypeScript", "Tailwind CSS", "FastAPI", "Python", "PostgreSQL", "Google Gemini", "YouTube Data API", "OpenCV", "python-docx", "Stripe", "Docker"],
@@ -60,7 +55,6 @@ export const projectsEn = [
     description:
       "A visual drag-and-drop orchestrator for multi-agent LLM debate. Wire a question into a graph of model nodes — each an AI provider — whose answers flow into orchestrator nodes that debate and synthesize them, converging on a single best answer: the Mixture-of-Agents pattern as a visual graph.",
     image: "",
-    ...PY,
     repoUrl: "",
     liveUrl: "",
     tech: ["Python", "TypeScript", "FastAPI", "Next.js", "React", "React Flow", "SQLAlchemy", "PostgreSQL", "Anthropic", "OpenAI", "Google Gemini", "xAI Grok", "SSE", "Tailwind CSS"],
@@ -80,7 +74,6 @@ export const projectsEs = [
     description:
       "Una plataforma full-stack para gestionar los registros de salud de las mascotas. Los dueños guardan los perfiles, fotos y documentos veterinarios de sus mascotas en un solo lugar, los comparten en modo solo lectura con un veterinario y consultan a un asistente de IA basado en el historial médico real de cada mascota.",
     image: "",
-    ...TS,
     repoUrl: "",
     liveUrl: "https://furtale.pet",
     tech: ["TypeScript", "Next.js", "React", "Python", "FastAPI", "PostgreSQL", "pgvector", "Anthropic Claude", "Google Gemini", "S3 / MinIO", "Docker"],
@@ -97,7 +90,6 @@ export const projectsEs = [
     description:
       "Una plataforma de reporte y consolidación financiera multipaís para una oficina financiera corporativa (CFO). Las entidades locales cargan datos de P&L estandarizados a través de un flujo de aprobación de varios niveles que consolida en reportes a nivel de grupo con métricas derivadas como EBITDA y presupuesto vs. real.",
     image: "",
-    ...TS,
     repoUrl: "",
     liveUrl: "",
     tech: ["TypeScript", "Next.js", "React", "Node.js", "Prisma", "PostgreSQL", "Auth.js", "Azure AD SSO", "Keycloak", "Material UI", "Zod", "ExcelJS", "PDFKit", "Docker"],
@@ -114,7 +106,6 @@ export const projectsEs = [
     description:
       "Una herramienta de IA que convierte videos en documentación estructurada. Sube un mp4 o pega un enlace de YouTube y Gemini produce un documento con secciones marcadas por tiempo, capturas extraídas y un mapa mental, exportable a Word.",
     image: "",
-    ...TS,
     repoUrl: "",
     liveUrl: "",
     tech: ["Next.js", "React", "TypeScript", "Tailwind CSS", "FastAPI", "Python", "PostgreSQL", "Google Gemini", "YouTube Data API", "OpenCV", "python-docx", "Stripe", "Docker"],
@@ -131,7 +122,6 @@ export const projectsEs = [
     description:
       "Un orquestador visual de arrastrar y soltar para el debate multi-agente entre LLMs. Conectas una pregunta a un grafo de nodos de modelo —cada uno un proveedor de IA— cuyas respuestas fluyen hacia nodos orquestadores que las debaten y sintetizan, convergiendo en una única mejor respuesta: el patrón Mixture-of-Agents como un grafo visual.",
     image: "",
-    ...PY,
     repoUrl: "",
     liveUrl: "",
     tech: ["Python", "TypeScript", "FastAPI", "Next.js", "React", "React Flow", "SQLAlchemy", "PostgreSQL", "Anthropic", "OpenAI", "Google Gemini", "xAI Grok", "SSE", "Tailwind CSS"],

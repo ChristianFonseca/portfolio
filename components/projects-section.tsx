@@ -132,7 +132,7 @@ export function ProjectsSection({ section, dict }: { section: SectionEntry<Proje
                   <ArrowUpRight className="h-4 w-4 shrink-0 text-muted-foreground/50 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-primary" />
                 </div>
                 <p className="text-sm text-muted-foreground mb-4 line-clamp-3">{project.description}</p>
-                <div className="flex flex-wrap gap-1 mb-4">
+                <div className="mt-auto flex flex-wrap gap-1">
                   {project.tech.slice(0, 4).map((tech) => (
                     <Badge key={tech} variant="secondary" className="text-xs">
                       {tech}
@@ -143,13 +143,6 @@ export function ProjectsSection({ section, dict }: { section: SectionEntry<Proje
                       +{project.tech.length - 4}
                     </Badge>
                   )}
-                </div>
-                <div className="mt-auto flex items-center text-xs text-muted-foreground">
-                  <span
-                    className="w-3 h-3 rounded-full mr-2"
-                    style={{ backgroundColor: project.languageColor || "#a855f7" }}
-                  ></span>
-                  {project.language}
                 </div>
               </button>
             </BubbleCard>
@@ -164,13 +157,6 @@ export function ProjectsSection({ section, dict }: { section: SectionEntry<Proje
               <DialogHeader>
                 <div className="mb-1 flex flex-wrap items-center gap-2">
                   <StatusChips project={selected} dict={dict} asLinks={false} />
-                  <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                    <span
-                      className="h-2.5 w-2.5 rounded-full"
-                      style={{ backgroundColor: selected.languageColor || "#a855f7" }}
-                    />
-                    {selected.language}
-                  </span>
                 </div>
                 <DialogTitle className="text-2xl bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
                   {selected.title}

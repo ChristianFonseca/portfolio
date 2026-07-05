@@ -33,8 +33,6 @@ export const projectsSchema = z.object({
         description: z.string().max(600),
         image: z.string().max(300),
         tech: z.array(z.string().min(1).max(60)).max(20),
-        language: z.string().max(60),
-        languageColor: z.string().max(20),
         // Chips derivados: Live si hay liveUrl, Open source si hay repoUrl, Private si ninguno
         repoUrl: z.string().max(300).default(""),
         liveUrl: z.string().max(300).default(""),
