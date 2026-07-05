@@ -453,6 +453,18 @@ export function SectionEditor({
                                 />
                                 <span className="text-sm text-foreground">Sí</span>
                               </label>
+                            ) : sub.type === "select" ? (
+                              <select
+                                value={String(item[sub.key] || sub.options?.[0] || "")}
+                                onChange={(e) => setItemField(field.key, i, sub.key, e.target.value)}
+                                className={inputClass}
+                              >
+                                {(sub.options ?? []).map((opt) => (
+                                  <option key={opt} value={opt}>
+                                    {opt}
+                                  </option>
+                                ))}
+                              </select>
                             ) : sub.type === "image" ? (
                               <ImageField
                                 value={String(item[sub.key] ?? "")}

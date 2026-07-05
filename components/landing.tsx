@@ -4,6 +4,7 @@ import type React from "react"
 
 import { Navigation } from "@/components/navigation"
 import { BubbleCard } from "@/components/bubble-card"
+import { ProjectsSection } from "@/components/projects-section"
 import { ThemedBackground } from "@/components/themed-background"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -31,14 +32,6 @@ const SKILL_BADGE_CLASSES: Record<string, string> = {
   rose: "bg-rose-500/10 text-rose-700 dark:text-rose-300 border-rose-500/30 dark:border-rose-500/20 hover:bg-rose-500/20 hover:border-rose-500/60",
 }
 
-const PROJECT_GRADIENTS = [
-  "from-blue-500/20 to-purple-500/20",
-  "from-yellow-500/20 to-orange-500/20",
-  "from-green-500/20 to-teal-500/20",
-  "from-purple-500/20 to-pink-500/20",
-  "from-orange-500/20 to-red-500/20",
-  "from-red-500/20 to-pink-500/20",
-]
 
 export function Landing({
   content,
@@ -283,46 +276,8 @@ export function Landing({
         </section>
       )}
 
-      {/* Public Projects Section */}
-      {publicProjects.visible && (
-        <section id="public-projects" className="py-20 px-6">
-          <div className="max-w-6xl mx-auto">
-            <h2 className="text-3xl md:text-4xl font-bold text-center mb-16 floating-element bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-              {publicProjects.title}
-            </h2>
-
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {publicProjects.data.items.map((project, i) => (
-                <BubbleCard key={`${project.title}-${i}`} className="glow-effect">
-                  <div
-                    className={`w-full h-48 mb-4 rounded-lg overflow-hidden bg-gradient-to-br ${PROJECT_GRADIENTS[i % PROJECT_GRADIENTS.length]}`}
-                  >
-                    <img src={project.image} alt={project.title} className="w-full h-full object-cover" />
-                  </div>
-                  <div className="flex items-start justify-between mb-4">
-                    <h3 className="text-lg font-semibold text-primary">{project.title}</h3>
-                  </div>
-                  <p className="text-sm text-muted-foreground mb-4">{project.description}</p>
-                  <div className="flex flex-wrap gap-1 mb-4">
-                    {project.tech.map((tech) => (
-                      <Badge key={tech} variant="secondary" className="text-xs">
-                        {tech}
-                      </Badge>
-                    ))}
-                  </div>
-                  <div className="flex items-center text-xs text-muted-foreground">
-                    <span
-                      className="w-3 h-3 rounded-full mr-2"
-                      style={{ backgroundColor: project.languageColor || "#a855f7" }}
-                    ></span>
-                    {project.language}
-                  </div>
-                </BubbleCard>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
+      {/* Projects Section */}
+      {publicProjects.visible && <ProjectsSection section={publicProjects} dict={dict} />}
 
       {/* Research Projects Section */}
       {researchProjects.visible && (

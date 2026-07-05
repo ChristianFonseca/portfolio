@@ -35,6 +35,11 @@ export const projectsSchema = z.object({
         tech: z.array(z.string().min(1).max(60)).max(20),
         language: z.string().max(60),
         languageColor: z.string().max(20),
+        visibility: z.enum(["public", "private"]).default("public"),
+        repoUrl: z.string().max(300).default(""),
+        liveUrl: z.string().max(300).default(""),
+        // Detalle extendido para el modal "más información"
+        bullets: z.array(z.string().min(1).max(400)).max(12).default([]),
       }),
     )
     .max(24),

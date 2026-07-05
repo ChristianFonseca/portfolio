@@ -23,6 +23,15 @@ export const dictionaries = {
       connect: "Connect",
       languagesTitle: "Languages",
     },
+    projects: {
+      public: "Public",
+      private: "Private",
+      details: "View details",
+      sourceCode: "Source code",
+      visitSite: "Visit site",
+      highlights: "Highlights",
+      stack: "Tech stack",
+    },
     contact: {
       heading: "Ready to collaborate?",
       subheading:
@@ -74,6 +83,15 @@ export const dictionaries = {
       heading: "Perfil Profesional",
       connect: "Conecta",
       languagesTitle: "Idiomas",
+    },
+    projects: {
+      public: "Público",
+      private: "Privado",
+      details: "Ver detalles",
+      sourceCode: "Código fuente",
+      visitSite: "Visitar sitio",
+      highlights: "Destacados",
+      stack: "Tecnologías",
     },
     contact: {
       heading: "¿Listo para colaborar?",
