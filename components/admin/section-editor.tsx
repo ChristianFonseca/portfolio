@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { saveSection } from "@/app/admin/actions"
 import { TagsInput } from "@/components/admin/tags-input"
 import { ImageField } from "@/components/admin/image-field"
+import { GalleryField } from "@/components/admin/gallery-field"
 import type { FieldSpec, SubFieldSpec } from "@/lib/content/specs"
 import type { SectionKind } from "@/lib/content/schemas"
 import type { Locale } from "@/lib/i18n/dictionaries"
@@ -27,7 +28,7 @@ function toFormModel(spec: FieldSpec[], data: Record<string, unknown>): FormMode
         const formItem: FormItem = {}
         for (const sub of field.fields) {
           const v = item[sub.key]
-          if (sub.type === "tags") formItem[sub.key] = Array.isArray(v) ? ([...v] as string[]) : []
+          if (sub.type === "tags" || sub.type === "gallery") formItem[sub.key] = Array.isArray(v) ? ([...v] as string[]) : []
           else if (sub.type === "bullets") formItem[sub.key] = Array.isArray(v) ? (v as string[]).join("\n") : ""
           else if (sub.type === "checkbox") formItem[sub.key] = Boolean(v)
           else formItem[sub.key] = typeof v === "string" ? v : ""
@@ -54,7 +55,7 @@ function fromFormModel(spec: FieldSpec[], model: FormModel): Record<string, unkn
         const out: Record<string, unknown> = {}
         for (const sub of field.fields) {
           const v = item[sub.key]
-          if (sub.type === "tags") out[sub.key] = Array.isArray(v) ? v : []
+          if (sub.type === "tags" || sub.type === "gallery") out[sub.key] = Array.isArray(v) ? v : []
           else if (sub.type === "bullets") out[sub.key] = splitLines(String(v ?? ""))
           else if (sub.type === "checkbox") out[sub.key] = Boolean(v)
           else out[sub.key] = String(v ?? "")
@@ -72,7 +73,8 @@ function fromFormModel(spec: FieldSpec[], model: FormModel): Record<string, unkn
 
 function emptyItem(fields: SubFieldSpec[]): FormItem {
   const item: FormItem = {}
-  for (const sub of fields) item[sub.key] = sub.type === "checkbox" ? false : sub.type === "tags" ? [] : ""
+  for (const sub of fields)
+    item[sub.key] = sub.type === "checkbox" ? false : sub.type === "tags" || sub.type === "gallery" ? [] : ""
   return item
 }
 
@@ -434,7 +436,7 @@ export function SectionEditor({
                           <div
                             key={sub.key}
                             className={
-                              sub.type === "textarea" || sub.type === "bullets" || sub.type === "tags" || sub.type === "image"
+                              sub.type === "textarea" || sub.type === "bullets" || sub.type === "tags" || sub.type === "image" || sub.type === "gallery"
                                 ? "md:col-span-2"
                                 : ""
                             }
@@ -453,6 +455,12 @@ export function SectionEditor({
                                 />
                                 <span className="text-sm text-foreground">Sí</span>
                               </label>
+                            ) : sub.type === "gallery" ? (
+                              <GalleryField
+                                value={(item[sub.key] as string[]) ?? []}
+                                onChange={(urls) => setItemField(field.key, i, sub.key, urls)}
+                                aspect={sub.aspect}
+                              />
                             ) : sub.type === "image" ? (
                               <ImageField
                                 value={String(item[sub.key] ?? "")}

@@ -1,15 +1,22 @@
 "use client"
 
 import { useState } from "react"
-import { Github, ExternalLink, Lock, Globe, ArrowUpRight } from "lucide-react"
+import { Github, ExternalLink, Lock, Globe, ArrowUpRight, ImageIcon } from "lucide-react"
 import { BubbleCard } from "@/components/bubble-card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
+import { ProjectCarousel } from "@/components/project-carousel"
 import type { ProjectsData, SectionEntry } from "@/lib/content/schemas"
 import type { Dictionary } from "@/lib/i18n/dictionaries"
 
 type Project = ProjectsData["items"][number]
+
+// Fotos del proyecto: usa el carrusel (images) y cae al legacy `image` si existe
+function galleryOf(project: Project): string[] {
+  if (project.images && project.images.length > 0) return project.images
+  return project.image ? [project.image] : []
+}
 
 const CARD_GRADIENTS = [
   "from-blue-500/20 to-purple-500/20",
@@ -116,9 +123,21 @@ export function ProjectsSection({ section, dict }: { section: SectionEntry<Proje
                     CARD_GRADIENTS[i % CARD_GRADIENTS.length]
                   }`}
                 >
-                  {project.image ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img src={project.image} alt={project.title} className="w-full h-full object-cover" />
+                  {galleryOf(project).length > 0 ? (
+                    <>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={galleryOf(project)[0]}
+                        alt={project.title}
+                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                      />
+                      {galleryOf(project).length > 1 && (
+                        <span className="absolute bottom-2 left-2 inline-flex items-center gap-1 rounded-full bg-black/60 px-2 py-0.5 text-[10px] font-semibold text-white backdrop-blur-sm">
+                          <ImageIcon className="h-3 w-3" />
+                          {galleryOf(project).length}
+                        </span>
+                      )}
+                    </>
                   ) : (
                     <span className="absolute inset-0 flex items-center justify-center font-serif text-5xl italic text-foreground/15">
                       {project.title.charAt(0)}
@@ -165,6 +184,12 @@ export function ProjectsSection({ section, dict }: { section: SectionEntry<Proje
                   {selected.description}
                 </DialogDescription>
               </DialogHeader>
+
+              {galleryOf(selected).length > 0 && (
+                <div className="mt-2">
+                  <ProjectCarousel images={galleryOf(selected)} title={selected.title} />
+                </div>
+              )}
 
               {selected.bullets.length > 0 && (
                 <div className="mt-2">
