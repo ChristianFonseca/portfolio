@@ -10,11 +10,14 @@ export type SubFieldSpec = {
   hint?: string
   // Para type "image"/"gallery": proporción del editor de recorte (ancho/alto).
   aspect?: number
+  // Campo igual en ambos idiomas (imágenes, URLs, tecnologías): editarlo actualiza
+  // EN y ES a la vez y no exige traducción. Los tipos image/gallery ya son compartidos.
+  shared?: boolean
 }
 
 export type FieldSpec =
-  | { key: string; label: string; type: "text" | "textarea" | "image"; hint?: string; aspect?: number }
-  | { key: string; label: string; type: "tags"; hint?: string }
+  | { key: string; label: string; type: "text" | "textarea" | "image"; hint?: string; aspect?: number; shared?: boolean }
+  | { key: string; label: string; type: "tags"; hint?: string; shared?: boolean }
   | { key: string; label: string; type: "items"; itemName: string; titleKey: string; fields: SubFieldSpec[] }
 
 export const kindSpecs: Record<SectionKind, FieldSpec[]> = {
@@ -76,15 +79,23 @@ export const kindSpecs: Record<SectionKind, FieldSpec[]> = {
           key: "repoUrl",
           label: "Repositorio (GitHub)",
           type: "text",
+          shared: true,
           hint: "si lo llenas, muestra el chip 'Open source' con enlace al repo",
         },
         {
           key: "liveUrl",
           label: "Sitio en vivo",
           type: "text",
+          shared: true,
           hint: "si lo llenas, muestra el chip 'Live' (ej. https://furtale.pet). Sin sitio ni repo = 'Private'",
         },
-        { key: "tech", label: "Tecnologías", type: "tags", hint: "separadas por comas — la primera es la principal" },
+        {
+          key: "tech",
+          label: "Tecnologías",
+          type: "tags",
+          shared: true,
+          hint: "separadas por comas — la primera es la principal",
+        },
         { key: "bullets", label: "Detalle (modal)", type: "bullets", hint: "uno por línea — se muestran al abrir el proyecto" },
       ],
     },

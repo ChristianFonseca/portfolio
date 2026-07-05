@@ -78,6 +78,30 @@ function emptyItem(fields: SubFieldSpec[]): FormItem {
   return item
 }
 
+const isSharedSubType = (sub: SubFieldSpec) => sub.type === "image" || sub.type === "gallery" || sub.shared === true
+
+// Copia los campos compartidos (imágenes, URLs, tecnologías) del idioma fuente al
+// destino, para que ambos idiomas queden consistentes (al cargar y tras traducir).
+function syncSharedFields(spec: FieldSpec[], source: FormModel, target: FormModel): FormModel {
+  const out: FormModel = { ...target }
+  for (const field of spec) {
+    if (field.type === "items") {
+      const srcItems = (source[field.key] as FormItem[]) ?? []
+      const tgtItems = (out[field.key] as FormItem[]) ?? []
+      out[field.key] = tgtItems.map((item, i) => {
+        const srcItem = srcItems[i]
+        if (!srcItem) return item
+        const copy = { ...item }
+        for (const sub of field.fields) if (isSharedSubType(sub)) copy[sub.key] = srcItem[sub.key]
+        return copy
+      })
+    } else if (field.type === "image" || ("shared" in field && field.shared)) {
+      out[field.key] = source[field.key]
+    }
+  }
+  return out
+}
+
 const inputClass =
   "w-full px-3 py-2 rounded-lg bg-background/50 border border-border text-sm text-foreground placeholder:text-muted-foreground/60 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
 
@@ -98,10 +122,11 @@ export function SectionEditor({
   spec: FieldSpec[]
   initialData: { en?: Record<string, unknown>; es?: Record<string, unknown> }
 }) {
-  const [models, setModels] = useState<Record<Locale, FormModel>>(() => ({
-    en: toFormModel(spec, initialData.en ?? {}),
-    es: toFormModel(spec, initialData.es ?? initialData.en ?? {}),
-  }))
+  const [models, setModels] = useState<Record<Locale, FormModel>>(() => {
+    const en = toFormModel(spec, initialData.en ?? {})
+    const es = toFormModel(spec, initialData.es ?? initialData.en ?? {})
+    return { en, es: syncSharedFields(spec, en, es) }
+  })
   const [titles, setTitles] = useState<Record<Locale, string>>({ en: title, es: titleEs || title })
   const [active, setActive] = useState<Locale>("en")
   // stale[L] = el contenido de L quedó desactualizado respecto al otro idioma
@@ -138,18 +163,46 @@ export function SectionEditor({
     else touch()
   }
 
+  // Campos iguales en ambos idiomas: imágenes/galería (por tipo) o marcados shared
+  const isSharedField = (key: string) => {
+    const f = spec.find((x) => x.key === key)
+    return !!f && ((f.type === "image") || ("shared" in f && f.shared === true))
+  }
+  const isSharedSub = (fieldKey: string, subKey: string) => {
+    const f = spec.find((x) => x.key === fieldKey)
+    if (!f || f.type !== "items") return false
+    const sub = f.fields.find((s) => s.key === subKey)
+    return !!sub && (sub.type === "image" || sub.type === "gallery" || sub.shared === true)
+  }
+  // Editar un campo compartido no desactualiza el otro idioma (solo marca dirty)
+  const touchShared = () => {
+    setDirty(true)
+    setSaved(false)
+  }
+
   const model = models[active]
   const setField = (key: string, value: FormValue) => {
-    setModels((prev) => ({ ...prev, [active]: { ...prev[active], [key]: value } }))
-    handleTouch()
+    const shared = isSharedField(key)
+    setModels((prev) =>
+      shared
+        ? { en: { ...prev.en, [key]: value }, es: { ...prev.es, [key]: value } }
+        : { ...prev, [active]: { ...prev[active], [key]: value } },
+    )
+    shared ? touchShared() : handleTouch()
   }
   const setItemField = (key: string, index: number, subKey: string, value: string | boolean | string[]) => {
+    const shared = isSharedSub(key, subKey)
     setModels((prev) => {
-      const items = [...(prev[active][key] as FormItem[])]
-      items[index] = { ...items[index], [subKey]: value }
-      return { ...prev, [active]: { ...prev[active], [key]: items } }
+      const applyTo = (loc: Locale) => {
+        const items = [...((prev[loc][key] as FormItem[]) ?? [])]
+        if (!items[index]) return prev[loc] // el otro idioma aún no tiene ese ítem
+        items[index] = { ...items[index], [subKey]: value }
+        return { ...prev[loc], [key]: items }
+      }
+      if (shared) return { en: applyTo("en"), es: applyTo("es") }
+      return { ...prev, [active]: applyTo(active) }
     })
-    handleTouch()
+    shared ? touchShared() : handleTouch()
   }
   const mutateItems = (key: string, fn: (items: FormItem[]) => FormItem[]) => {
     setModels((prev) => ({ ...prev, [active]: { ...prev[active], [key]: fn([...(prev[active][key] as FormItem[])]) } }))
@@ -167,7 +220,8 @@ export function SectionEditor({
       })
       const payload = await res.json().catch(() => ({}))
       if (res.ok && payload.data) {
-        setModels((prev) => ({ ...prev, [other]: toFormModel(spec, payload.data) }))
+        // Los campos compartidos quedan iguales al idioma fuente, no a lo que devuelva la IA
+        setModels((prev) => ({ ...prev, [other]: syncSharedFields(spec, prev[active], toFormModel(spec, payload.data)) }))
         setStale((prev) => ({ ...prev, [other]: false }))
         setDirty(true)
         setToast({
@@ -443,6 +497,11 @@ export function SectionEditor({
                           >
                             <label className="mb-1.5 block text-xs text-muted-foreground">
                               {sub.label}
+                              {(sub.type === "image" || sub.type === "gallery" || sub.shared) && (
+                                <span className="ml-1.5 rounded border border-border px-1 py-0.5 text-[9px] uppercase tracking-wide text-muted-foreground/70">
+                                  EN/ES
+                                </span>
+                              )}
                               {sub.hint && <span className="opacity-60"> — {sub.hint}</span>}
                             </label>
                             {sub.type === "checkbox" ? (
@@ -505,6 +564,11 @@ export function SectionEditor({
               <div>
                 <label className="mb-2 block text-[11px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
                   {field.label}
+                  {isSharedField(field.key) && (
+                    <span className="ml-1.5 rounded border border-border px-1 py-0.5 text-[9px] normal-case text-muted-foreground/70">
+                      EN/ES
+                    </span>
+                  )}
                   {"hint" in field && field.hint && <span className="opacity-60 normal-case"> — {field.hint}</span>}
                 </label>
                 {field.type === "textarea" ? (
