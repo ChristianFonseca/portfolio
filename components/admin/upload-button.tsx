@@ -2,9 +2,9 @@
 
 import { useCallback, useRef, useState } from "react"
 import Cropper from "react-easy-crop"
-import { Upload, Loader2, ZoomIn } from "lucide-react"
+import { Upload, Loader2, ZoomIn, ZoomOut } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
 import { getCroppedBlob, type PixelCrop } from "@/lib/crop-image"
 
 // Botón de subida reutilizable. Si se pasa `aspect`, abre el editor de recorte
@@ -103,14 +103,19 @@ export function UploadButton({
       />
 
       <Dialog open={cropSrc !== null} onOpenChange={(open) => !open && cancelCrop()}>
-        <DialogContent className="max-w-xl">
+        <DialogContent className="max-w-3xl">
           <DialogHeader>
             <DialogTitle>Ajustar imagen</DialogTitle>
+            <DialogDescription>
+              Arrastra para reposicionar y usa el zoom. El recuadro es exactamente lo que se verá en la página.
+            </DialogDescription>
           </DialogHeader>
-          <p className="text-xs text-muted-foreground">
-            Arrastra para reposicionar y usa el zoom. El recorte es exactamente lo que se verá en la página.
-          </p>
-          <div className="relative mt-2 h-72 w-full overflow-hidden rounded-xl bg-black/60">
+
+          {/* El área usa la proporción de salida: la imagen llena el recuadro sin bordes raros */}
+          <div
+            className="relative mx-auto w-full overflow-hidden rounded-xl border border-border bg-black/70"
+            style={{ aspectRatio: String(aspect ?? 1), maxHeight: "60vh" }}
+          >
             {cropSrc && (
               <Cropper
                 image={cropSrc}
@@ -120,12 +125,21 @@ export function UploadButton({
                 onCropChange={setCrop}
                 onZoomChange={setZoom}
                 onCropComplete={onCropComplete}
-                showGrid={false}
+                showGrid
+                objectFit="cover"
               />
             )}
           </div>
-          <div className="mt-3 flex items-center gap-3">
-            <ZoomIn className="h-4 w-4 text-muted-foreground" />
+
+          <div className="mt-5 flex items-center gap-3">
+            <button
+              type="button"
+              aria-label="Alejar"
+              onClick={() => setZoom((z) => Math.max(1, +(z - 0.2).toFixed(2)))}
+              className="rounded-full p-1 text-muted-foreground transition-colors hover:text-primary"
+            >
+              <ZoomOut className="h-4 w-4" />
+            </button>
             <input
               type="range"
               min={1}
@@ -133,11 +147,20 @@ export function UploadButton({
               step={0.01}
               value={zoom}
               onChange={(e) => setZoom(Number(e.target.value))}
-              className="flex-1 accent-purple-500"
+              className="h-1.5 flex-1 cursor-pointer appearance-none rounded-full bg-border accent-purple-500"
               aria-label="Zoom"
             />
+            <button
+              type="button"
+              aria-label="Acercar"
+              onClick={() => setZoom((z) => Math.min(3, +(z + 0.2).toFixed(2)))}
+              className="rounded-full p-1 text-muted-foreground transition-colors hover:text-primary"
+            >
+              <ZoomIn className="h-4 w-4" />
+            </button>
           </div>
-          <div className="mt-4 flex justify-end gap-3">
+
+          <div className="mt-6 flex justify-end gap-3">
             <Button type="button" variant="outline" size="sm" onClick={cancelCrop} disabled={busy}>
               Cancelar
             </Button>

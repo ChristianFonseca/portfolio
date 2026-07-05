@@ -170,7 +170,7 @@ export function ProjectsSection({ section, dict }: { section: SectionEntry<Proje
       </div>
 
       <Dialog open={selected !== null} onOpenChange={(open) => !open && setSelected(null)}>
-        <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">
+        <DialogContent className="max-w-3xl max-h-[88vh] overflow-y-auto">
           {selected && (
             <>
               <DialogHeader>
