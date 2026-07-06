@@ -170,78 +170,90 @@ export function ProjectsSection({ section, dict }: { section: SectionEntry<Proje
       </div>
 
       <Dialog open={selected !== null} onOpenChange={(open) => !open && setSelected(null)}>
-        <DialogContent className="max-w-3xl max-h-[88vh] overflow-y-auto">
-          {selected && (
-            <>
-              <DialogHeader>
-                <div className="mb-1 flex flex-wrap items-center gap-2">
-                  <StatusChips project={selected} dict={dict} asLinks={false} />
-                </div>
-                <DialogTitle className="text-2xl bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                  {selected.title}
-                </DialogTitle>
-                <DialogDescription className="text-base leading-relaxed text-muted-foreground">
-                  {selected.description}
-                </DialogDescription>
-              </DialogHeader>
+        {/* Ancho: hasta 64rem en desktop, 92vw en pantallas menores (siempre con margen) */}
+        <DialogContent className="w-[min(92vw,64rem)] max-w-none sm:max-w-none max-h-[90vh] overflow-y-auto">
+          {selected &&
+            (() => {
+              const gallery = galleryOf(selected)
+              const hasImages = gallery.length > 0
+              return (
+                <>
+                  <DialogHeader>
+                    <div className="mb-1 flex flex-wrap items-center gap-2">
+                      <StatusChips project={selected} dict={dict} asLinks={false} />
+                    </div>
+                    <DialogTitle className="text-2xl bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                      {selected.title}
+                    </DialogTitle>
+                  </DialogHeader>
 
-              {galleryOf(selected).length > 0 && (
-                <div className="mt-2">
-                  <ProjectCarousel images={galleryOf(selected)} title={selected.title} />
-                </div>
-              )}
+                  {/* Dos columnas en desktop (carrusel | detalle); apilado en móvil */}
+                  <div className={hasImages ? "grid gap-6 lg:grid-cols-[1.15fr_1fr]" : "max-w-3xl"}>
+                    {hasImages && (
+                      <div className="min-w-0 lg:self-start">
+                        <ProjectCarousel images={gallery} title={selected.title} />
+                      </div>
+                    )}
 
-              {selected.bullets.length > 0 && (
-                <div className="mt-2">
-                  <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                    {dict.projects.highlights}
-                  </p>
-                  <ul className="space-y-1.5 text-sm text-muted-foreground">
-                    {selected.bullets.map((b, j) => (
-                      <li key={j} className="flex gap-2">
-                        <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-primary/60" />
-                        {b}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
+                    <div className="min-w-0 space-y-5">
+                      <DialogDescription className="text-base leading-relaxed text-muted-foreground">
+                        {selected.description}
+                      </DialogDescription>
 
-              <div className="mt-2">
-                <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                  {dict.projects.stack}
-                </p>
-                <div className="flex flex-wrap gap-1.5">
-                  {selected.tech.map((tech) => (
-                    <Badge key={tech} variant="secondary" className="text-xs">
-                      {tech}
-                    </Badge>
-                  ))}
-                </div>
-              </div>
+                      {selected.bullets.length > 0 && (
+                        <div>
+                          <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                            {dict.projects.highlights}
+                          </p>
+                          <ul className="space-y-1.5 text-sm text-muted-foreground">
+                            {selected.bullets.map((b, j) => (
+                              <li key={j} className="flex gap-2">
+                                <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-primary/60" />
+                                {b}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
 
-              {(selected.repoUrl || selected.liveUrl) && (
-                <div className="mt-4 flex flex-wrap gap-3">
-                  {selected.liveUrl && (
-                    <Button asChild>
-                      <a href={selected.liveUrl} target="_blank" rel="noopener noreferrer">
-                        <ExternalLink className="mr-2 h-4 w-4" />
-                        {dict.projects.visitSite}
-                      </a>
-                    </Button>
-                  )}
-                  {selected.repoUrl && (
-                    <Button variant="outline" asChild>
-                      <a href={selected.repoUrl} target="_blank" rel="noopener noreferrer">
-                        <Github className="mr-2 h-4 w-4" />
-                        {dict.projects.sourceCode}
-                      </a>
-                    </Button>
-                  )}
-                </div>
-              )}
-            </>
-          )}
+                      <div>
+                        <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                          {dict.projects.stack}
+                        </p>
+                        <div className="flex flex-wrap gap-1.5">
+                          {selected.tech.map((tech) => (
+                            <Badge key={tech} variant="secondary" className="text-xs">
+                              {tech}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+
+                      {(selected.repoUrl || selected.liveUrl) && (
+                        <div className="flex flex-wrap gap-3 pt-1">
+                          {selected.liveUrl && (
+                            <Button asChild>
+                              <a href={selected.liveUrl} target="_blank" rel="noopener noreferrer">
+                                <ExternalLink className="mr-2 h-4 w-4" />
+                                {dict.projects.visitSite}
+                              </a>
+                            </Button>
+                          )}
+                          {selected.repoUrl && (
+                            <Button variant="outline" asChild>
+                              <a href={selected.repoUrl} target="_blank" rel="noopener noreferrer">
+                                <Github className="mr-2 h-4 w-4" />
+                                {dict.projects.sourceCode}
+                              </a>
+                            </Button>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </>
+              )
+            })()}
         </DialogContent>
       </Dialog>
     </section>
