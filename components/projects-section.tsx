@@ -187,69 +187,63 @@ export function ProjectsSection({ section, dict }: { section: SectionEntry<Proje
                     </DialogTitle>
                   </DialogHeader>
 
-                  {/* Dos columnas en desktop (carrusel | detalle); apilado en móvil */}
-                  <div className={hasImages ? "grid gap-6 lg:grid-cols-[1.15fr_1fr]" : "max-w-3xl"}>
-                    {hasImages && (
-                      <div className="min-w-0 lg:self-start">
-                        <ProjectCarousel images={gallery} title={selected.title} />
+                  {/* Imagen a todo el ancho arriba; la info debajo usa todo el espacio */}
+                  {hasImages && <ProjectCarousel images={gallery} title={selected.title} />}
+
+                  <div className="space-y-5">
+                    <DialogDescription className="text-base leading-relaxed text-muted-foreground">
+                      {selected.description}
+                    </DialogDescription>
+
+                    {selected.bullets.length > 0 && (
+                      <div>
+                        <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                          {dict.projects.highlights}
+                        </p>
+                        <ul className="grid gap-1.5 text-sm text-muted-foreground sm:grid-cols-2">
+                          {selected.bullets.map((b, j) => (
+                            <li key={j} className="flex gap-2">
+                              <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-primary/60" />
+                              {b}
+                            </li>
+                          ))}
+                        </ul>
                       </div>
                     )}
 
-                    <div className="min-w-0 space-y-5">
-                      <DialogDescription className="text-base leading-relaxed text-muted-foreground">
-                        {selected.description}
-                      </DialogDescription>
-
-                      {selected.bullets.length > 0 && (
-                        <div>
-                          <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                            {dict.projects.highlights}
-                          </p>
-                          <ul className="space-y-1.5 text-sm text-muted-foreground">
-                            {selected.bullets.map((b, j) => (
-                              <li key={j} className="flex gap-2">
-                                <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-primary/60" />
-                                {b}
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      )}
-
-                      <div>
-                        <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                          {dict.projects.stack}
-                        </p>
-                        <div className="flex flex-wrap gap-1.5">
-                          {selected.tech.map((tech) => (
-                            <Badge key={tech} variant="secondary" className="text-xs">
-                              {tech}
-                            </Badge>
-                          ))}
-                        </div>
+                    <div>
+                      <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                        {dict.projects.stack}
+                      </p>
+                      <div className="flex flex-wrap gap-1.5">
+                        {selected.tech.map((tech) => (
+                          <Badge key={tech} variant="secondary" className="text-xs">
+                            {tech}
+                          </Badge>
+                        ))}
                       </div>
-
-                      {(selected.repoUrl || selected.liveUrl) && (
-                        <div className="flex flex-wrap gap-3 pt-1">
-                          {selected.liveUrl && (
-                            <Button asChild>
-                              <a href={selected.liveUrl} target="_blank" rel="noopener noreferrer">
-                                <ExternalLink className="mr-2 h-4 w-4" />
-                                {dict.projects.visitSite}
-                              </a>
-                            </Button>
-                          )}
-                          {selected.repoUrl && (
-                            <Button variant="outline" asChild>
-                              <a href={selected.repoUrl} target="_blank" rel="noopener noreferrer">
-                                <Github className="mr-2 h-4 w-4" />
-                                {dict.projects.sourceCode}
-                              </a>
-                            </Button>
-                          )}
-                        </div>
-                      )}
                     </div>
+
+                    {(selected.repoUrl || selected.liveUrl) && (
+                      <div className="flex flex-wrap gap-3 pt-1">
+                        {selected.liveUrl && (
+                          <Button asChild>
+                            <a href={selected.liveUrl} target="_blank" rel="noopener noreferrer">
+                              <ExternalLink className="mr-2 h-4 w-4" />
+                              {dict.projects.visitSite}
+                            </a>
+                          </Button>
+                        )}
+                        {selected.repoUrl && (
+                          <Button variant="outline" asChild>
+                            <a href={selected.repoUrl} target="_blank" rel="noopener noreferrer">
+                              <Github className="mr-2 h-4 w-4" />
+                              {dict.projects.sourceCode}
+                            </a>
+                          </Button>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </>
               )
