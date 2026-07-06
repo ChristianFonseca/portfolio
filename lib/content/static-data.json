@@ -432,6 +432,36 @@
                 "Live run streaming over SSE with full token, cost (USD) and latency accounting per node.",
                 "Enterprise auth and security: JWT with Argon2id, data-driven RBAC, rate limiting, audit logging and ISO 27001 mapping."
               ]
+            },
+            {
+              "title": "MAT",
+              "description": "MAT (Multi-Agent Trading) is a self-hosted, AI-driven trading platform where specialized LLM agents — technical, fundamental, macro, sentiment, risk and allocation — collaborate to analyze markets and propose trades across FX, equities, ETFs, crypto and commodities, while deterministic, versioned code enforces every risk limit, position size and execution. The principle: LLMs propose, deterministic code disposes.",
+              "image": "",
+              "repoUrl": "",
+              "liveUrl": "",
+              "tech": [
+                "Python",
+                "FastAPI",
+                "Next.js",
+                "React",
+                "TypeScript",
+                "PostgreSQL",
+                "pgvector",
+                "SQLAlchemy",
+                "Redis",
+                "arq",
+                "Anthropic Claude",
+                "OpenTelemetry",
+                "Docker",
+                "Caddy"
+              ],
+              "bullets": [
+                "Multi-agent pipeline of ~15 LLM agents (orchestrator, analysts, a 3-way risk debate, allocation, decision, memory, monitor, reporter) loaded as installable plugins.",
+                "Deterministic guardrails as final authority: every agent computes features in reproducible, tested code and falls back to a deterministic path if the LLM is unavailable — risk limits and sizing can never be widened by model reasoning or prompt injection.",
+                "Paper and live trading modes with human-in-the-loop approval, kill switch, Decimal money math, UTC-only timestamps and full step-by-step provenance on every cycle.",
+                "Deterministic backtesting engine that reuses the live runtime with point-in-time data and record/replay, surfacing LLM look-ahead-bias warnings.",
+                "Production platform: JWT/RBAC/2FA auth, pgvector-backed memory, OpenTelemetry observability with LLM cost tracking, and a Next.js dashboard generated from the API's OpenAPI schema."
+              ]
             }
           ]
         },
@@ -551,6 +581,36 @@
                 "Motor de ejecución de DAG asíncrono (asyncio.TaskGroup) con timeouts por nodo, reintentos y tolerancia a fallos parciales k-de-n.",
                 "Streaming de ejecución en vivo por SSE con contabilidad completa de tokens, costo (USD) y latencia por nodo.",
                 "Autenticación y seguridad empresarial: JWT con Argon2id, RBAC basado en datos, rate limiting, log de auditoría y mapeo a ISO 27001."
+              ]
+            },
+            {
+              "title": "MAT",
+              "description": "MAT (Multi-Agent Trading) es una plataforma de trading autoalojada e impulsada por IA donde agentes LLM especializados —técnico, fundamental, macro, sentimiento, riesgo y asignación— colaboran para analizar los mercados y proponer operaciones en divisas, acciones, ETFs, cripto y materias primas, mientras código determinista y versionado impone cada límite de riesgo, tamaño de posición y ejecución. El principio: los LLMs proponen, el código determinista dispone.",
+              "image": "",
+              "repoUrl": "",
+              "liveUrl": "",
+              "tech": [
+                "Python",
+                "FastAPI",
+                "Next.js",
+                "React",
+                "TypeScript",
+                "PostgreSQL",
+                "pgvector",
+                "SQLAlchemy",
+                "Redis",
+                "arq",
+                "Anthropic Claude",
+                "OpenTelemetry",
+                "Docker",
+                "Caddy"
+              ],
+              "bullets": [
+                "Pipeline multiagente de ~15 agentes LLM (orquestador, analistas, un debate de riesgo a 3 voces, asignación, decisión, memoria, monitor y reporte) cargados como plugins instalables.",
+                "Guardarraíles deterministas como autoridad final: cada agente calcula sus features en código reproducible y probado, y cae a una ruta determinista si el LLM no está disponible — los límites de riesgo y el sizing nunca pueden ampliarse por el razonamiento del modelo ni por inyección de prompts.",
+                "Modos de trading en papel y en vivo con aprobación humana en el flujo, kill switch, aritmética monetaria con Decimal, marcas de tiempo solo en UTC y trazabilidad paso a paso en cada ciclo.",
+                "Motor de backtesting determinista que reutiliza el runtime en vivo con datos point-in-time y modos record/replay, señalando advertencias de sesgo de anticipación (look-ahead) del LLM.",
+                "Plataforma de producción: autenticación JWT/RBAC/2FA, memoria con pgvector, observabilidad OpenTelemetry con seguimiento de costos de LLM y un dashboard en Next.js generado desde el esquema OpenAPI de la API."
               ]
             }
           ]
