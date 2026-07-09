@@ -51,7 +51,9 @@ export function UploadButton({
   }
 
   const handleFile = (file: File) => {
-    if (aspect) {
+    // Los GIF (animados) se suben directo: recortarlos en canvas los dejaría estáticos
+    const isGif = file.type === "image/gif"
+    if (aspect && !isGif) {
       setCrop({ x: 0, y: 0 })
       setZoom(1)
       setCroppedPixels(null)

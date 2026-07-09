@@ -10,7 +10,7 @@ import { getSessionUser } from "@/lib/auth"
 // que Next sirve automáticamente.
 const uploadsDir = () => process.env.UPLOADS_DIR || path.join(process.cwd(), "public", "uploads")
 
-const MAX_UPLOAD_BYTES = 10 * 1024 * 1024
+const MAX_UPLOAD_BYTES = 15 * 1024 * 1024
 const MAX_DIMENSION = 1600
 
 export async function POST(request: Request) {
@@ -29,19 +29,32 @@ export async function POST(request: Request) {
 
     const input = Buffer.from(await file.arrayBuffer())
 
-    // sharp valida que sea una imagen real (no confiamos en el MIME del cliente)
+    // sharp valida que sea una imagen real (no confiamos en el MIME del cliente).
+    // Si tiene varios frames (GIF/WebP animado) se preserva la animación como WebP animado.
     let output: Buffer
     let width: number | undefined
     let height: number | undefined
     try {
-      const processed = await sharp(input)
-        .rotate() // respeta la orientación EXIF
-        .resize(MAX_DIMENSION, MAX_DIMENSION, { fit: "inside", withoutEnlargement: true })
-        .webp({ quality: 82 })
-        .toBuffer({ resolveWithObject: true })
-      output = processed.data
-      width = processed.info.width
-      height = processed.info.height
+      const meta = await sharp(input).metadata()
+      const isAnimated = (meta.pages ?? 1) > 1
+
+      if (isAnimated) {
+        output = await sharp(input, { animated: true })
+          .resize(MAX_DIMENSION, MAX_DIMENSION, { fit: "inside", withoutEnlargement: true })
+          .webp({ quality: 75, effort: 4 })
+          .toBuffer()
+      } else {
+        output = await sharp(input)
+          .rotate() // respeta la orientación EXIF (no aplica a animados)
+          .resize(MAX_DIMENSION, MAX_DIMENSION, { fit: "inside", withoutEnlargement: true })
+          .webp({ quality: 82 })
+          .toBuffer()
+      }
+
+      // Dimensiones del frame (pageHeight en animados; height en estáticos)
+      const outMeta = await sharp(output).metadata()
+      width = outMeta.width
+      height = outMeta.pageHeight ?? outMeta.height
     } catch {
       return NextResponse.json({ error: "El archivo no es una imagen válida" }, { status: 400 })
     }

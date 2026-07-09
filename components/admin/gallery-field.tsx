@@ -76,7 +76,9 @@ export function GalleryField({
       )}
       <div className="flex items-center gap-2">
         <UploadButton aspect={aspect} onUploaded={add} label="Agregar foto" />
-        <span className="text-[11px] text-muted-foreground/60">recorte a 16:9 · la #1 es la portada</span>
+        <span className="text-[11px] text-muted-foreground/60">
+          recorte a 16:9 · la #1 es la portada · los GIF se suben animados
+        </span>
       </div>
     </div>
   )
