@@ -1,4 +1,4 @@
-// Datos de los 4 proyectos reales (bilingüe). Fuente única compartida por
+// Datos de los proyectos reales (bilingüe). Fuente única compartida por
 // scripts/seed-projects.mjs (DB) y el actualizador de static-data.json.
 
 export const projectsEn = [
@@ -82,6 +82,22 @@ export const projectsEn = [
       "Production platform: JWT/RBAC/2FA auth, pgvector-backed memory, OpenTelemetry observability with LLM cost tracking, and a Next.js dashboard generated from the API's OpenAPI schema.",
     ],
   },
+  {
+    title: "CrabAir",
+    description:
+      "A VS Code extension that turns Claude Code's activity into a live animation: a little airplane piloted by Claude's crab mascot takes off, cruises and lands in real time as Claude works. The extension embeds a local \"control tower\" server that turns each Claude Code hook event into an animated scene inside the editor.",
+    image: "",
+    repoUrl: "https://github.com/ChristianFonseca/crabair",
+    liveUrl: "https://marketplace.visualstudio.com/items?itemName=ChristianFonseca.crabair",
+    tech: ["JavaScript", "Node.js", "VS Code Extension API", "HTTP server", "Server-Sent Events", "Webview", "SVG", "CSS animation", "Claude Code hooks", "Anthropic Claude"],
+    bullets: [
+      "Real-time flight reacting to Claude Code: taxi on a new session, takeoff on prompt submit, cruising while working, and automatic landing after Claude's turn ends (cancels if you type again).",
+      "A towed banner shows exactly what Claude is doing right now (reading a file, running a command, asking a question), and each delegated subagent takes off as its own escort plane.",
+      "The extension itself is the 'control tower': a dependency-free Node HTTP server that normalizes each hook event and pushes it to VS Code webviews via postMessage and to browsers via Server-Sent Events.",
+      "One-click install/uninstall of global Claude Code hooks into ~/.claude/settings.json (with backup), a status-bar toggle, and rendering in the sidebar, a panel or a second monitor at localhost:4747.",
+      "Extras: day/night mode, optional engine sound, turbulence on tool failure, a wait-time mini-game with unlockable plane skins, and a post-flight summary of the session.",
+    ],
+  },
 ]
 
 export const projectsEs = [
@@ -163,6 +179,22 @@ export const projectsEs = [
       "Modos de trading en papel y en vivo con aprobación humana en el flujo, kill switch, aritmética monetaria con Decimal, marcas de tiempo solo en UTC y trazabilidad paso a paso en cada ciclo.",
       "Motor de backtesting determinista que reutiliza el runtime en vivo con datos point-in-time y modos record/replay, señalando advertencias de sesgo de anticipación (look-ahead) del LLM.",
       "Plataforma de producción: autenticación JWT/RBAC/2FA, memoria con pgvector, observabilidad OpenTelemetry con seguimiento de costos de LLM y un dashboard en Next.js generado desde el esquema OpenAPI de la API.",
+    ],
+  },
+  {
+    title: "CrabAir",
+    description:
+      "Una extensión de VS Code que convierte la actividad de Claude Code en una animación en vivo: un avioncito pilotado por el cangrejo mascota de Claude despega, vuela y aterriza en tiempo real según lo que hace Claude. La extensión integra un servidor local de \"torre de control\" que convierte cada evento de los hooks de Claude Code en una escena animada dentro del editor.",
+    image: "",
+    repoUrl: "https://github.com/ChristianFonseca/crabair",
+    liveUrl: "https://marketplace.visualstudio.com/items?itemName=ChristianFonseca.crabair",
+    tech: ["JavaScript", "Node.js", "VS Code Extension API", "HTTP server", "Server-Sent Events", "Webview", "SVG", "CSS animation", "Claude Code hooks", "Anthropic Claude"],
+    bullets: [
+      "Vuelo en tiempo real según Claude Code: taxi al iniciar una sesión, despegue al enviar un prompt, crucero mientras trabaja y aterrizaje automático cuando termina el turno de Claude (se cancela si vuelves a escribir).",
+      "Un banner remolcado muestra exactamente qué está haciendo Claude ahora (leer un archivo, correr un comando, hacer una pregunta), y cada subagente delegado despega como su propio avión de escolta.",
+      "La extensión misma es la 'torre de control': un servidor HTTP en Node sin dependencias que normaliza cada evento de hook y lo envía a los webviews de VS Code vía postMessage y a los navegadores vía Server-Sent Events.",
+      "Instalación/desinstalación con un clic de los hooks globales de Claude Code en ~/.claude/settings.json (con respaldo), un botón en la barra de estado, y renderizado en la barra lateral, un panel o un segundo monitor en localhost:4747.",
+      "Extras: modo día/noche, sonido de motor opcional, turbulencia ante fallos de herramientas, un minijuego para la espera con skins de avión desbloqueables y un resumen post-vuelo de la sesión.",
     ],
   },
 ]
