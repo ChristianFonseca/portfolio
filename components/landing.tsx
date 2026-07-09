@@ -18,6 +18,15 @@ import type { Dictionary, Locale } from "@/lib/i18n/dictionaries"
 
 // Clases completas por nombre de color, con variantes light y dark
 // (Tailwind no genera clases construidas dinámicamente)
+// Dominio acortado para el tooltip del badge (ej. "langchain.com"), sin mostrar la URL completa
+function hostOf(url: string): string {
+  try {
+    return new URL(url).hostname.replace(/^www\./, "")
+  } catch {
+    return url
+  }
+}
+
 const SKILL_BADGE_CLASSES: Record<string, string> = {
   purple:
     "bg-purple-500/10 text-purple-700 dark:text-purple-300 border-purple-500/30 dark:border-purple-500/20 hover:bg-purple-500/20 hover:border-purple-500/60",
@@ -241,15 +250,35 @@ export function Landing({
                   <BubbleCard key={group.name} className="glow-effect flex flex-col h-full">
                     <h4 className="text-lg font-semibold mb-4 text-primary">{group.name}</h4>
                     <div className="flex flex-wrap gap-2">
-                      {group.badges.map((skill) => (
-                        <Badge
-                          key={skill}
-                          variant="outline"
-                          className={`text-xs hover:-translate-y-0.5 transition-all ${SKILL_BADGE_CLASSES[group.color] ?? SKILL_BADGE_CLASSES.purple}`}
-                        >
-                          {skill}
-                        </Badge>
-                      ))}
+                      {group.badges.map((skill, bi) => {
+                        // Resiliente a datos legacy (string) o nuevos ({name, url})
+                        const name = typeof skill === "string" ? skill : skill.name
+                        const url = typeof skill === "string" ? "" : skill.url
+                        const cls = `text-xs transition-all hover:-translate-y-0.5 ${
+                          SKILL_BADGE_CLASSES[group.color] ?? SKILL_BADGE_CLASSES.purple
+                        }`
+                        if (url) {
+                          return (
+                            <a
+                              key={`${name}-${bi}`}
+                              href={url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              title={hostOf(url)}
+                              className="cursor-pointer"
+                            >
+                              <Badge variant="outline" className={`${cls} cursor-pointer hover:border-primary`}>
+                                {name}
+                              </Badge>
+                            </a>
+                          )
+                        }
+                        return (
+                          <Badge key={`${name}-${bi}`} variant="outline" className={cls}>
+                            {name}
+                          </Badge>
+                        )
+                      })}
                     </div>
                   </BubbleCard>
                 ))}

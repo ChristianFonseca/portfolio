@@ -18,12 +18,23 @@ export const skillsSchema = z.object({
       z.object({
         name: z.string().min(1).max(80),
         color: z.enum(["purple", "blue", "emerald", "yellow", "orange", "cyan", "rose"]),
-        badges: z.array(z.string().min(1).max(60)).max(40),
+        // Cada badge: nombre + URL opcional (docs/web del tool). URL vacía = no clickeable.
+        // Acepta string legacy o {name,url}; siempre normaliza a {name,url}.
+        badges: z
+          .array(
+            z.union([
+              z.string().min(1).max(60).transform((s) => ({ name: s, url: "" })),
+              z.object({ name: z.string().min(1).max(60), url: z.string().max(300).default("") }),
+            ]),
+          )
+          .max(40),
       }),
     )
     .max(12),
   languages: z.array(z.object({ name: z.string().min(1).max(60), level: z.string().min(1).max(60) })).max(10),
 })
+
+export type SkillBadge = { name: string; url: string }
 
 export const projectsSchema = z.object({
   items: z

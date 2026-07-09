@@ -6,7 +6,7 @@ import type { SectionKind } from "./schemas"
 export type SubFieldSpec = {
   key: string
   label: string
-  type: "text" | "textarea" | "tags" | "bullets" | "checkbox" | "image" | "gallery"
+  type: "text" | "textarea" | "tags" | "bullets" | "checkbox" | "image" | "gallery" | "linktags"
   hint?: string
   // Para type "image"/"gallery": proporción del editor de recorte (ancho/alto).
   aspect?: number
@@ -49,7 +49,13 @@ export const kindSpecs: Record<SectionKind, FieldSpec[]> = {
       fields: [
         { key: "name", label: "Nombre del grupo", type: "text" },
         { key: "color", label: "Color", type: "text", hint: "purple | blue | emerald | yellow | orange | cyan | rose" },
-        { key: "badges", label: "Skills", type: "tags", hint: "separadas por comas" },
+        {
+          key: "badges",
+          label: "Skills",
+          type: "linktags",
+          shared: true,
+          hint: "cada skill puede tener un enlace opcional (web/docs)",
+        },
       ],
     },
     {

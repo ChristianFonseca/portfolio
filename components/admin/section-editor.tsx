@@ -8,14 +8,21 @@ import { saveSection } from "@/app/admin/actions"
 import { TagsInput } from "@/components/admin/tags-input"
 import { ImageField } from "@/components/admin/image-field"
 import { GalleryField } from "@/components/admin/gallery-field"
+import { LinkTagsInput, type LinkTag } from "@/components/admin/link-tags-input"
 import type { FieldSpec, SubFieldSpec } from "@/lib/content/specs"
 import type { SectionKind } from "@/lib/content/schemas"
 import type { Locale } from "@/lib/i18n/dictionaries"
 
 // Form model: como los datos reales, pero con bullets como texto multilínea
-// (un ítem por línea). Tags se editan como chips.
-type FormValue = string | boolean | string[] | FormItem[]
-type FormItem = Record<string, string | boolean | string[]>
+// (un ítem por línea). Tags se editan como chips; linktags como {name,url}[].
+type FieldValue = string | boolean | string[] | LinkTag[]
+type FormValue = FieldValue | FormItem[]
+type FormItem = Record<string, FieldValue>
+
+const normalizeBadge = (x: unknown): LinkTag =>
+  typeof x === "string"
+    ? { name: x, url: "" }
+    : { name: String((x as LinkTag)?.name ?? ""), url: String((x as LinkTag)?.url ?? "") }
 type FormModel = Record<string, FormValue>
 
 function toFormModel(spec: FieldSpec[], data: Record<string, unknown>): FormModel {
@@ -29,6 +36,7 @@ function toFormModel(spec: FieldSpec[], data: Record<string, unknown>): FormMode
         for (const sub of field.fields) {
           const v = item[sub.key]
           if (sub.type === "tags" || sub.type === "gallery") formItem[sub.key] = Array.isArray(v) ? ([...v] as string[]) : []
+          else if (sub.type === "linktags") formItem[sub.key] = Array.isArray(v) ? v.map(normalizeBadge) : []
           else if (sub.type === "bullets") formItem[sub.key] = Array.isArray(v) ? (v as string[]).join("\n") : ""
           else if (sub.type === "checkbox") formItem[sub.key] = Boolean(v)
           else formItem[sub.key] = typeof v === "string" ? v : ""
@@ -56,6 +64,12 @@ function fromFormModel(spec: FieldSpec[], model: FormModel): Record<string, unkn
         for (const sub of field.fields) {
           const v = item[sub.key]
           if (sub.type === "tags" || sub.type === "gallery") out[sub.key] = Array.isArray(v) ? v : []
+          else if (sub.type === "linktags")
+            out[sub.key] = Array.isArray(v)
+              ? (v as LinkTag[])
+                  .filter((b) => b.name?.trim())
+                  .map((b) => ({ name: b.name.trim(), url: (b.url || "").trim() }))
+              : []
           else if (sub.type === "bullets") out[sub.key] = splitLines(String(v ?? ""))
           else if (sub.type === "checkbox") out[sub.key] = Boolean(v)
           else out[sub.key] = String(v ?? "")
@@ -74,11 +88,13 @@ function fromFormModel(spec: FieldSpec[], model: FormModel): Record<string, unkn
 function emptyItem(fields: SubFieldSpec[]): FormItem {
   const item: FormItem = {}
   for (const sub of fields)
-    item[sub.key] = sub.type === "checkbox" ? false : sub.type === "tags" || sub.type === "gallery" ? [] : ""
+    item[sub.key] =
+      sub.type === "checkbox" ? false : ["tags", "gallery", "linktags"].includes(sub.type) ? [] : ""
   return item
 }
 
-const isSharedSubType = (sub: SubFieldSpec) => sub.type === "image" || sub.type === "gallery" || sub.shared === true
+const isSharedSubType = (sub: SubFieldSpec) =>
+  sub.type === "image" || sub.type === "gallery" || sub.type === "linktags" || sub.shared === true
 
 // Copia los campos compartidos (imágenes, URLs, tecnologías) del idioma fuente al
 // destino, para que ambos idiomas queden consistentes (al cargar y tras traducir).
@@ -190,7 +206,7 @@ export function SectionEditor({
     )
     shared ? touchShared() : handleTouch()
   }
-  const setItemField = (key: string, index: number, subKey: string, value: string | boolean | string[]) => {
+  const setItemField = (key: string, index: number, subKey: string, value: FieldValue) => {
     const shared = isSharedSub(key, subKey)
     setModels((prev) => {
       const applyTo = (loc: Locale) => {
@@ -490,7 +506,7 @@ export function SectionEditor({
                           <div
                             key={sub.key}
                             className={
-                              sub.type === "textarea" || sub.type === "bullets" || sub.type === "tags" || sub.type === "image" || sub.type === "gallery"
+                              sub.type === "textarea" || sub.type === "bullets" || sub.type === "tags" || sub.type === "image" || sub.type === "gallery" || sub.type === "linktags"
                                 ? "md:col-span-2"
                                 : ""
                             }
@@ -519,6 +535,11 @@ export function SectionEditor({
                                 value={(item[sub.key] as string[]) ?? []}
                                 onChange={(urls) => setItemField(field.key, i, sub.key, urls)}
                                 aspect={sub.aspect}
+                              />
+                            ) : sub.type === "linktags" ? (
+                              <LinkTagsInput
+                                value={(item[sub.key] as LinkTag[]) ?? []}
+                                onChange={(v) => setItemField(field.key, i, sub.key, v)}
                               />
                             ) : sub.type === "image" ? (
                               <ImageField

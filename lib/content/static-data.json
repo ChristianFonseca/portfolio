@@ -95,94 +95,250 @@
               "name": "GenAI, LLMs & Agents",
               "color": "purple",
               "badges": [
-                "RAG Architectures",
-                "LangChain",
-                "LangGraph",
-                "Google ADK",
-                "Prompt Engineering",
-                "Pinecone",
-                "FAISS",
-                "Ollama",
-                "Hugging Face",
-                "OpenAI",
-                "Gemini",
-                "Anthropic",
-                "Bedrock",
-                "DeepSeek",
-                "xAI"
+                {
+                  "name": "RAG Architectures",
+                  "url": ""
+                },
+                {
+                  "name": "LangChain",
+                  "url": "https://www.langchain.com"
+                },
+                {
+                  "name": "LangGraph",
+                  "url": "https://langchain-ai.github.io/langgraph/"
+                },
+                {
+                  "name": "Google ADK",
+                  "url": "https://google.github.io/adk-docs/"
+                },
+                {
+                  "name": "Prompt Engineering",
+                  "url": ""
+                },
+                {
+                  "name": "Pinecone",
+                  "url": "https://www.pinecone.io"
+                },
+                {
+                  "name": "FAISS",
+                  "url": "https://faiss.ai"
+                },
+                {
+                  "name": "Ollama",
+                  "url": "https://ollama.com"
+                },
+                {
+                  "name": "Hugging Face",
+                  "url": "https://huggingface.co"
+                },
+                {
+                  "name": "OpenAI",
+                  "url": "https://openai.com"
+                },
+                {
+                  "name": "Gemini",
+                  "url": "https://deepmind.google/technologies/gemini/"
+                },
+                {
+                  "name": "Anthropic",
+                  "url": "https://www.anthropic.com"
+                },
+                {
+                  "name": "Bedrock",
+                  "url": "https://aws.amazon.com/bedrock/"
+                },
+                {
+                  "name": "DeepSeek",
+                  "url": "https://www.deepseek.com"
+                },
+                {
+                  "name": "xAI",
+                  "url": "https://x.ai"
+                }
               ]
             },
             {
               "name": "Machine Learning & MLOps",
               "color": "blue",
               "badges": [
-                "TensorFlow",
-                "PyTorch",
-                "Scikit-learn",
-                "MLflow",
-                "Vertex AI",
-                "Amazon SageMaker"
+                {
+                  "name": "TensorFlow",
+                  "url": "https://www.tensorflow.org"
+                },
+                {
+                  "name": "PyTorch",
+                  "url": "https://pytorch.org"
+                },
+                {
+                  "name": "Scikit-learn",
+                  "url": "https://scikit-learn.org"
+                },
+                {
+                  "name": "MLflow",
+                  "url": "https://mlflow.org"
+                },
+                {
+                  "name": "Vertex AI",
+                  "url": "https://cloud.google.com/vertex-ai"
+                },
+                {
+                  "name": "Amazon SageMaker",
+                  "url": "https://aws.amazon.com/sagemaker/"
+                }
               ]
             },
             {
               "name": "Data Engineering & Databases",
               "color": "emerald",
               "badges": [
-                "SQL",
-                "PySpark",
-                "Databricks",
-                "PostgreSQL",
-                "Oracle",
-                "Redshift",
-                "SQL Server",
-                "MongoDB",
-                "RDS/Aurora"
+                {
+                  "name": "SQL",
+                  "url": ""
+                },
+                {
+                  "name": "PySpark",
+                  "url": "https://spark.apache.org/docs/latest/api/python/"
+                },
+                {
+                  "name": "Databricks",
+                  "url": "https://www.databricks.com"
+                },
+                {
+                  "name": "PostgreSQL",
+                  "url": "https://www.postgresql.org"
+                },
+                {
+                  "name": "Oracle",
+                  "url": "https://www.oracle.com/database/"
+                },
+                {
+                  "name": "Redshift",
+                  "url": "https://aws.amazon.com/redshift/"
+                },
+                {
+                  "name": "SQL Server",
+                  "url": "https://www.microsoft.com/sql-server"
+                },
+                {
+                  "name": "MongoDB",
+                  "url": "https://www.mongodb.com"
+                },
+                {
+                  "name": "RDS/Aurora",
+                  "url": "https://aws.amazon.com/rds/aurora/"
+                }
               ]
             },
             {
               "name": "Programming Languages",
               "color": "yellow",
               "badges": [
-                "Python",
-                "TypeScript",
-                "R",
-                "MATLAB",
-                "C/C++",
-                "C#",
-                "Rust"
+                {
+                  "name": "Python",
+                  "url": "https://www.python.org"
+                },
+                {
+                  "name": "TypeScript",
+                  "url": "https://www.typescriptlang.org"
+                },
+                {
+                  "name": "R",
+                  "url": "https://www.r-project.org"
+                },
+                {
+                  "name": "MATLAB",
+                  "url": "https://www.mathworks.com/products/matlab.html"
+                },
+                {
+                  "name": "C/C++",
+                  "url": "https://isocpp.org"
+                },
+                {
+                  "name": "C#",
+                  "url": "https://learn.microsoft.com/dotnet/csharp/"
+                },
+                {
+                  "name": "Rust",
+                  "url": "https://www.rust-lang.org"
+                }
               ]
             },
             {
               "name": "Web & API Development",
               "color": "orange",
               "badges": [
-                "React",
-                "Next.js",
-                "FastAPI",
-                "RESTful APIs",
-                "Microservices"
+                {
+                  "name": "React",
+                  "url": "https://react.dev"
+                },
+                {
+                  "name": "Next.js",
+                  "url": "https://nextjs.org"
+                },
+                {
+                  "name": "FastAPI",
+                  "url": "https://fastapi.tiangolo.com"
+                },
+                {
+                  "name": "RESTful APIs",
+                  "url": ""
+                },
+                {
+                  "name": "Microservices",
+                  "url": ""
+                }
               ]
             },
             {
               "name": "Cloud Platforms",
               "color": "cyan",
               "badges": [
-                "AWS",
-                "Azure",
-                "GCP",
-                "OCI"
+                {
+                  "name": "AWS",
+                  "url": "https://aws.amazon.com"
+                },
+                {
+                  "name": "Azure",
+                  "url": "https://azure.microsoft.com"
+                },
+                {
+                  "name": "GCP",
+                  "url": "https://cloud.google.com"
+                },
+                {
+                  "name": "OCI",
+                  "url": "https://www.oracle.com/cloud/"
+                }
               ]
             },
             {
               "name": "DevOps & Tools",
               "color": "rose",
               "badges": [
-                "Docker",
-                "Kubernetes",
-                "Git",
-                "CI/CD (GitHub/GitLab/Bitbucket)",
-                "Terraform",
-                "CloudFormation"
+                {
+                  "name": "Docker",
+                  "url": "https://www.docker.com"
+                },
+                {
+                  "name": "Kubernetes",
+                  "url": "https://kubernetes.io"
+                },
+                {
+                  "name": "Git",
+                  "url": "https://git-scm.com"
+                },
+                {
+                  "name": "CI/CD (GitHub/GitLab/Bitbucket)",
+                  "url": "https://github.com/features/actions"
+                },
+                {
+                  "name": "Terraform",
+                  "url": "https://www.terraform.io"
+                },
+                {
+                  "name": "CloudFormation",
+                  "url": "https://aws.amazon.com/cloudformation/"
+                }
               ]
             }
           ],
@@ -203,94 +359,250 @@
               "name": "GenAI, LLMs y Agentes",
               "color": "purple",
               "badges": [
-                "RAG Architectures",
-                "LangChain",
-                "LangGraph",
-                "Google ADK",
-                "Prompt Engineering",
-                "Pinecone",
-                "FAISS",
-                "Ollama",
-                "Hugging Face",
-                "OpenAI",
-                "Gemini",
-                "Anthropic",
-                "Bedrock",
-                "DeepSeek",
-                "xAI"
+                {
+                  "name": "RAG Architectures",
+                  "url": ""
+                },
+                {
+                  "name": "LangChain",
+                  "url": "https://www.langchain.com"
+                },
+                {
+                  "name": "LangGraph",
+                  "url": "https://langchain-ai.github.io/langgraph/"
+                },
+                {
+                  "name": "Google ADK",
+                  "url": "https://google.github.io/adk-docs/"
+                },
+                {
+                  "name": "Prompt Engineering",
+                  "url": ""
+                },
+                {
+                  "name": "Pinecone",
+                  "url": "https://www.pinecone.io"
+                },
+                {
+                  "name": "FAISS",
+                  "url": "https://faiss.ai"
+                },
+                {
+                  "name": "Ollama",
+                  "url": "https://ollama.com"
+                },
+                {
+                  "name": "Hugging Face",
+                  "url": "https://huggingface.co"
+                },
+                {
+                  "name": "OpenAI",
+                  "url": "https://openai.com"
+                },
+                {
+                  "name": "Gemini",
+                  "url": "https://deepmind.google/technologies/gemini/"
+                },
+                {
+                  "name": "Anthropic",
+                  "url": "https://www.anthropic.com"
+                },
+                {
+                  "name": "Bedrock",
+                  "url": "https://aws.amazon.com/bedrock/"
+                },
+                {
+                  "name": "DeepSeek",
+                  "url": "https://www.deepseek.com"
+                },
+                {
+                  "name": "xAI",
+                  "url": "https://x.ai"
+                }
               ]
             },
             {
               "name": "Machine Learning y MLOps",
               "color": "blue",
               "badges": [
-                "TensorFlow",
-                "PyTorch",
-                "Scikit-learn",
-                "MLflow",
-                "Vertex AI",
-                "Amazon SageMaker"
+                {
+                  "name": "TensorFlow",
+                  "url": "https://www.tensorflow.org"
+                },
+                {
+                  "name": "PyTorch",
+                  "url": "https://pytorch.org"
+                },
+                {
+                  "name": "Scikit-learn",
+                  "url": "https://scikit-learn.org"
+                },
+                {
+                  "name": "MLflow",
+                  "url": "https://mlflow.org"
+                },
+                {
+                  "name": "Vertex AI",
+                  "url": "https://cloud.google.com/vertex-ai"
+                },
+                {
+                  "name": "Amazon SageMaker",
+                  "url": "https://aws.amazon.com/sagemaker/"
+                }
               ]
             },
             {
               "name": "Ingeniería de Datos y Bases de Datos",
               "color": "emerald",
               "badges": [
-                "SQL",
-                "PySpark",
-                "Databricks",
-                "PostgreSQL",
-                "Oracle",
-                "Redshift",
-                "SQL Server",
-                "MongoDB",
-                "RDS/Aurora"
+                {
+                  "name": "SQL",
+                  "url": ""
+                },
+                {
+                  "name": "PySpark",
+                  "url": "https://spark.apache.org/docs/latest/api/python/"
+                },
+                {
+                  "name": "Databricks",
+                  "url": "https://www.databricks.com"
+                },
+                {
+                  "name": "PostgreSQL",
+                  "url": "https://www.postgresql.org"
+                },
+                {
+                  "name": "Oracle",
+                  "url": "https://www.oracle.com/database/"
+                },
+                {
+                  "name": "Redshift",
+                  "url": "https://aws.amazon.com/redshift/"
+                },
+                {
+                  "name": "SQL Server",
+                  "url": "https://www.microsoft.com/sql-server"
+                },
+                {
+                  "name": "MongoDB",
+                  "url": "https://www.mongodb.com"
+                },
+                {
+                  "name": "RDS/Aurora",
+                  "url": "https://aws.amazon.com/rds/aurora/"
+                }
               ]
             },
             {
               "name": "Lenguajes de Programación",
               "color": "yellow",
               "badges": [
-                "Python",
-                "TypeScript",
-                "R",
-                "MATLAB",
-                "C/C++",
-                "C#",
-                "Rust"
+                {
+                  "name": "Python",
+                  "url": "https://www.python.org"
+                },
+                {
+                  "name": "TypeScript",
+                  "url": "https://www.typescriptlang.org"
+                },
+                {
+                  "name": "R",
+                  "url": "https://www.r-project.org"
+                },
+                {
+                  "name": "MATLAB",
+                  "url": "https://www.mathworks.com/products/matlab.html"
+                },
+                {
+                  "name": "C/C++",
+                  "url": "https://isocpp.org"
+                },
+                {
+                  "name": "C#",
+                  "url": "https://learn.microsoft.com/dotnet/csharp/"
+                },
+                {
+                  "name": "Rust",
+                  "url": "https://www.rust-lang.org"
+                }
               ]
             },
             {
               "name": "Desarrollo Web y APIs",
               "color": "orange",
               "badges": [
-                "React",
-                "Next.js",
-                "FastAPI",
-                "RESTful APIs",
-                "Microservices"
+                {
+                  "name": "React",
+                  "url": "https://react.dev"
+                },
+                {
+                  "name": "Next.js",
+                  "url": "https://nextjs.org"
+                },
+                {
+                  "name": "FastAPI",
+                  "url": "https://fastapi.tiangolo.com"
+                },
+                {
+                  "name": "RESTful APIs",
+                  "url": ""
+                },
+                {
+                  "name": "Microservices",
+                  "url": ""
+                }
               ]
             },
             {
               "name": "Plataformas Cloud",
               "color": "cyan",
               "badges": [
-                "AWS",
-                "Azure",
-                "GCP",
-                "OCI"
+                {
+                  "name": "AWS",
+                  "url": "https://aws.amazon.com"
+                },
+                {
+                  "name": "Azure",
+                  "url": "https://azure.microsoft.com"
+                },
+                {
+                  "name": "GCP",
+                  "url": "https://cloud.google.com"
+                },
+                {
+                  "name": "OCI",
+                  "url": "https://www.oracle.com/cloud/"
+                }
               ]
             },
             {
               "name": "DevOps y Herramientas",
               "color": "rose",
               "badges": [
-                "Docker",
-                "Kubernetes",
-                "Git",
-                "CI/CD (GitHub/GitLab/Bitbucket)",
-                "Terraform",
-                "CloudFormation"
+                {
+                  "name": "Docker",
+                  "url": "https://www.docker.com"
+                },
+                {
+                  "name": "Kubernetes",
+                  "url": "https://kubernetes.io"
+                },
+                {
+                  "name": "Git",
+                  "url": "https://git-scm.com"
+                },
+                {
+                  "name": "CI/CD (GitHub/GitLab/Bitbucket)",
+                  "url": "https://github.com/features/actions"
+                },
+                {
+                  "name": "Terraform",
+                  "url": "https://www.terraform.io"
+                },
+                {
+                  "name": "CloudFormation",
+                  "url": "https://aws.amazon.com/cloudformation/"
+                }
               ]
             }
           ],
