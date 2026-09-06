@@ -1,0 +1,20 @@
+# Actualizaciones automáticas de dependencias — evita quedarse en versiones con CVE
+# (como el RCE de Next.js 15.5.4 / CVE-2025-55182 del 06/09/2026).
+version: 2
+updates:
+  - package-ecosystem: "npm"          # cubre pnpm (usa el lockfile)
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+    groups:
+      # Agrupa parches menores para no inundar de PRs
+      minor-and-patch:
+        update-types: ["minor", "patch"]
+    labels: ["dependencies", "security"]
+    commit-message:
+      prefix: "deps"
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
