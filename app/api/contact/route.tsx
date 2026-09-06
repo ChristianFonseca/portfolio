@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server"
-import { MailerSend, EmailParams, Sender, Recipient } from "mailersend"
 import { z } from "zod"
 
 const contactSchema = z.object({
@@ -44,9 +43,9 @@ function isRateLimited(ip: string): boolean {
 
 export async function POST(request: Request) {
   try {
-    const apiKey = process.env.MAILERSEND_API_KEY
+    const apiKey = process.env.RESEND_API_KEY
     if (!apiKey) {
-      console.error("MAILERSEND_API_KEY is not set; contact form is disabled")
+      console.error("RESEND_API_KEY is not set; contact form is disabled")
       return NextResponse.json({ error: "Email service not configured" }, { status: 500 })
     }
 
@@ -72,41 +71,38 @@ export async function POST(request: Request) {
     }
     const { name, email, subject, message } = parsed.data
 
-    const mailerSend = new MailerSend({ apiKey })
+    const fromEmail = process.env.CONTACT_FROM_EMAIL || "no-reply@christianfonseca.dev"
+    const toEmail = process.env.CONTACT_TO_EMAIL || "christian.fonseca.r@gmail.com"
 
-    const sentFrom = new Sender(
-      process.env.CONTACT_FROM_EMAIL || "MS_mbalq3@test-p7kx4xwo18eg9yjr.mlsender.net",
-      "Christian Fonseca Portfolio",
-    )
-    const recipients = [
-      new Recipient(process.env.CONTACT_TO_EMAIL || "christian.fonseca.r@gmail.com", "Christian Fonseca"),
-    ]
+    // Resend REST API (sin SDK): https://resend.com/docs/api-reference/emails/send-email
+    const res = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        from: `Christian Fonseca Portfolio <${fromEmail}>`,
+        to: [toEmail],
+        reply_to: email,
+        subject: `Portfolio Contact: ${subject}`,
+        html: `
+          <h2>New Contact Form Submission</h2>
+          <p><strong>From:</strong> ${escapeHtml(name)}</p>
+          <p><strong>Email:</strong> ${escapeHtml(email)}</p>
+          <p><strong>Subject:</strong> ${escapeHtml(subject)}</p>
+          <p><strong>Message:</strong></p>
+          <p>${escapeHtml(message).replace(/\n/g, "<br>")}</p>
+        `,
+        text: `New Contact Form Submission\n\nFrom: ${name}\nEmail: ${email}\nSubject: ${subject}\n\nMessage:\n${message}`,
+      }),
+    })
 
-    const emailParams = new EmailParams()
-      .setFrom(sentFrom)
-      .setTo(recipients)
-      .setReplyTo(new Sender(email, name))
-      .setSubject(`Portfolio Contact: ${subject}`)
-      .setHtml(`
-        <h2>New Contact Form Submission</h2>
-        <p><strong>From:</strong> ${escapeHtml(name)}</p>
-        <p><strong>Email:</strong> ${escapeHtml(email)}</p>
-        <p><strong>Subject:</strong> ${escapeHtml(subject)}</p>
-        <p><strong>Message:</strong></p>
-        <p>${escapeHtml(message).replace(/\n/g, "<br>")}</p>
-      `)
-      .setText(`
-        New Contact Form Submission
-
-        From: ${name}
-        Email: ${email}
-        Subject: ${subject}
-
-        Message:
-        ${message}
-      `)
-
-    await mailerSend.email.send(emailParams)
+    if (!res.ok) {
+      const detail = await res.text().catch(() => "")
+      console.error("Resend error:", res.status, detail)
+      return NextResponse.json({ error: "Failed to send email" }, { status: 502 })
+    }
 
     return NextResponse.json({ success: true, message: "Email sent successfully" }, { status: 200 })
   } catch (error) {
