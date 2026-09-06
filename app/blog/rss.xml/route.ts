@@ -1,5 +1,8 @@
 import { getPublishedPosts } from "@/lib/blog"
 
+// No consultar la DB en build (el contenedor de build no alcanza pg-dev); render on-demand
+export const dynamic = "force-dynamic"
+
 const SITE = "https://christianfonseca.dev"
 
 const escapeXml = (s: string) =>

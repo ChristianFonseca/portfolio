@@ -1,6 +1,9 @@
 import { getKnowledgeBase } from "@/lib/chat/knowledge"
 import { getPublishedPosts } from "@/lib/blog"
 
+// No consultar la DB en build (el contenedor de build no alcanza pg-dev); render on-demand
+export const dynamic = "force-dynamic"
+
 // llms.txt: resumen en markdown para crawlers de IA (ChatGPT, Perplexity,
 // Gemini, Claude). Reutiliza la misma knowledge base del chat: siempre al día
 // con lo que se edita en el admin.
