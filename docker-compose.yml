@@ -3,19 +3,19 @@ services:
     build: .
     container_name: portfolio-web
     restart: unless-stopped
-    env_file: .env
+    # Solo el token de Bitwarden (root:600). Los secretos de la app los trae bws en runtime.
+    env_file: /root/portfolio-bws.env
     environment:
       UPLOADS_DIR: /data/uploads
     ports: ["127.0.0.1:8001:3000"]
     # Endurecimiento: limita el radio de un futuro RCE
-    read_only: true                 # sistema de archivos de solo lectura
+    read_only: true
     security_opt:
-      - no-new-privileges:true      # no se pueden escalar privilegios (setuid)
+      - no-new-privileges:true
     cap_drop:
-      - ALL                         # sin capabilities de Linux (Next no las necesita)
+      - ALL
     volumes:
-      - /var/lib/portfolio/uploads:/data/uploads   # subidas (validadas como imagen)
-      # Únicas rutas escribibles, en RAM y efímeras (se pierden al reiniciar):
+      - /var/lib/portfolio/uploads:/data/uploads
       - type: tmpfs
         target: /tmp
         tmpfs: { mode: 01777, size: 67108864 }
