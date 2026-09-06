@@ -1,5 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // No revelar "X-Powered-By: Next.js" (ayuda a escáneres a elegir exploits)
+  poweredByHeader: false,
   // standalone solo en Docker: en Windows local falla por permisos de symlink
   output: process.env.BUILD_STANDALONE === "1" ? "standalone" : undefined,
   images: {
