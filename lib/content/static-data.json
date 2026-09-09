@@ -631,7 +631,7 @@
           "items": [
             {
               "title": "Furtale",
-              "description": "A full-stack platform for managing pet health records. Owners keep their pets' profiles, photos and veterinary documents in one place, share them read-only with a vet, and query an AI assistant grounded in each pet's real medical history.",
+              "description": "A full-stack platform for managing pet health records. Owners keep their pets' profiles, photos, voice-note journals and veterinary documents in one place, get vaccination and appointment reminders by email, share records read-only with a vet, and query an AI assistant grounded in each pet's real medical history.",
               "image": "",
               "repoUrl": "",
               "liveUrl": "https://furtale.pet",
@@ -645,15 +645,19 @@
                 "pgvector",
                 "Anthropic Claude",
                 "Google Gemini",
+                "Whisper",
                 "S3 / MinIO",
-                "Docker"
+                "Docker",
+                "Cloudflare",
+                "Resend"
               ],
               "bullets": [
-                "AI document extraction: photograph a lab report and Claude auto-fills the structured fields via forced tool use (owner reviews before saving).",
-                "Per-pet RAG chat with citations, grounded in that pet's records using local fastembed embeddings stored in PostgreSQL pgvector.",
-                "Security-first auth and RBAC: JWT with rotating refresh tokens, Argon2 hashing, brute-force lockout, Google OAuth and an append-only audit log.",
-                "Time-limited, revocable read-only sharing with veterinarians; multi-role clinic accounts.",
-                "Rich pet management: photos, weight tracking, journal, voice-note transcription, notifications, full EN/ES i18n and dark mode."
+                "RAG assistant over each pet's records (pgvector + Claude) with tool-use retrieval, so answers cite the pet's actual reports instead of generic advice.",
+                "Snap-a-photo report digitization: Gemini extracts structured lab values and metadata from veterinary documents.",
+                "Voice journal with real-time dictation (Web Speech / native iOS speech) and self-hosted Whisper transcription as the accurate fallback.",
+                "Vaccination protocols and calendar events with locale-aware transactional email reminders sent through Resend.",
+                "Hardened edge: Cloudflare WAF and rate limiting, admin panel on a separate hostname behind Cloudflare Access (email OTP), and the origin locked down with Authenticated Origin Pulls (mTLS) so direct-to-IP traffic is rejected.",
+                "Ships as an Android (TWA) and iOS (Capacitor) app over the same live web codebase; fully bilingual ES/EN."
               ],
               "images": []
             },
@@ -804,7 +808,8 @@
                 "The extension itself is the 'control tower': a dependency-free Node HTTP server that normalizes each hook event and pushes it to VS Code webviews via postMessage and to browsers via Server-Sent Events.",
                 "One-click install/uninstall of global Claude Code hooks into ~/.claude/settings.json (with backup), a status-bar toggle, and rendering in the sidebar, a panel or a second monitor at localhost:4747.",
                 "Extras: day/night mode, optional engine sound, turbulence on tool failure, a wait-time mini-game with unlockable plane skins, and a post-flight summary of the session."
-              ]
+              ],
+              "images": []
             }
           ]
         },
@@ -812,7 +817,7 @@
           "items": [
             {
               "title": "Furtale",
-              "description": "Una plataforma full-stack para gestionar los registros de salud de las mascotas. Los dueños guardan los perfiles, fotos y documentos veterinarios de sus mascotas en un solo lugar, los comparten en modo solo lectura con un veterinario y consultan a un asistente de IA basado en el historial médico real de cada mascota.",
+              "description": "Plataforma full-stack para gestionar historiales de salud de mascotas. Los dueños mantienen perfiles, fotos, bitácoras con notas de voz y documentos veterinarios en un solo lugar, reciben recordatorios de vacunas y citas por correo, comparten el historial en modo lectura con su veterinario y consultan a un asistente de IA anclado al historial médico real de cada mascota.",
               "image": "",
               "repoUrl": "",
               "liveUrl": "https://furtale.pet",
@@ -826,15 +831,19 @@
                 "pgvector",
                 "Anthropic Claude",
                 "Google Gemini",
+                "Whisper",
                 "S3 / MinIO",
-                "Docker"
+                "Docker",
+                "Cloudflare",
+                "Resend"
               ],
               "bullets": [
-                "Extracción de documentos con IA: fotografías un informe de laboratorio y Claude completa los campos estructurados mediante uso forzado de herramientas (el dueño revisa antes de guardar).",
-                "Chat RAG por mascota con citas, basado en los registros de esa mascota usando embeddings locales fastembed almacenados en PostgreSQL pgvector.",
-                "Autenticación y RBAC con enfoque en seguridad: JWT con refresh rotativo, hashing Argon2, bloqueo por fuerza bruta, Google OAuth y un log de auditoría append-only.",
-                "Acceso solo lectura, temporal y revocable, para veterinarios; cuentas de clínica multi-rol.",
-                "Gestión completa de la mascota: fotos, control de peso, bitácora, transcripción de notas de voz, notificaciones, i18n EN/ES y modo oscuro."
+                "Asistente RAG sobre el historial de cada mascota (pgvector + Claude) con recuperación vía tool-use: las respuestas citan los informes reales, no consejos genéricos.",
+                "Digitalización de informes desde una foto: Gemini extrae valores de laboratorio y metadatos estructurados de documentos veterinarios.",
+                "Bitácora de voz con dictado en tiempo real (Web Speech / dictado nativo en iOS) y transcripción con Whisper autoalojado como respaldo de precisión.",
+                "Protocolos de vacunación y eventos de calendario con recordatorios transaccionales por correo, según el idioma del usuario, enviados con Resend.",
+                "Borde endurecido: WAF y rate limiting de Cloudflare, panel de administración en un hostname separado detrás de Cloudflare Access (OTP por correo), y origen bloqueado con Authenticated Origin Pulls (mTLS) que rechaza el tráfico directo a la IP.",
+                "Se distribuye como app de Android (TWA) y iOS (Capacitor) sobre el mismo código web en vivo; completamente bilingüe ES/EN."
               ],
               "images": []
             },
@@ -985,7 +994,8 @@
                 "La extensión misma es la 'torre de control': un servidor HTTP en Node sin dependencias que normaliza cada evento de hook y lo envía a los webviews de VS Code vía postMessage y a los navegadores vía Server-Sent Events.",
                 "Instalación/desinstalación con un clic de los hooks globales de Claude Code en ~/.claude/settings.json (con respaldo), un botón en la barra de estado, y renderizado en la barra lateral, un panel o un segundo monitor en localhost:4747.",
                 "Extras: modo día/noche, sonido de motor opcional, turbulencia ante fallos de herramientas, un minijuego para la espera con skins de avión desbloqueables y un resumen post-vuelo de la sesión."
-              ]
+              ],
+              "images": []
             }
           ]
         }

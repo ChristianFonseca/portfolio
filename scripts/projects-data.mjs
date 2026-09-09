@@ -5,17 +5,18 @@ export const projectsEn = [
   {
     title: "Furtale",
     description:
-      "A full-stack platform for managing pet health records. Owners keep their pets' profiles, photos and veterinary documents in one place, share them read-only with a vet, and query an AI assistant grounded in each pet's real medical history.",
+      "A full-stack platform for managing pet health records. Owners keep their pets' profiles, photos, voice-note journals and veterinary documents in one place, get vaccination and appointment reminders by email, share records read-only with a vet, and query an AI assistant grounded in each pet's real medical history.",
     image: "",
     repoUrl: "",
     liveUrl: "https://furtale.pet",
-    tech: ["TypeScript", "Next.js", "React", "Python", "FastAPI", "PostgreSQL", "pgvector", "Anthropic Claude", "Google Gemini", "S3 / MinIO", "Docker"],
+    tech: ["TypeScript", "Next.js", "React", "Python", "FastAPI", "PostgreSQL", "pgvector", "Anthropic Claude", "Google Gemini", "Whisper", "S3 / MinIO", "Docker", "Cloudflare", "Resend"],
     bullets: [
-      "AI document extraction: photograph a lab report and Claude auto-fills the structured fields via forced tool use (owner reviews before saving).",
-      "Per-pet RAG chat with citations, grounded in that pet's records using local fastembed embeddings stored in PostgreSQL pgvector.",
-      "Security-first auth and RBAC: JWT with rotating refresh tokens, Argon2 hashing, brute-force lockout, Google OAuth and an append-only audit log.",
-      "Time-limited, revocable read-only sharing with veterinarians; multi-role clinic accounts.",
-      "Rich pet management: photos, weight tracking, journal, voice-note transcription, notifications, full EN/ES i18n and dark mode.",
+      "RAG assistant over each pet's records (pgvector + Claude) with tool-use retrieval, so answers cite the pet's actual reports instead of generic advice.",
+      "Snap-a-photo report digitization: Gemini extracts structured lab values and metadata from veterinary documents.",
+      "Voice journal with real-time dictation (Web Speech / native iOS speech) and self-hosted Whisper transcription as the accurate fallback.",
+      "Vaccination protocols and calendar events with locale-aware transactional email reminders sent through Resend.",
+      "Hardened edge: Cloudflare WAF and rate limiting, admin panel on a separate hostname behind Cloudflare Access (email OTP), and the origin locked down with Authenticated Origin Pulls (mTLS) so direct-to-IP traffic is rejected.",
+      "Ships as an Android (TWA) and iOS (Capacitor) app over the same live web codebase; fully bilingual ES/EN.",
     ],
   },
   {
@@ -104,17 +105,18 @@ export const projectsEs = [
   {
     title: "Furtale",
     description:
-      "Una plataforma full-stack para gestionar los registros de salud de las mascotas. Los dueños guardan los perfiles, fotos y documentos veterinarios de sus mascotas en un solo lugar, los comparten en modo solo lectura con un veterinario y consultan a un asistente de IA basado en el historial médico real de cada mascota.",
+      "Plataforma full-stack para gestionar historiales de salud de mascotas. Los dueños mantienen perfiles, fotos, bitácoras con notas de voz y documentos veterinarios en un solo lugar, reciben recordatorios de vacunas y citas por correo, comparten el historial en modo lectura con su veterinario y consultan a un asistente de IA anclado al historial médico real de cada mascota.",
     image: "",
     repoUrl: "",
     liveUrl: "https://furtale.pet",
-    tech: ["TypeScript", "Next.js", "React", "Python", "FastAPI", "PostgreSQL", "pgvector", "Anthropic Claude", "Google Gemini", "S3 / MinIO", "Docker"],
+    tech: ["TypeScript", "Next.js", "React", "Python", "FastAPI", "PostgreSQL", "pgvector", "Anthropic Claude", "Google Gemini", "Whisper", "S3 / MinIO", "Docker", "Cloudflare", "Resend"],
     bullets: [
-      "Extracción de documentos con IA: fotografías un informe de laboratorio y Claude completa los campos estructurados mediante uso forzado de herramientas (el dueño revisa antes de guardar).",
-      "Chat RAG por mascota con citas, basado en los registros de esa mascota usando embeddings locales fastembed almacenados en PostgreSQL pgvector.",
-      "Autenticación y RBAC con enfoque en seguridad: JWT con refresh rotativo, hashing Argon2, bloqueo por fuerza bruta, Google OAuth y un log de auditoría append-only.",
-      "Acceso solo lectura, temporal y revocable, para veterinarios; cuentas de clínica multi-rol.",
-      "Gestión completa de la mascota: fotos, control de peso, bitácora, transcripción de notas de voz, notificaciones, i18n EN/ES y modo oscuro.",
+      "Asistente RAG sobre el historial de cada mascota (pgvector + Claude) con recuperación vía tool-use: las respuestas citan los informes reales, no consejos genéricos.",
+      "Digitalización de informes desde una foto: Gemini extrae valores de laboratorio y metadatos estructurados de documentos veterinarios.",
+      "Bitácora de voz con dictado en tiempo real (Web Speech / dictado nativo en iOS) y transcripción con Whisper autoalojado como respaldo de precisión.",
+      "Protocolos de vacunación y eventos de calendario con recordatorios transaccionales por correo, según el idioma del usuario, enviados con Resend.",
+      "Borde endurecido: WAF y rate limiting de Cloudflare, panel de administración en un hostname separado detrás de Cloudflare Access (OTP por correo), y origen bloqueado con Authenticated Origin Pulls (mTLS) que rechaza el tráfico directo a la IP.",
+      "Se distribuye como app de Android (TWA) y iOS (Capacitor) sobre el mismo código web en vivo; completamente bilingüe ES/EN.",
     ],
   },
   {
