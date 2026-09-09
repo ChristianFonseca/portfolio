@@ -6,7 +6,7 @@ import type { SectionKind } from "./schemas"
 export type SubFieldSpec = {
   key: string
   label: string
-  type: "text" | "textarea" | "tags" | "bullets" | "checkbox" | "image" | "gallery" | "linktags"
+  type: "text" | "textarea" | "tags" | "bullets" | "checkbox" | "image" | "gallery" | "linktags" | "month"
   hint?: string
   // Para type "image"/"gallery": proporción del editor de recorte (ancho/alto).
   aspect?: number
@@ -120,8 +120,8 @@ export const kindSpecs: Record<SectionKind, FieldSpec[]> = {
         { key: "institutionUrl", label: "Link de la institución (opcional)", type: "text", shared: true },
         { key: "department", label: "Departamento / Centro — subtexto (opcional)", type: "text", shared: true, hint: "ej. Depto. de Ing. Electrónica, CTIC" },
         { key: "departmentUrl", label: "Link del departamento/centro (opcional)", type: "text", shared: true },
-        { key: "startDate", label: "Inicio", type: "text", shared: true, hint: "ej. 2018 o Mar 2018" },
-        { key: "endDate", label: "Fin (vacío = Presente)", type: "text", shared: true },
+        { key: "startDate", label: "Inicio (mes/año)", type: "month", shared: true },
+        { key: "endDate", label: "Fin (vacío = Presente)", type: "month", shared: true },
         { key: "images", label: "Fotos (carrusel)", type: "gallery", aspect: 16 / 9 },
         { key: "bullets", label: "Logros", type: "bullets", hint: "uno por línea" },
         { key: "tech", label: "Tecnologías", type: "tags", hint: "separadas por comas" },

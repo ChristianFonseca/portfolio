@@ -7,17 +7,27 @@ import { Badge } from "@/components/ui/badge"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
 import { ProjectCarousel } from "@/components/project-carousel"
 import type { ResearchData, SectionEntry } from "@/lib/content/schemas"
-import type { Dictionary } from "@/lib/i18n/dictionaries"
+import type { Dictionary, Locale } from "@/lib/i18n/dictionaries"
 
 type Item = ResearchData["items"][number]
 
 const galleryOf = (it: Item): string[] => (it.images && it.images.length > 0 ? it.images : [])
 
+// "YYYY-MM" -> "mar 2023" localizado; si no es ese formato, se muestra tal cual (legacy)
+function fmtMonth(value: string, locale: Locale): string {
+  const m = /^(\d{4})-(\d{2})$/.exec(value || "")
+  if (!m) return value || ""
+  const d = new Date(Number(m[1]), Number(m[2]) - 1, 1)
+  return new Intl.DateTimeFormat(locale === "es" ? "es" : "en", { month: "short", year: "numeric" }).format(d)
+}
+
 // Rango de fechas: "inicio – fin", "inicio – Presente", o solo fin. Vacío si no hay.
-function dateRange(it: Item, present: string): string {
-  if (it.startDate && it.endDate) return `${it.startDate} – ${it.endDate}`
-  if (it.startDate) return `${it.startDate} – ${present}`
-  return it.endDate || ""
+function dateRange(it: Item, present: string, locale: Locale): string {
+  const s = fmtMonth(it.startDate, locale)
+  const e = fmtMonth(it.endDate, locale)
+  if (s && e) return `${s} – ${e}`
+  if (s) return `${s} – ${present}`
+  return e || ""
 }
 
 const CARD_GRADIENTS = [
@@ -27,7 +37,15 @@ const CARD_GRADIENTS = [
   "from-orange-500/20 to-red-500/20",
 ]
 
-export function ResearchSection({ section, dict }: { section: SectionEntry<ResearchData>; dict: Dictionary }) {
+export function ResearchSection({
+  section,
+  dict,
+  locale,
+}: {
+  section: SectionEntry<ResearchData>
+  dict: Dictionary
+  locale: Locale
+}) {
   const [selected, setSelected] = useState<Item | null>(null)
 
   return (
@@ -78,11 +96,11 @@ export function ResearchSection({ section, dict }: { section: SectionEntry<Resea
                   </h3>
                   <ArrowUpRight className="h-4 w-4 shrink-0 text-muted-foreground/50 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-primary" />
                 </div>
-                {(item.institution || dateRange(item, dict.projects.present)) && (
+                {(item.institution || dateRange(item, dict.projects.present, locale)) && (
                   <p className="mb-2 text-xs text-muted-foreground/80">
                     {item.institution}
-                    {item.institution && dateRange(item, dict.projects.present) && " · "}
-                    {dateRange(item, dict.projects.present)}
+                    {item.institution && dateRange(item, dict.projects.present, locale) && " · "}
+                    {dateRange(item, dict.projects.present, locale)}
                   </p>
                 )}
                 <p className="text-sm text-muted-foreground mb-4 line-clamp-3">{item.description}</p>
@@ -115,7 +133,7 @@ export function ResearchSection({ section, dict }: { section: SectionEntry<Resea
                     <DialogTitle className="text-2xl bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
                       {selected.title}
                     </DialogTitle>
-                    {(selected.institution || selected.department || dateRange(selected, dict.projects.present)) && (
+                    {(selected.institution || selected.department || dateRange(selected, dict.projects.present, locale)) && (
                       <div className="mt-1 space-y-0.5 text-left">
                         {selected.institution &&
                           (selected.institutionUrl ? (
@@ -143,8 +161,8 @@ export function ResearchSection({ section, dict }: { section: SectionEntry<Resea
                           ) : (
                             <div className="text-xs text-muted-foreground">{selected.department}</div>
                           ))}
-                        {dateRange(selected, dict.projects.present) && (
-                          <div className="text-xs text-muted-foreground/80">{dateRange(selected, dict.projects.present)}</div>
+                        {dateRange(selected, dict.projects.present, locale) && (
+                          <div className="text-xs text-muted-foreground/80">{dateRange(selected, dict.projects.present, locale)}</div>
                         )}
                       </div>
                     )}

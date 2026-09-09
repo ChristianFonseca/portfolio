@@ -310,7 +310,7 @@ export function Landing({
       {publicProjects.visible && <ProjectsSection section={publicProjects} dict={dict} />}
 
       {/* Research Projects Section */}
-      {researchProjects.visible && <ResearchSection section={researchProjects} dict={dict} />}
+      {researchProjects.visible && <ResearchSection section={researchProjects} dict={dict} locale={locale} />}
 
       {/* Experience Section */}
       {experience.visible && (

@@ -559,6 +559,13 @@ export function SectionEditor({
                                 onChange={(e) => setItemField(field.key, i, sub.key, e.target.value)}
                                 className={`${inputClass} resize-y`}
                               />
+                            ) : sub.type === "month" ? (
+                              <input
+                                type="month"
+                                value={String(item[sub.key] ?? "")}
+                                onChange={(e) => setItemField(field.key, i, sub.key, e.target.value)}
+                                className={`${inputClass} w-fit`}
+                              />
                             ) : (
                               <input
                                 type="text"
