@@ -13,6 +13,13 @@ type Item = ResearchData["items"][number]
 
 const galleryOf = (it: Item): string[] => (it.images && it.images.length > 0 ? it.images : [])
 
+// Rango de fechas: "inicio – fin", "inicio – Presente", o solo fin. Vacío si no hay.
+function dateRange(it: Item, present: string): string {
+  if (it.startDate && it.endDate) return `${it.startDate} – ${it.endDate}`
+  if (it.startDate) return `${it.startDate} – ${present}`
+  return it.endDate || ""
+}
+
 const CARD_GRADIENTS = [
   "from-blue-500/20 to-purple-500/20",
   "from-green-500/20 to-teal-500/20",
@@ -65,12 +72,19 @@ export function ResearchSection({ section, dict }: { section: SectionEntry<Resea
                     </span>
                   )}
                 </div>
-                <div className="flex items-start justify-between gap-2 mb-2">
+                <div className="flex items-start justify-between gap-2 mb-1">
                   <h3 className="text-lg font-semibold text-primary group-hover:underline underline-offset-4">
                     {item.title}
                   </h3>
                   <ArrowUpRight className="h-4 w-4 shrink-0 text-muted-foreground/50 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-primary" />
                 </div>
+                {(item.institution || dateRange(item, dict.projects.present)) && (
+                  <p className="mb-2 text-xs text-muted-foreground/80">
+                    {item.institution}
+                    {item.institution && dateRange(item, dict.projects.present) && " · "}
+                    {dateRange(item, dict.projects.present)}
+                  </p>
+                )}
                 <p className="text-sm text-muted-foreground mb-4 line-clamp-3">{item.description}</p>
                 <div className="mt-auto flex flex-wrap gap-1">
                   {item.tech.slice(0, 4).map((tech) => (
@@ -101,6 +115,39 @@ export function ResearchSection({ section, dict }: { section: SectionEntry<Resea
                     <DialogTitle className="text-2xl bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
                       {selected.title}
                     </DialogTitle>
+                    {(selected.institution || selected.department || dateRange(selected, dict.projects.present)) && (
+                      <div className="mt-1 space-y-0.5 text-left">
+                        {selected.institution &&
+                          (selected.institutionUrl ? (
+                            <a
+                              href={selected.institutionUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-sm font-medium text-primary hover:underline"
+                            >
+                              {selected.institution}
+                            </a>
+                          ) : (
+                            <div className="text-sm font-medium text-foreground/90">{selected.institution}</div>
+                          ))}
+                        {selected.department &&
+                          (selected.departmentUrl ? (
+                            <a
+                              href={selected.departmentUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="block text-xs text-muted-foreground hover:text-primary hover:underline"
+                            >
+                              {selected.department}
+                            </a>
+                          ) : (
+                            <div className="text-xs text-muted-foreground">{selected.department}</div>
+                          ))}
+                        {dateRange(selected, dict.projects.present) && (
+                          <div className="text-xs text-muted-foreground/80">{dateRange(selected, dict.projects.present)}</div>
+                        )}
+                      </div>
+                    )}
                   </DialogHeader>
 
                   {gallery.length > 0 && <ProjectCarousel images={gallery} title={selected.title} />}

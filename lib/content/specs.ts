@@ -116,6 +116,12 @@ export const kindSpecs: Record<SectionKind, FieldSpec[]> = {
       fields: [
         { key: "title", label: "Título", type: "text" },
         { key: "description", label: "Descripción", type: "textarea" },
+        { key: "institution", label: "Institución (opcional)", type: "text", shared: true, hint: "ej. UTEC, UNI" },
+        { key: "institutionUrl", label: "Link de la institución (opcional)", type: "text", shared: true },
+        { key: "department", label: "Departamento / Centro — subtexto (opcional)", type: "text", shared: true, hint: "ej. Depto. de Ing. Electrónica, CTIC" },
+        { key: "departmentUrl", label: "Link del departamento/centro (opcional)", type: "text", shared: true },
+        { key: "startDate", label: "Inicio", type: "text", shared: true, hint: "ej. 2018 o Mar 2018" },
+        { key: "endDate", label: "Fin (vacío = Presente)", type: "text", shared: true },
         { key: "images", label: "Fotos (carrusel)", type: "gallery", aspect: 16 / 9 },
         { key: "bullets", label: "Logros", type: "bullets", hint: "uno por línea" },
         { key: "tech", label: "Tecnologías", type: "tags", hint: "separadas por comas" },

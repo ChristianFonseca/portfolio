@@ -33,6 +33,7 @@ export const dictionaries = {
       highlights: "Highlights",
       achievements: "Achievements",
       stack: "Tech stack",
+      present: "Present",
     },
     contact: {
       heading: "Ready to collaborate?",
@@ -96,6 +97,7 @@ export const dictionaries = {
       highlights: "Destacados",
       achievements: "Logros",
       stack: "Tecnologías",
+      present: "Presente",
     },
     contact: {
       heading: "¿Listo para colaborar?",

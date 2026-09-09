@@ -62,6 +62,14 @@ export const researchSchema = z.object({
         title: z.string().min(1).max(120),
         description: z.string().max(600),
         images: z.array(z.string().min(1).max(300)).max(12).default([]), // carrusel (figuras/diagramas)
+        // Dónde se hizo (todo opcional): institución + departamento/centro, cada uno con link opcional
+        institution: z.string().max(160).default(""),
+        institutionUrl: z.string().max(300).default(""),
+        department: z.string().max(200).default(""),
+        departmentUrl: z.string().max(300).default(""),
+        // Fechas (opcional): fin vacío = "Presente"
+        startDate: z.string().max(40).default(""),
+        endDate: z.string().max(40).default(""),
         bullets: z.array(z.string().min(1).max(400)).max(12),
         tech: z.array(z.string().min(1).max(60)).max(20),
       }),
