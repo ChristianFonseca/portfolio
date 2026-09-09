@@ -233,6 +233,17 @@
   .blog-prose pre code {
     @apply bg-transparent p-0;
   }
+  /* Diagramas Mermaid: sin estilo de bloque de código, centrados. Ocultos hasta renderizar (evita ver el código crudo). */
+  .blog-prose pre.mermaid {
+    @apply flex justify-center border-0 bg-transparent p-0 my-8;
+    font-family: inherit;
+  }
+  .blog-prose pre.mermaid:not([data-processed]) {
+    @apply invisible h-0 overflow-hidden my-0;
+  }
+  .blog-prose pre.mermaid svg {
+    @apply max-w-full h-auto;
+  }
   .blog-prose img {
     @apply my-6 max-w-full rounded-xl;
   }

@@ -37,6 +37,13 @@ const escapeHtml = (s: string) =>
 
 const renderer = new Renderer()
 renderer.html = ({ text }) => escapeHtml(text)
+// Bloques ```mermaid``` -> <pre class="mermaid"> para que el cliente los renderice como diagrama.
+// El código va escapado (el cliente lee textContent, que decodifica las entidades).
+renderer.code = ({ text, lang }) => {
+  const l = (lang || "").trim().toLowerCase()
+  if (l === "mermaid") return `<pre class="mermaid">${escapeHtml(text)}</pre>`
+  return `<pre><code class="language-${escapeHtml(l)}">${escapeHtml(text)}</code></pre>`
+}
 
 export function renderMarkdown(md: string): string {
   return marked.parse(md, { renderer, async: false, gfm: true }) as string

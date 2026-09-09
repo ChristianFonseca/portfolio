@@ -4,6 +4,7 @@ import { notFound } from "next/navigation"
 import { ArrowLeft } from "lucide-react"
 import { getPublishedPost, getPublishedPosts, renderMarkdown } from "@/lib/blog"
 import { BlogHeader } from "@/components/blog/blog-header"
+import { MermaidRender } from "@/components/blog/mermaid-render"
 import { PostPager } from "@/components/blog/post-pager"
 import { Badge } from "@/components/ui/badge"
 
@@ -96,6 +97,7 @@ export default async function BlogPostPageEs({ params }: { params: Promise<{ slu
           </div>
         )}
         <div className="blog-prose mt-10" dangerouslySetInnerHTML={{ __html: renderMarkdown(post.body) }} />
+        <MermaidRender />
         <PostPager prev={older} next={newer} locale="es" />
       </article>
     </main>
