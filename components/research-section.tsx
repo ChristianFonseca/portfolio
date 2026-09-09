@@ -97,11 +97,12 @@ export function ResearchSection({
                   <ArrowUpRight className="h-4 w-4 shrink-0 text-muted-foreground/50 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-primary" />
                 </div>
                 {(item.institution || dateRange(item, dict.projects.present, locale)) && (
-                  <p className="mb-2 text-xs text-muted-foreground/80">
-                    {item.institution}
-                    {item.institution && dateRange(item, dict.projects.present, locale) && " · "}
-                    {dateRange(item, dict.projects.present, locale)}
-                  </p>
+                  <div className="mb-2 text-xs leading-snug">
+                    {item.institution && <div className="text-muted-foreground/80">{item.institution}</div>}
+                    {dateRange(item, dict.projects.present, locale) && (
+                      <div className="text-muted-foreground/60">{dateRange(item, dict.projects.present, locale)}</div>
+                    )}
+                  </div>
                 )}
                 <p className="text-sm text-muted-foreground mb-4 line-clamp-3">{item.description}</p>
                 <div className="mt-auto flex flex-wrap gap-1">
