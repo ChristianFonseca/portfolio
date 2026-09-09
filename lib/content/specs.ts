@@ -116,6 +116,7 @@ export const kindSpecs: Record<SectionKind, FieldSpec[]> = {
       fields: [
         { key: "title", label: "Título", type: "text" },
         { key: "description", label: "Descripción", type: "textarea" },
+        { key: "images", label: "Fotos (carrusel)", type: "gallery", aspect: 16 / 9 },
         { key: "bullets", label: "Logros", type: "bullets", hint: "uno por línea" },
         { key: "tech", label: "Tecnologías", type: "tags", hint: "separadas por comas" },
       ],

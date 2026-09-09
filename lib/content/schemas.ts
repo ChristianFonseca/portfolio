@@ -61,6 +61,7 @@ export const researchSchema = z.object({
       z.object({
         title: z.string().min(1).max(120),
         description: z.string().max(600),
+        images: z.array(z.string().min(1).max(300)).max(12).default([]), // carrusel (figuras/diagramas)
         bullets: z.array(z.string().min(1).max(400)).max(12),
         tech: z.array(z.string().min(1).max(60)).max(20),
       }),

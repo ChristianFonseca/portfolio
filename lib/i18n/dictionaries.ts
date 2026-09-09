@@ -31,6 +31,7 @@ export const dictionaries = {
       sourceCode: "Source code",
       visitSite: "Visit site",
       highlights: "Highlights",
+      achievements: "Achievements",
       stack: "Tech stack",
     },
     contact: {
@@ -93,6 +94,7 @@ export const dictionaries = {
       sourceCode: "Código fuente",
       visitSite: "Visitar sitio",
       highlights: "Destacados",
+      achievements: "Logros",
       stack: "Tecnologías",
     },
     contact: {

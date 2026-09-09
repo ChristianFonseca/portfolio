@@ -5,6 +5,7 @@ import type React from "react"
 import { Navigation } from "@/components/navigation"
 import { BubbleCard } from "@/components/bubble-card"
 import { ProjectsSection } from "@/components/projects-section"
+import { ResearchSection } from "@/components/research-section"
 import { ThemedBackground } from "@/components/themed-background"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -309,36 +310,7 @@ export function Landing({
       {publicProjects.visible && <ProjectsSection section={publicProjects} dict={dict} />}
 
       {/* Research Projects Section */}
-      {researchProjects.visible && (
-        <section id="research-projects" className="py-20 px-6">
-          <div className="max-w-6xl mx-auto">
-            <h2 className="text-3xl md:text-4xl font-bold text-center mb-16 floating-element bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-              {researchProjects.title}
-            </h2>
-
-            <div className="grid md:grid-cols-2 gap-8">
-              {researchProjects.data.items.map((project, i) => (
-                <BubbleCard key={`${project.title}-${i}`} size="lg" className="glow-effect">
-                  <h3 className="text-xl font-semibold mb-4 text-primary">{project.title}</h3>
-                  <p className="text-muted-foreground mb-4">{project.description}</p>
-                  <ul className="text-sm text-muted-foreground space-y-1 mb-4">
-                    {project.bullets.map((bullet, j) => (
-                      <li key={j}>• {bullet}</li>
-                    ))}
-                  </ul>
-                  <div className="flex flex-wrap gap-2">
-                    {project.tech.map((tech) => (
-                      <Badge key={tech} variant="secondary" className="text-xs">
-                        {tech}
-                      </Badge>
-                    ))}
-                  </div>
-                </BubbleCard>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
+      {researchProjects.visible && <ResearchSection section={researchProjects} dict={dict} />}
 
       {/* Experience Section */}
       {experience.visible && (
