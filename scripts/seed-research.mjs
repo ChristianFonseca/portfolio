@@ -19,13 +19,20 @@ if (!rows.length) {
 }
 const current = rows[0].data ?? {}
 
+// Campos que el usuario edita en el admin: se preservan de la DB (no se pisan).
+// title/description/bullets/tech vienen del módulo (contenido autorado).
+const PRESERVE = ["images", "papers", "institution", "institutionUrl", "department", "departmentUrl", "startDate", "endDate"]
+
 function mergeLocale(nextItems, prevItems) {
   const prevByTitle = new Map((prevItems ?? []).map((p) => [p.title, p]))
   return nextItems.map((p) => {
     const prev = prevByTitle.get(p.title)
     if (!prev) return p
-    // preserva solo las imágenes ya subidas; todo lo demás viene del módulo
-    return { ...p, images: Array.isArray(prev.images) && prev.images.length ? prev.images : (p.images ?? []) }
+    const out = { ...p }
+    for (const k of PRESERVE) {
+      if (prev[k] !== undefined && !(Array.isArray(prev[k]) && prev[k].length === 0) && prev[k] !== "") out[k] = prev[k]
+    }
+    return out
   })
 }
 

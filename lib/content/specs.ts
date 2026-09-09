@@ -6,7 +6,7 @@ import type { SectionKind } from "./schemas"
 export type SubFieldSpec = {
   key: string
   label: string
-  type: "text" | "textarea" | "tags" | "bullets" | "checkbox" | "image" | "gallery" | "linktags" | "month"
+  type: "text" | "textarea" | "tags" | "bullets" | "checkbox" | "image" | "gallery" | "linktags" | "month" | "papers"
   hint?: string
   // Para type "image"/"gallery": proporción del editor de recorte (ancho/alto).
   aspect?: number
@@ -125,6 +125,7 @@ export const kindSpecs: Record<SectionKind, FieldSpec[]> = {
         { key: "images", label: "Fotos (carrusel)", type: "gallery", aspect: 16 / 9 },
         { key: "bullets", label: "Logros", type: "bullets", hint: "uno por línea" },
         { key: "tech", label: "Tecnologías", type: "tags", hint: "separadas por comas" },
+        { key: "papers", label: "Papers / Publicaciones (opcional)", type: "papers", shared: true, hint: "nombre + link; autores opcional" },
       ],
     },
   ],

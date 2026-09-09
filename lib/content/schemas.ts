@@ -72,6 +72,17 @@ export const researchSchema = z.object({
         endDate: z.string().max(40).default(""),
         bullets: z.array(z.string().min(1).max(400)).max(12),
         tech: z.array(z.string().min(1).max(60)).max(20),
+        // Papers/publicaciones (opcional): nombre + link + autores (autores opcional)
+        papers: z
+          .array(
+            z.object({
+              name: z.string().min(1).max(240),
+              url: z.string().max(300).default(""),
+              authors: z.string().max(300).default(""),
+            }),
+          )
+          .max(20)
+          .default([]),
       }),
     )
     .max(12),

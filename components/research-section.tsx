@@ -192,6 +192,36 @@ export function ResearchSection({
                       </div>
                     )}
 
+                    {selected.papers && selected.papers.length > 0 && (
+                      <div>
+                        <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                          {dict.projects.papers}
+                        </p>
+                        <ul className="space-y-2 text-sm">
+                          {selected.papers.map((p, j) => (
+                            <li key={j} className="flex gap-2">
+                              <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-accent/60" />
+                              <div>
+                                {p.url ? (
+                                  <a
+                                    href={p.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-primary hover:underline"
+                                  >
+                                    {p.name}
+                                  </a>
+                                ) : (
+                                  <span className="text-foreground/90">{p.name}</span>
+                                )}
+                                {p.authors && <div className="text-xs text-muted-foreground/70">{p.authors}</div>}
+                              </div>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
                     <div>
                       <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                         {dict.projects.stack}

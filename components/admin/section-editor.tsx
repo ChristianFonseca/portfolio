@@ -9,13 +9,14 @@ import { TagsInput } from "@/components/admin/tags-input"
 import { ImageField } from "@/components/admin/image-field"
 import { GalleryField } from "@/components/admin/gallery-field"
 import { LinkTagsInput, type LinkTag } from "@/components/admin/link-tags-input"
+import { PapersInput, type Paper } from "@/components/admin/papers-input"
 import type { FieldSpec, SubFieldSpec } from "@/lib/content/specs"
 import type { SectionKind } from "@/lib/content/schemas"
 import type { Locale } from "@/lib/i18n/dictionaries"
 
 // Form model: como los datos reales, pero con bullets como texto multilínea
 // (un ítem por línea). Tags se editan como chips; linktags como {name,url}[].
-type FieldValue = string | boolean | string[] | LinkTag[]
+type FieldValue = string | boolean | string[] | LinkTag[] | Paper[]
 type FormValue = FieldValue | FormItem[]
 type FormItem = Record<string, FieldValue>
 
@@ -23,6 +24,12 @@ const normalizeBadge = (x: unknown): LinkTag =>
   typeof x === "string"
     ? { name: x, url: "" }
     : { name: String((x as LinkTag)?.name ?? ""), url: String((x as LinkTag)?.url ?? "") }
+
+const normalizePaper = (x: unknown): Paper => ({
+  name: String((x as Paper)?.name ?? ""),
+  url: String((x as Paper)?.url ?? ""),
+  authors: String((x as Paper)?.authors ?? ""),
+})
 type FormModel = Record<string, FormValue>
 
 function toFormModel(spec: FieldSpec[], data: Record<string, unknown>): FormModel {
@@ -37,6 +44,7 @@ function toFormModel(spec: FieldSpec[], data: Record<string, unknown>): FormMode
           const v = item[sub.key]
           if (sub.type === "tags" || sub.type === "gallery") formItem[sub.key] = Array.isArray(v) ? ([...v] as string[]) : []
           else if (sub.type === "linktags") formItem[sub.key] = Array.isArray(v) ? v.map(normalizeBadge) : []
+          else if (sub.type === "papers") formItem[sub.key] = Array.isArray(v) ? v.map(normalizePaper) : []
           else if (sub.type === "bullets") formItem[sub.key] = Array.isArray(v) ? (v as string[]).join("\n") : ""
           else if (sub.type === "checkbox") formItem[sub.key] = Boolean(v)
           else formItem[sub.key] = typeof v === "string" ? v : ""
@@ -70,6 +78,12 @@ function fromFormModel(spec: FieldSpec[], model: FormModel): Record<string, unkn
                   .filter((b) => b.name?.trim())
                   .map((b) => ({ name: b.name.trim(), url: (b.url || "").trim() }))
               : []
+          else if (sub.type === "papers")
+            out[sub.key] = Array.isArray(v)
+              ? (v as Paper[])
+                  .filter((p) => p.name?.trim())
+                  .map((p) => ({ name: p.name.trim(), url: (p.url || "").trim(), authors: (p.authors || "").trim() }))
+              : []
           else if (sub.type === "bullets") out[sub.key] = splitLines(String(v ?? ""))
           else if (sub.type === "checkbox") out[sub.key] = Boolean(v)
           else out[sub.key] = String(v ?? "")
@@ -89,12 +103,12 @@ function emptyItem(fields: SubFieldSpec[]): FormItem {
   const item: FormItem = {}
   for (const sub of fields)
     item[sub.key] =
-      sub.type === "checkbox" ? false : ["tags", "gallery", "linktags"].includes(sub.type) ? [] : ""
+      sub.type === "checkbox" ? false : ["tags", "gallery", "linktags", "papers"].includes(sub.type) ? [] : ""
   return item
 }
 
 const isSharedSubType = (sub: SubFieldSpec) =>
-  sub.type === "image" || sub.type === "gallery" || sub.type === "linktags" || sub.shared === true
+  sub.type === "image" || sub.type === "gallery" || sub.type === "linktags" || sub.type === "papers" || sub.shared === true
 
 // Copia los campos compartidos (imágenes, URLs, tecnologías) del idioma fuente al
 // destino, para que ambos idiomas queden consistentes (al cargar y tras traducir).
@@ -506,7 +520,7 @@ export function SectionEditor({
                           <div
                             key={sub.key}
                             className={
-                              sub.type === "textarea" || sub.type === "bullets" || sub.type === "tags" || sub.type === "image" || sub.type === "gallery" || sub.type === "linktags"
+                              sub.type === "textarea" || sub.type === "bullets" || sub.type === "tags" || sub.type === "image" || sub.type === "gallery" || sub.type === "linktags" || sub.type === "papers"
                                 ? "md:col-span-2"
                                 : ""
                             }
@@ -539,6 +553,11 @@ export function SectionEditor({
                             ) : sub.type === "linktags" ? (
                               <LinkTagsInput
                                 value={(item[sub.key] as LinkTag[]) ?? []}
+                                onChange={(v) => setItemField(field.key, i, sub.key, v)}
+                              />
+                            ) : sub.type === "papers" ? (
+                              <PapersInput
+                                value={(item[sub.key] as Paper[]) ?? []}
                                 onChange={(v) => setItemField(field.key, i, sub.key, v)}
                               />
                             ) : sub.type === "image" ? (
