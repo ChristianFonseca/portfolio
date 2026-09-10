@@ -6,6 +6,14 @@ import { useRouter } from "next/navigation"
 import { FileText, Plus, Trash2, Globe, EyeOff } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
 import { createPost, deletePost, togglePublishPost } from "@/app/admin/actions"
 
 export interface PostSummary {
@@ -32,6 +40,7 @@ const inputClass =
 export function PostsManager({ posts }: { posts: PostSummary[] }) {
   const router = useRouter()
   const [pending, startTransition] = useTransition()
+  const [open, setOpen] = useState(false)
   const [title, setTitle] = useState("")
   const [slug, setSlug] = useState("")
   const [slugTouched, setSlugTouched] = useState(false)
@@ -42,6 +51,16 @@ export function PostsManager({ posts }: { posts: PostSummary[] }) {
     const t = setTimeout(() => setToast(null), 4000)
     return () => clearTimeout(t)
   }, [toast])
+
+  // Al cerrar el modal se limpia el formulario para la próxima vez.
+  const handleOpenChange = (next: boolean) => {
+    setOpen(next)
+    if (!next) {
+      setTitle("")
+      setSlug("")
+      setSlugTouched(false)
+    }
+  }
 
   const handleCreate = () => {
     startTransition(async () => {
@@ -75,19 +94,36 @@ export function PostsManager({ posts }: { posts: PostSummary[] }) {
     })
   }
 
+  const published = posts.filter((p) => p.published).length
+
   return (
-    <div className="grid gap-6 lg:grid-cols-[1fr_340px]">
+    <div className="space-y-4">
+      {/* Barra superior: conteo + acción principal */}
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <p className="text-xs text-muted-foreground">
+          {posts.length} {posts.length === 1 ? "artículo" : "artículos"} · {published}{" "}
+          {published === 1 ? "publicado" : "publicados"} · {posts.length - published} en borrador
+        </p>
+        <Button size="sm" onClick={() => setOpen(true)}>
+          <Plus className="mr-1.5 h-4 w-4" />
+          Nuevo artículo
+        </Button>
+      </div>
+
       <div className="space-y-3">
         {posts.length === 0 && (
           <div className="rounded-2xl border border-dashed border-border py-14 text-center text-sm text-muted-foreground">
             <FileText className="mx-auto mb-3 h-6 w-6 opacity-40" />
-            Aún no hay artículos. Crea el primero →
+            Aún no hay artículos. Crea el primero con el botón de arriba.
           </div>
         )}
         {posts.map((post) => (
-          <div key={post.id} className="flex items-center gap-4 rounded-2xl border border-border bg-card/40 px-5 py-4">
+          <div
+            key={post.id}
+            className="flex flex-wrap items-center gap-3 rounded-2xl border border-border bg-card/40 px-5 py-4 sm:flex-nowrap sm:gap-4"
+          >
             <FileText className="h-4 w-4 shrink-0 text-primary/60" />
-            <div className="min-w-0 flex-1">
+            <div className="min-w-0 flex-1 basis-full sm:basis-auto">
               <p className="truncate text-sm font-semibold">{post.title || "(sin título)"}</p>
               <p className="truncate text-xs text-muted-foreground">
                 /blog/{post.slug} · act. {post.updated_at}
@@ -117,6 +153,7 @@ export function PostsManager({ posts }: { posts: PostSummary[] }) {
             <Button
               variant="outline"
               size="sm"
+              aria-label="Eliminar artículo"
               className="border-red-500/40 text-xs text-red-400 hover:bg-red-500/10"
               disabled={pending}
               onClick={() => handleDelete(post)}
@@ -127,52 +164,65 @@ export function PostsManager({ posts }: { posts: PostSummary[] }) {
         ))}
       </div>
 
-      <div className="h-fit rounded-2xl border border-border bg-card/40 p-5">
-        <h2 className="mb-4 flex items-center gap-2 font-semibold">
-          <Plus className="h-4 w-4 text-primary" />
-          Nuevo artículo
-        </h2>
-        <div className="space-y-3">
-          <div>
-            <label htmlFor="post-title" className="mb-1 block text-xs text-muted-foreground">
-              Título (EN)
-            </label>
-            <input
-              id="post-title"
-              type="text"
-              value={title}
-              onChange={(e) => {
-                setTitle(e.target.value)
-                if (!slugTouched) setSlug(slugify(e.target.value))
-              }}
-              className={inputClass}
-              placeholder="How to build RAG systems with Gemini"
-            />
+      {/* Modal: nuevo artículo */}
+      <Dialog open={open} onOpenChange={handleOpenChange}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Plus className="h-4 w-4 text-primary" />
+              Nuevo artículo
+            </DialogTitle>
+            <DialogDescription>
+              Se crea como borrador y te lleva al editor. El slug se genera desde el título; puedes ajustarlo.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3">
+            <div>
+              <label htmlFor="post-title" className="mb-1 block text-xs text-muted-foreground">
+                Título (EN)
+              </label>
+              <input
+                id="post-title"
+                type="text"
+                autoFocus
+                value={title}
+                onChange={(e) => {
+                  setTitle(e.target.value)
+                  if (!slugTouched) setSlug(slugify(e.target.value))
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && title.trim() && slug.length >= 3 && !pending) handleCreate()
+                }}
+                className={inputClass}
+                placeholder="How to build RAG systems with Gemini"
+              />
+            </div>
+            <div>
+              <label htmlFor="post-slug" className="mb-1 block text-xs text-muted-foreground">
+                Slug (URL: /blog/…)
+              </label>
+              <input
+                id="post-slug"
+                type="text"
+                value={slug}
+                onChange={(e) => {
+                  setSlug(e.target.value)
+                  setSlugTouched(true)
+                }}
+                className={`${inputClass} font-mono text-xs`}
+              />
+            </div>
           </div>
-          <div>
-            <label htmlFor="post-slug" className="mb-1 block text-xs text-muted-foreground">
-              Slug (URL: /blog/…)
-            </label>
-            <input
-              id="post-slug"
-              type="text"
-              value={slug}
-              onChange={(e) => {
-                setSlug(e.target.value)
-                setSlugTouched(true)
-              }}
-              className={`${inputClass} font-mono text-xs`}
-            />
-          </div>
-          <Button
-            className="w-full"
-            disabled={pending || !title.trim() || slug.length < 3}
-            onClick={handleCreate}
-          >
-            {pending ? "Creando…" : "Crear borrador"}
-          </Button>
-        </div>
-      </div>
+          <DialogFooter className="gap-2 sm:gap-0">
+            <Button variant="outline" onClick={() => handleOpenChange(false)} disabled={pending}>
+              Cancelar
+            </Button>
+            <Button disabled={pending || !title.trim() || slug.length < 3} onClick={handleCreate}>
+              {pending ? "Creando…" : "Crear borrador"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {toast && (
         <div

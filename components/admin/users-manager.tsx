@@ -5,6 +5,14 @@ import { useRouter } from "next/navigation"
 import { KeyRound, Trash2, UserPlus, Wand2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
 import { createUser, deleteUser, resetUserPassword, setUserRole } from "@/app/admin/actions"
 import type { UserRole } from "@/lib/auth"
 
@@ -31,6 +39,7 @@ const inputClass =
 export function UsersManager({ users, currentUserId }: { users: UserSummary[]; currentUserId: number }) {
   const router = useRouter()
   const [pending, startTransition] = useTransition()
+  const [open, setOpen] = useState(false)
   const [email, setEmail] = useState("")
   const [name, setName] = useState("")
   const [password, setPassword] = useState("")
@@ -43,19 +52,30 @@ export function UsersManager({ users, currentUserId }: { users: UserSummary[]; c
     return () => clearTimeout(t)
   }, [toast])
 
+  const resetForm = () => {
+    setEmail("")
+    setName("")
+    setPassword("")
+    setRole("editor")
+  }
+
+  const handleOpenChange = (next: boolean) => {
+    setOpen(next)
+    if (!next) resetForm()
+  }
+
   const handleCreate = () => {
     startTransition(async () => {
       const result = await createUser({ email, name, password, role })
       if (result.ok) {
+        // El toast sticky con la contraseña se muestra fuera del modal, que se cierra.
         setToast({
           ok: true,
           sticky: true,
           text: `Usuario ${email} creado con rol ${ROLE_LABELS[role]}. Su contraseña: ${password} — cópiala y compártela de forma segura; no se vuelve a mostrar.`,
         })
-        setEmail("")
-        setName("")
-        setPassword("")
-        setRole("editor")
+        setOpen(false)
+        resetForm()
         router.refresh()
       } else {
         setToast({ ok: false, text: result.error })
@@ -108,18 +128,32 @@ export function UsersManager({ users, currentUserId }: { users: UserSummary[]; c
     })
   }
 
+  const admins = users.filter((u) => u.role === "admin").length
+
   return (
-    <div className="grid gap-6 lg:grid-cols-[1fr_340px]">
+    <div className="space-y-4">
+      {/* Barra superior: conteo + acción principal */}
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <p className="text-xs text-muted-foreground">
+          {users.length} {users.length === 1 ? "usuario" : "usuarios"} · {admins} admin · {users.length - admins}{" "}
+          editor{users.length - admins === 1 ? "" : "es"}
+        </p>
+        <Button size="sm" onClick={() => setOpen(true)}>
+          <UserPlus className="mr-1.5 h-4 w-4" />
+          Nuevo usuario
+        </Button>
+      </div>
+
       <div className="space-y-3">
         {users.map((user) => (
           <div
             key={user.id}
-            className="flex items-center gap-4 rounded-2xl border border-border bg-card/40 px-5 py-4"
+            className="flex flex-wrap items-center gap-3 rounded-2xl border border-border bg-card/40 px-5 py-4 sm:flex-nowrap sm:gap-4"
           >
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-primary/60 to-accent/60 text-sm font-bold text-white">
               {(user.name || user.email)[0].toUpperCase()}
             </div>
-            <div className="min-w-0 flex-1">
+            <div className="min-w-0 flex-1 basis-[calc(100%-3.25rem)] sm:basis-auto">
               <p className="truncate text-sm font-semibold">
                 {user.name || user.email}
                 <Badge
@@ -175,87 +209,95 @@ export function UsersManager({ users, currentUserId }: { users: UserSummary[]; c
         ))}
       </div>
 
-      <div className="h-fit rounded-2xl border border-border bg-card/40 p-5">
-        <h2 className="mb-1 flex items-center gap-2 font-semibold">
-          <UserPlus className="h-4 w-4 text-primary" />
-          Agregar usuario
-        </h2>
-        <p className="mb-4 text-xs text-muted-foreground">
-          Podrá entrar a este panel y editar el contenido de la landing.
-        </p>
-        <div className="space-y-3">
-          <div>
-            <label htmlFor="new-email" className="mb-1 block text-xs text-muted-foreground">
-              Email
-            </label>
-            <input
-              id="new-email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className={inputClass}
-              placeholder="persona@ejemplo.com"
-            />
-          </div>
-          <div>
-            <label htmlFor="new-name" className="mb-1 block text-xs text-muted-foreground">
-              Nombre
-            </label>
-            <input
-              id="new-name"
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className={inputClass}
-              placeholder="Nombre y apellido"
-            />
-          </div>
-          <div>
-            <label htmlFor="new-role" className="mb-1 block text-xs text-muted-foreground">
-              Rol
-            </label>
-            <select
-              id="new-role"
-              value={role}
-              onChange={(e) => setRole(e.target.value as UserRole)}
-              className={inputClass}
-            >
-              <option value="editor">Editor — solo contenido y analítica</option>
-              <option value="admin">Admin — todo (usuarios y configuración)</option>
-            </select>
-          </div>
-          <div>
-            <label htmlFor="new-password" className="mb-1 block text-xs text-muted-foreground">
-              Contraseña (mín. 10 caracteres)
-            </label>
-            <div className="flex gap-2">
+      {/* Modal: nuevo usuario */}
+      <Dialog open={open} onOpenChange={handleOpenChange}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <UserPlus className="h-4 w-4 text-primary" />
+              Nuevo usuario
+            </DialogTitle>
+            <DialogDescription>
+              Podrá entrar a este panel y editar el contenido de la landing. La contraseña se muestra una sola vez al
+              crear.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3">
+            <div>
+              <label htmlFor="new-email" className="mb-1 block text-xs text-muted-foreground">
+                Email
+              </label>
               <input
-                id="new-password"
-                type="text"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                id="new-email"
+                type="email"
+                autoFocus
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 className={inputClass}
+                placeholder="persona@ejemplo.com"
               />
-              <Button
-                variant="outline"
-                size="sm"
-                className="h-auto shrink-0 text-xs"
-                onClick={() => setPassword(generatePassword())}
+            </div>
+            <div>
+              <label htmlFor="new-name" className="mb-1 block text-xs text-muted-foreground">
+                Nombre
+              </label>
+              <input
+                id="new-name"
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className={inputClass}
+                placeholder="Nombre y apellido"
+              />
+            </div>
+            <div>
+              <label htmlFor="new-role" className="mb-1 block text-xs text-muted-foreground">
+                Rol
+              </label>
+              <select
+                id="new-role"
+                value={role}
+                onChange={(e) => setRole(e.target.value as UserRole)}
+                className={inputClass}
               >
-                <Wand2 className="mr-1 h-3.5 w-3.5" />
-                Generar
-              </Button>
+                <option value="editor">Editor — solo contenido y analítica</option>
+                <option value="admin">Admin — todo (usuarios y configuración)</option>
+              </select>
+            </div>
+            <div>
+              <label htmlFor="new-password" className="mb-1 block text-xs text-muted-foreground">
+                Contraseña (mín. 10 caracteres)
+              </label>
+              <div className="flex gap-2">
+                <input
+                  id="new-password"
+                  type="text"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className={inputClass}
+                />
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="h-auto shrink-0 text-xs"
+                  onClick={() => setPassword(generatePassword())}
+                >
+                  <Wand2 className="mr-1 h-3.5 w-3.5" />
+                  Generar
+                </Button>
+              </div>
             </div>
           </div>
-          <Button
-            className="w-full"
-            disabled={pending || !email || password.length < 10}
-            onClick={handleCreate}
-          >
-            {pending ? "Creando…" : "Crear usuario"}
-          </Button>
-        </div>
-      </div>
+          <DialogFooter className="gap-2 sm:gap-0">
+            <Button variant="outline" onClick={() => handleOpenChange(false)} disabled={pending}>
+              Cancelar
+            </Button>
+            <Button disabled={pending || !email || password.length < 10} onClick={handleCreate}>
+              {pending ? "Creando…" : "Crear usuario"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {toast && (
         <div
