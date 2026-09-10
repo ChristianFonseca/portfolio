@@ -5,7 +5,19 @@ import { z } from "zod"
 import { sql } from "@/lib/db"
 import { hashPassword, requireAdmin, requireAdminRole, type UserRole } from "@/lib/auth"
 import { kindSchemas, localizedSchema, type SectionKind } from "@/lib/content/schemas"
-import { setSetting } from "@/lib/settings"
+import { getSetting, setSetting } from "@/lib/settings"
+import {
+  SETTING_CATALOG,
+  SETTING_FALLBACK,
+  SETTING_INCIDENT,
+  getGeminiCatalog,
+  listGeminiModels,
+  modelStatus,
+  probeGeminiModel,
+  type GeminiCatalog,
+  type GeminiIncident,
+} from "@/lib/gemini"
+import { buildKnowledgeBase, type KnowledgeBase } from "@/lib/chat/knowledge"
 
 export type ActionResult = { ok: true } | { ok: false; error: string }
 
@@ -205,21 +217,126 @@ export async function setChatConfig(input: {
   }
 }
 
+// ---------- Gemini: modelos ----------
+
+const modelIdSchema = z
+  .string()
+  .trim()
+  .regex(/^[a-z0-9.-]+$/i, "Identificador de modelo inválido")
+  .max(80)
+
+const fmtDate = (iso: string) =>
+  new Date(iso).toLocaleString("es", { dateStyle: "medium", timeStyle: "short", timeZone: "America/Lima" })
+
+// Un modelo solo se acepta si está en el catálogo descargado y no está deprecado.
+// Sin catálogo (aún no se actualizó) solo se bloquean las familias retiradas conocidas.
+async function validateModelChoice(model: string): Promise<{ ok: true; id: string } | { ok: false; error: string }> {
+  const parsed = modelIdSchema.safeParse(model)
+  if (!parsed.success) return { ok: false, error: parsed.error.issues[0].message }
+  const catalog = await getGeminiCatalog()
+  const status = modelStatus(parsed.data, catalog)
+  if (status === "deprecated") {
+    return { ok: false, error: `"${parsed.data}" está deprecado o retirado por Google. Elige otro modelo.` }
+  }
+  if (status === "missing" && catalog) {
+    return {
+      ok: false,
+      error: `"${parsed.data}" no aparece en el catálogo de modelos disponibles (actualizado ${fmtDate(catalog.fetchedAt)}). Actualiza el catálogo o elige uno de la lista.`,
+    }
+  }
+  return { ok: true, id: parsed.data }
+}
+
 export async function setGeminiModel(model: string): Promise<ActionResult> {
   try {
     await requireAdminRole()
-    const parsed = z
-      .string()
-      .trim()
-      .regex(/^[a-z0-9.-]+$/i, "Identificador de modelo inválido")
-      .max(80)
-      .safeParse(model)
-    if (!parsed.success) return { ok: false, error: parsed.error.issues[0].message }
-    await setSetting("gemini_model", parsed.data)
+    const valid = await validateModelChoice(model)
+    if (!valid.ok) return valid
+    const previous = await getSetting<string>("gemini_model", "")
+    await setSetting("gemini_model", valid.id)
+    // Cambiar de modelo cierra el incidente del modelo anterior.
+    if (previous !== valid.id) await setSetting(SETTING_INCIDENT, null)
     return { ok: true }
   } catch (error) {
     console.error("setGeminiModel:", error)
     return { ok: false, error: "Error al guardar la configuración" }
+  }
+}
+
+export async function setGeminiFallbackModel(model: string): Promise<ActionResult> {
+  try {
+    await requireAdminRole()
+    const valid = await validateModelChoice(model)
+    if (!valid.ok) return valid
+    await setSetting(SETTING_FALLBACK, valid.id)
+    return { ok: true }
+  } catch (error) {
+    console.error("setGeminiFallbackModel:", error)
+    return { ok: false, error: "Error al guardar el modelo de respaldo" }
+  }
+}
+
+export async function refreshGeminiModels(): Promise<
+  { ok: true; catalog: GeminiCatalog; available: number; deprecated: number } | { ok: false; error: string }
+> {
+  try {
+    await requireAdminRole()
+    const apiKey = process.env.GEMINI_API_KEY
+    if (!apiKey) return { ok: false, error: "GEMINI_API_KEY no está configurada en el servidor." }
+    const models = await listGeminiModels(apiKey)
+    if (!models.length) return { ok: false, error: "La API no devolvió modelos Gemini de texto. Revisa la API key." }
+    const catalog: GeminiCatalog = { fetchedAt: new Date().toISOString(), models }
+    await setSetting(SETTING_CATALOG, catalog)
+    const deprecated = models.filter((m) => m.deprecated).length
+    return { ok: true, catalog, available: models.length - deprecated, deprecated }
+  } catch (error) {
+    console.error("refreshGeminiModels:", error)
+    return { ok: false, error: error instanceof Error ? error.message : "Error al consultar los modelos" }
+  }
+}
+
+export async function testGeminiModel(
+  model: string,
+): Promise<{ ok: true; ms: number; tokens: number } | { ok: false; error: string }> {
+  try {
+    await requireAdminRole()
+    const parsed = modelIdSchema.safeParse(model)
+    if (!parsed.success) return { ok: false, error: parsed.error.issues[0].message }
+    const apiKey = process.env.GEMINI_API_KEY
+    if (!apiKey) return { ok: false, error: "GEMINI_API_KEY no está configurada en el servidor." }
+    const result = await probeGeminiModel(apiKey, parsed.data)
+    if (!result.ok) return { ok: false, error: `HTTP ${result.status}: ${result.error}` }
+    return { ok: true, ms: result.ms, tokens: result.tokens }
+  } catch (error) {
+    console.error("testGeminiModel:", error)
+    return { ok: false, error: "Error al probar el modelo" }
+  }
+}
+
+export async function dismissGeminiIncident(): Promise<ActionResult> {
+  try {
+    await requireAdminRole()
+    await setSetting(SETTING_INCIDENT, null satisfies GeminiIncident | null)
+    return { ok: true }
+  } catch (error) {
+    console.error("dismissGeminiIncident:", error)
+    return { ok: false, error: "Error al descartar el aviso" }
+  }
+}
+
+// ---------- Chat: base de conocimiento ----------
+
+export async function rebuildKnowledgeBase(): Promise<{ ok: true; kb: KnowledgeBase } | { ok: false; error: string }> {
+  try {
+    await requireAdmin()
+    // Invalida la copia cacheada (la usa /api/chat) y construye una fresca para mostrar.
+    revalidateTag("content")
+    revalidateTag("posts")
+    const kb = await buildKnowledgeBase()
+    return { ok: true, kb }
+  } catch (error) {
+    console.error("rebuildKnowledgeBase:", error)
+    return { ok: false, error: "Error al reconstruir la base de conocimiento" }
   }
 }
 

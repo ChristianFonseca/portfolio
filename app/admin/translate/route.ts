@@ -2,7 +2,8 @@ import { NextResponse } from "next/server"
 import { z } from "zod"
 import { getSessionUser } from "@/lib/auth"
 import { kindSchemas } from "@/lib/content/schemas"
-import { DEFAULT_GEMINI_MODEL, getSetting } from "@/lib/settings"
+import { DEFAULT_GEMINI_FALLBACK_MODEL, DEFAULT_GEMINI_MODEL, getSetting } from "@/lib/settings"
+import { SETTING_FALLBACK, generateContent } from "@/lib/gemini"
 
 // Además de las secciones, se pueden traducir artículos del blog (markdown:
 // la IA preserva el formato, código y links)
@@ -62,39 +63,38 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Idiomas no soportados" }, { status: 400 })
     }
 
-    const model = await getSetting<string>("gemini_model", DEFAULT_GEMINI_MODEL)
+    const [configuredModel, fallbackModel] = await Promise.all([
+      getSetting<string>("gemini_model", DEFAULT_GEMINI_MODEL),
+      getSetting<string>(SETTING_FALLBACK, DEFAULT_GEMINI_FALLBACK_MODEL),
+    ])
 
-    const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-goog-api-key": apiKey,
+    const outcome = await generateContent({
+      apiKey,
+      model: configuredModel,
+      fallbackModel,
+      context: "translate",
+      body: {
+        contents: [{ parts: [{ text: buildPrompt(from, to, data) }] }],
+        generationConfig: {
+          responseMimeType: "application/json",
+          temperature: 0.2,
         },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: buildPrompt(from, to, data) }] }],
-          generationConfig: {
-            responseMimeType: "application/json",
-            temperature: 0.2,
-          },
-        }),
       },
-    )
+    })
 
-    if (!response.ok) {
-      const detail = await response.text().catch(() => "")
-      console.error("gemini error:", response.status, detail.slice(0, 500))
+    if (!outcome.ok) {
+      console.error("gemini error:", outcome.status, outcome.detail.slice(0, 500))
       const hint =
-        response.status === 404
-          ? ` El modelo "${model}" no existe o no está disponible — cámbialo en Configuración.`
-          : response.status === 400 || response.status === 403
+        outcome.status === 404
+          ? ` El modelo "${outcome.model}" no existe o no está disponible — cámbialo en Configuración (y revisa el modelo de respaldo).`
+          : outcome.status === 400 || outcome.status === 403
             ? " Revisa que la GEMINI_API_KEY sea válida."
             : ""
-      return NextResponse.json({ error: `Gemini respondió ${response.status}.${hint}` }, { status: 502 })
+      return NextResponse.json({ error: `Gemini respondió ${outcome.status}.${hint}` }, { status: 502 })
     }
 
-    const payload = await response.json()
+    const model = outcome.model // el que realmente respondió (puede ser el de respaldo)
+    const payload = outcome.payload as { candidates?: { content?: { parts?: { text?: string }[] } }[] }
     const text: string | undefined = payload?.candidates?.[0]?.content?.parts?.[0]?.text
     if (!text) {
       return NextResponse.json({ error: "Gemini no devolvió contenido. Intenta de nuevo." }, { status: 502 })

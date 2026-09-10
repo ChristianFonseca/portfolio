@@ -1,7 +1,10 @@
 import { sql } from "./db"
 
 export const DEFAULT_GEMINI_MODEL = "gemini-2.5-flash-lite"
+// Respaldo si el modelo elegido deja de existir (se reintenta una vez con este).
+export const DEFAULT_GEMINI_FALLBACK_MODEL = "gemini-2.5-flash-lite"
 
+// Lista semilla para el selector mientras no se haya descargado el catálogo real.
 export const GEMINI_MODELS = [
   { id: "gemini-2.5-flash-lite", label: "Gemini 2.5 Flash-Lite — el más rápido y económico (recomendado)" },
   { id: "gemini-3.1-flash-lite", label: "Gemini 3.1 Flash-Lite — nueva generación, bajo costo" },

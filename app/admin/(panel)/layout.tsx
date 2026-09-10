@@ -7,6 +7,7 @@ import { sql } from "@/lib/db"
 import { LogoutButton } from "@/components/admin/logout-button"
 import { BrandLogo } from "@/components/brand-logo"
 import { SidebarSections, type SidebarSection } from "@/components/admin/sidebar-sections"
+import { GeminiIncidentBanner } from "@/components/admin/gemini-incident-banner"
 
 export const dynamic = "force-dynamic"
 
@@ -118,7 +119,10 @@ export default async function PanelLayout({ children }: { children: React.ReactN
         </aside>
 
         {/* Contenido */}
-        <div className="min-w-0 px-6 py-8">{children}</div>
+        <div className="min-w-0 px-6 py-8">
+          <GeminiIncidentBanner />
+          {children}
+        </div>
       </div>
     </main>
   )
