@@ -5,6 +5,7 @@ import path from "path"
 import sharp from "sharp"
 import { sql } from "@/lib/db"
 import { getSessionUser } from "@/lib/auth"
+import { logAudit } from "@/lib/activity"
 
 // En el VPS apunta al volumen (/data/uploads); en dev local cae en public/uploads,
 // que Next sirve automáticamente.
@@ -71,6 +72,13 @@ export async function POST(request: Request) {
       on conflict (filename) do nothing
     `
 
+    void logAudit({
+      actor: user.email,
+      action: "upload",
+      target: filename,
+      detail: { original: file.name.slice(0, 120), bytes: output.length, width, height },
+      headers: request.headers,
+    })
     return NextResponse.json({ ok: true, url: `/uploads/${filename}`, width, height })
   } catch (error) {
     console.error("upload:", error)

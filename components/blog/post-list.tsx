@@ -27,6 +27,7 @@ export function PostList({ posts, locale }: { posts: PublicPost[]; locale: Local
         <Link
           key={post.slug}
           href={`${base}/${post.slug}`}
+          data-track={`blog:${post.slug}`}
           className="group block rounded-2xl border border-border bg-card/40 p-6 transition-all hover:-translate-y-0.5 hover:border-primary/60 hover:shadow-[0_0_30px_-10px_rgba(168,85,247,0.5)]"
         >
           <div className="flex flex-col gap-4 sm:flex-row">

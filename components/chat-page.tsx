@@ -11,6 +11,7 @@ import { ThemedBackground } from "@/components/themed-background"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { PageTransition } from "@/components/page-transition"
 import { useRouter } from "next/navigation"
+import { getSessionId } from "@/lib/client-session"
 import type { Dictionary, Locale } from "@/lib/i18n/dictionaries"
 
 interface Message {
@@ -80,7 +81,7 @@ export function ChatPage({ locale, dict }: { locale: Locale; dict: Dictionary })
 
       const res = await fetch("/api/chat", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "x-session-id": getSessionId() },
         body: JSON.stringify({ message: question, history, locale }),
       })
       const data = await res.json().catch(() => ({}))

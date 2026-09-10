@@ -14,6 +14,7 @@ import { useState } from "react"
 import { SuccessModal } from "@/components/success-modal"
 import { PageTransition } from "@/components/page-transition"
 import { useRouter } from "next/navigation"
+import { getSessionId } from "@/lib/client-session"
 import type { LandingContent } from "@/lib/content/schemas"
 import type { Dictionary, Locale } from "@/lib/i18n/dictionaries"
 
@@ -81,6 +82,7 @@ export function Landing({
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "x-session-id": getSessionId(),
         },
         body: JSON.stringify(formData),
       })
@@ -210,7 +212,7 @@ export function Landing({
                   className="w-52"
                   asChild
                 >
-                  <a href={chatHref} onClick={handleNavigateToChat}>
+                  <a href={chatHref} onClick={handleNavigateToChat} data-track="cta:chat">
                     <MessageCircle className="h-5 w-5 mr-2" />
                     {dict.hero.tryChat}
                   </a>
@@ -446,6 +448,7 @@ export function Landing({
                 size="lg"
                 className="w-full"
                 disabled={isSubmitting}
+                data-track="cta:contact-send"
               >
                 <Mail className="h-5 w-5 mr-2" />
                 {isSubmitting ? dict.contact.sending : dict.contact.send}
@@ -455,7 +458,7 @@ export function Landing({
 
           <div className="flex flex-wrap justify-center gap-6">
             <Button variant="outline" size="lg" asChild>
-              <a href={chatHref} onClick={handleNavigateToChat}>
+              <a href={chatHref} onClick={handleNavigateToChat} data-track="cta:chat">
                 <MessageCircle className="h-5 w-5 mr-2" />
                 {dict.hero.tryChat}
               </a>
@@ -466,7 +469,7 @@ export function Landing({
              
               asChild
             >
-              <a href="mailto:christian.fonseca.r@gmail.com">
+              <a href="mailto:christian.fonseca.r@gmail.com" data-track="cta:email">
                 <Mail className="h-5 w-5 mr-2" />
                 {dict.contact.directEmail}
               </a>
@@ -477,7 +480,12 @@ export function Landing({
              
               asChild
             >
-              <a href="https://linkedin.com/in/christian-fonseca-rodriguez" target="_blank" rel="noopener noreferrer">
+              <a
+                href="https://linkedin.com/in/christian-fonseca-rodriguez"
+                target="_blank"
+                rel="noopener noreferrer"
+                data-track="social:linkedin"
+              >
                 <Linkedin className="h-5 w-5 mr-2" />
                 LinkedIn
               </a>
@@ -492,6 +500,7 @@ export function Landing({
                 href="https://scholar.google.com/citations?user=95NzphUAAAAJ&hl=es"
                 target="_blank"
                 rel="noopener noreferrer"
+                data-track="social:scholar"
               >
                 <ExternalLink className="h-5 w-5 mr-2" />
                 {dict.contact.scholar}
@@ -507,6 +516,7 @@ export function Landing({
           <p>
             &copy; {new Date().getFullYear()} Christian Fonseca. {dict.footer.rights}
           </p>
+          <p className="mx-auto mt-3 max-w-2xl text-xs leading-relaxed text-muted-foreground/60">{dict.footer.privacy}</p>
         </div>
       </footer>
 

@@ -56,6 +56,8 @@ export const dictionaries = {
     },
     footer: {
       rights: "All rights reserved.",
+      privacy:
+        "This site keeps a lightweight, cookie-free usage log (pages viewed, clicks, IP address and country) for security and analytics, deleted automatically after 90 days.",
     },
     chat: {
       title: "Chat with AI Assistant",
@@ -121,6 +123,8 @@ export const dictionaries = {
     },
     footer: {
       rights: "Todos los derechos reservados.",
+      privacy:
+        "Este sitio guarda un registro de uso ligero y sin cookies (páginas vistas, clics, dirección IP y país) con fines de seguridad y analítica; se elimina automáticamente a los 90 días.",
     },
     chat: {
       title: "Chat con Asistente de IA",

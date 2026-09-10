@@ -18,6 +18,7 @@ import {
   type GeminiIncident,
 } from "@/lib/gemini"
 import { buildKnowledgeBase, type KnowledgeBase } from "@/lib/chat/knowledge"
+import { SETTING_AUDIT_RETENTION, SETTING_VISITOR_RETENTION, logAudit, purgeActivity } from "@/lib/activity"
 
 export type ActionResult = { ok: true } | { ok: false; error: string }
 
@@ -59,6 +60,7 @@ export async function saveSection(slug: string, payload: SaveSectionPayload): Pr
     })
 
     revalidateTag("content")
+    void logAudit({ actor: admin.email, action: "section.save", target: slug, detail: { title: title.data } })
     return { ok: true }
   } catch (error) {
     console.error("saveSection:", error)
@@ -109,7 +111,7 @@ export async function createPost(input: { title: string; slug: string }): Promis
   { ok: true; id: number } | { ok: false; error: string }
 > {
   try {
-    await requireAdmin()
+    const admin = await requireAdmin()
     const title = z.string().trim().min(1).max(200).safeParse(input.title)
     const slug = slugSchema.safeParse(input.slug)
     if (!title.success) return { ok: false, error: "El título es obligatorio" }
@@ -121,6 +123,7 @@ export async function createPost(input: { title: string; slug: string }): Promis
       returning id
     `
     if (!rows.length) return { ok: false, error: "Ya existe un artículo con ese slug" }
+    void logAudit({ actor: admin.email, action: "post.create", target: slug.data, detail: { id: rows[0].id, title: title.data } })
     return { ok: true, id: rows[0].id }
   } catch (error) {
     console.error("createPost:", error)
@@ -130,7 +133,7 @@ export async function createPost(input: { title: string; slug: string }): Promis
 
 export async function savePost(id: number, fields: PostFields): Promise<ActionResult> {
   try {
-    await requireAdmin()
+    const admin = await requireAdmin()
     const parsed = postFieldsSchema.safeParse(fields)
     if (!parsed.success) {
       const issue = parsed.error.issues[0]
@@ -148,6 +151,7 @@ export async function savePost(id: number, fields: PostFields): Promise<ActionRe
     `
     if (!rows.length) return { ok: false, error: "Artículo no encontrado" }
     revalidateTag("posts")
+    void logAudit({ actor: admin.email, action: "post.save", target: f.slug, detail: { id, title: f.title } })
     return { ok: true }
   } catch (error) {
     console.error("savePost:", error)
@@ -157,7 +161,7 @@ export async function savePost(id: number, fields: PostFields): Promise<ActionRe
 
 export async function togglePublishPost(id: number): Promise<ActionResult> {
   try {
-    await requireAdmin()
+    const admin = await requireAdmin()
     const rows = await sql<{ published: boolean; title: string; title_es: string; body: string; body_es: string }[]>`
       select published, title, title_es, body, body_es from posts where id = ${id}
     `
@@ -177,6 +181,12 @@ export async function togglePublishPost(id: number): Promise<ActionResult> {
       await sql`update posts set published = false, updated_at = now() where id = ${id}`
     }
     revalidateTag("posts")
+    void logAudit({
+      actor: admin.email,
+      action: post.published ? "post.unpublish" : "post.publish",
+      target: String(id),
+      detail: { title: post.title },
+    })
     return { ok: true }
   } catch (error) {
     console.error("togglePublishPost:", error)
@@ -186,9 +196,15 @@ export async function togglePublishPost(id: number): Promise<ActionResult> {
 
 export async function deletePost(id: number): Promise<ActionResult> {
   try {
-    await requireAdmin()
-    await sql`delete from posts where id = ${id}`
+    const admin = await requireAdmin()
+    const deleted = await sql<{ slug: string; title: string }[]>`delete from posts where id = ${id} returning slug, title`
     revalidateTag("posts")
+    void logAudit({
+      actor: admin.email,
+      action: "post.delete",
+      target: deleted[0]?.slug ?? String(id),
+      detail: { id, title: deleted[0]?.title ?? "" },
+    })
     return { ok: true }
   } catch (error) {
     console.error("deletePost:", error)
@@ -202,7 +218,7 @@ export async function setChatConfig(input: {
   extraContext: string
 }): Promise<ActionResult> {
   try {
-    await requireAdminRole()
+    const admin = await requireAdminRole()
     const parsed = chatConfigSchema.safeParse(input)
     if (!parsed.success) return { ok: false, error: parsed.error.issues[0].message }
     await setSetting("chat_daily_limit", parsed.data.dailyLimit)
@@ -210,6 +226,11 @@ export async function setChatConfig(input: {
     await setSetting("chat_extra_context", parsed.data.extraContext)
     // El contexto extra alimenta la knowledge base del chat (cache tag "content")
     revalidateTag("content")
+    void logAudit({
+      actor: admin.email,
+      action: "settings.chat",
+      detail: { dailyLimit: parsed.data.dailyLimit, allowlist: parsed.data.allowlist.length, extraChars: parsed.data.extraContext.length },
+    })
     return { ok: true }
   } catch (error) {
     console.error("setChatConfig:", error)
@@ -249,13 +270,14 @@ async function validateModelChoice(model: string): Promise<{ ok: true; id: strin
 
 export async function setGeminiModel(model: string): Promise<ActionResult> {
   try {
-    await requireAdminRole()
+    const admin = await requireAdminRole()
     const valid = await validateModelChoice(model)
     if (!valid.ok) return valid
     const previous = await getSetting<string>("gemini_model", "")
     await setSetting("gemini_model", valid.id)
     // Cambiar de modelo cierra el incidente del modelo anterior.
     if (previous !== valid.id) await setSetting(SETTING_INCIDENT, null)
+    void logAudit({ actor: admin.email, action: "settings.model", target: valid.id, detail: { previous } })
     return { ok: true }
   } catch (error) {
     console.error("setGeminiModel:", error)
@@ -265,10 +287,11 @@ export async function setGeminiModel(model: string): Promise<ActionResult> {
 
 export async function setGeminiFallbackModel(model: string): Promise<ActionResult> {
   try {
-    await requireAdminRole()
+    const admin = await requireAdminRole()
     const valid = await validateModelChoice(model)
     if (!valid.ok) return valid
     await setSetting(SETTING_FALLBACK, valid.id)
+    void logAudit({ actor: admin.email, action: "settings.fallback_model", target: valid.id })
     return { ok: true }
   } catch (error) {
     console.error("setGeminiFallbackModel:", error)
@@ -280,7 +303,7 @@ export async function refreshGeminiModels(): Promise<
   { ok: true; catalog: GeminiCatalog; available: number; deprecated: number } | { ok: false; error: string }
 > {
   try {
-    await requireAdminRole()
+    const admin = await requireAdminRole()
     const apiKey = process.env.GEMINI_API_KEY
     if (!apiKey) return { ok: false, error: "GEMINI_API_KEY no está configurada en el servidor." }
     const models = await listGeminiModels(apiKey)
@@ -288,6 +311,7 @@ export async function refreshGeminiModels(): Promise<
     const catalog: GeminiCatalog = { fetchedAt: new Date().toISOString(), models }
     await setSetting(SETTING_CATALOG, catalog)
     const deprecated = models.filter((m) => m.deprecated).length
+    void logAudit({ actor: admin.email, action: "models.refresh", detail: { total: models.length, deprecated } })
     return { ok: true, catalog, available: models.length - deprecated, deprecated }
   } catch (error) {
     console.error("refreshGeminiModels:", error)
@@ -315,8 +339,9 @@ export async function testGeminiModel(
 
 export async function dismissGeminiIncident(): Promise<ActionResult> {
   try {
-    await requireAdminRole()
+    const admin = await requireAdminRole()
     await setSetting(SETTING_INCIDENT, null satisfies GeminiIncident | null)
+    void logAudit({ actor: admin.email, action: "incident.dismiss" })
     return { ok: true }
   } catch (error) {
     console.error("dismissGeminiIncident:", error)
@@ -328,11 +353,12 @@ export async function dismissGeminiIncident(): Promise<ActionResult> {
 
 export async function rebuildKnowledgeBase(): Promise<{ ok: true; kb: KnowledgeBase } | { ok: false; error: string }> {
   try {
-    await requireAdmin()
+    const admin = await requireAdmin()
     // Invalida la copia cacheada (la usa /api/chat) y construye una fresca para mostrar.
     revalidateTag("content")
     revalidateTag("posts")
     const kb = await buildKnowledgeBase()
+    void logAudit({ actor: admin.email, action: "kb.rebuild", detail: { chars: kb.chars, approxTokens: kb.approxTokens, sources: kb.sources.length } })
     return { ok: true, kb }
   } catch (error) {
     console.error("rebuildKnowledgeBase:", error)
@@ -342,10 +368,13 @@ export async function rebuildKnowledgeBase(): Promise<{ ok: true; kb: KnowledgeB
 
 export async function toggleVisible(slug: string): Promise<ActionResult> {
   try {
-    await requireAdmin()
-    const rows = await sql`update sections set visible = not visible, updated_at = now() where slug = ${slug} returning slug`
+    const admin = await requireAdmin()
+    const rows = await sql<{ slug: string; visible: boolean }[]>`
+      update sections set visible = not visible, updated_at = now() where slug = ${slug} returning slug, visible
+    `
     if (!rows.length) return { ok: false, error: "Sección no encontrada" }
     revalidateTag("content")
+    void logAudit({ actor: admin.email, action: "section.visibility", target: slug, detail: { visible: rows[0].visible } })
     return { ok: true }
   } catch (error) {
     console.error("toggleVisible:", error)
@@ -355,7 +384,7 @@ export async function toggleVisible(slug: string): Promise<ActionResult> {
 
 export async function moveSection(slug: string, direction: "up" | "down"): Promise<ActionResult> {
   try {
-    await requireAdmin()
+    const admin = await requireAdmin()
     const sections = await sql<{ id: number; slug: string; position: number }[]>`
       select id, slug, position from sections order by position
     `
@@ -371,6 +400,7 @@ export async function moveSection(slug: string, direction: "up" | "down"): Promi
       await tx`update sections set position = ${a.position} where id = ${b.id}`
     })
     revalidateTag("content")
+    void logAudit({ actor: admin.email, action: "section.move", target: slug, detail: { direction } })
     return { ok: true }
   } catch (error) {
     console.error("moveSection:", error)
@@ -397,7 +427,7 @@ export async function createUser(input: {
   role: UserRole
 }): Promise<ActionResult> {
   try {
-    await requireAdminRole()
+    const admin = await requireAdminRole()
     const parsed = newUserSchema.safeParse(input)
     if (!parsed.success) return { ok: false, error: parsed.error.issues[0].message }
 
@@ -408,6 +438,7 @@ export async function createUser(input: {
       returning id
     `
     if (!inserted.length) return { ok: false, error: "Ya existe un usuario con ese email" }
+    void logAudit({ actor: admin.email, action: "user.create", target: parsed.data.email, detail: { role: parsed.data.role } })
     return { ok: true }
   } catch (error) {
     console.error("createUser:", error)
@@ -424,7 +455,8 @@ export async function deleteUser(id: number): Promise<ActionResult> {
     if (target[0].role === "admin" && (await countAdmins()) <= 1) {
       return { ok: false, error: "No se puede eliminar al último administrador" }
     }
-    await sql`delete from users where id = ${id}`
+    const removed = await sql<{ email: string }[]>`delete from users where id = ${id} returning email`
+    void logAudit({ actor: admin.email, action: "user.delete", target: removed[0]?.email ?? String(id), detail: { role: target[0].role } })
     return { ok: true }
   } catch (error) {
     console.error("deleteUser:", error)
@@ -442,7 +474,8 @@ export async function setUserRole(id: number, role: UserRole): Promise<ActionRes
     if (target[0].role === "admin" && role !== "admin" && (await countAdmins()) <= 1) {
       return { ok: false, error: "No se puede degradar al último administrador" }
     }
-    await sql`update users set role = ${role} where id = ${id}`
+    const updated = await sql<{ email: string }[]>`update users set role = ${role} where id = ${id} returning email`
+    void logAudit({ actor: admin.email, action: "user.role", target: updated[0]?.email ?? String(id), detail: { from: target[0].role, to: role } })
     return { ok: true }
   } catch (error) {
     console.error("setUserRole:", error)
@@ -452,13 +485,50 @@ export async function setUserRole(id: number, role: UserRole): Promise<ActionRes
 
 export async function resetUserPassword(id: number, password: string): Promise<ActionResult> {
   try {
-    await requireAdminRole()
+    const admin = await requireAdminRole()
     if (password.length < 10) return { ok: false, error: "La contraseña debe tener al menos 10 caracteres" }
-    const rows = await sql`update users set password_hash = ${hashPassword(password)} where id = ${id} returning id`
+    const rows = await sql<{ email: string }[]>`
+      update users set password_hash = ${hashPassword(password)} where id = ${id} returning email
+    `
     if (!rows.length) return { ok: false, error: "Usuario no encontrado" }
+    void logAudit({ actor: admin.email, action: "user.password_reset", target: rows[0].email })
     return { ok: true }
   } catch (error) {
     console.error("resetUserPassword:", error)
     return { ok: false, error: "Error al cambiar la contraseña" }
+  }
+}
+
+// ---------- Analytics / Bitácora: retención ----------
+
+const activityConfigSchema = z.object({
+  visitorDays: z.number().int().min(7).max(365),
+  auditDays: z.number().int().min(30).max(730),
+})
+
+export async function setActivityConfig(input: { visitorDays: number; auditDays: number }): Promise<ActionResult> {
+  try {
+    const admin = await requireAdminRole()
+    const parsed = activityConfigSchema.safeParse(input)
+    if (!parsed.success) return { ok: false, error: "Retención inválida: visitantes 7–365 días, bitácora 30–730 días" }
+    await setSetting(SETTING_VISITOR_RETENTION, parsed.data.visitorDays)
+    await setSetting(SETTING_AUDIT_RETENTION, parsed.data.auditDays)
+    void logAudit({ actor: admin.email, action: "settings.activity", detail: parsed.data })
+    return { ok: true }
+  } catch (error) {
+    console.error("setActivityConfig:", error)
+    return { ok: false, error: "Error al guardar la retención" }
+  }
+}
+
+export async function purgeActivityNow(): Promise<{ ok: true; visitors: number; audit: number } | { ok: false; error: string }> {
+  try {
+    const admin = await requireAdminRole()
+    const r = await purgeActivity()
+    void logAudit({ actor: admin.email, action: "activity.purge", detail: r })
+    return { ok: true, visitors: r.visitors, audit: r.audit }
+  } catch (error) {
+    console.error("purgeActivityNow:", error)
+    return { ok: false, error: "Error al purgar" }
   }
 }

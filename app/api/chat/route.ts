@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server"
-import { createHmac } from "crypto"
 import { z } from "zod"
 import { sql } from "@/lib/db"
 import { DEFAULT_GEMINI_FALLBACK_MODEL, DEFAULT_GEMINI_MODEL, getSetting } from "@/lib/settings"
 import { getKnowledgeBase } from "@/lib/chat/knowledge"
 import { SETTING_FALLBACK, generateContent } from "@/lib/gemini"
+import { getClientIp, hashIp } from "@/lib/request-ip"
+import { trackServerEvent } from "@/lib/activity"
 
 const DEFAULT_CHAT_DAILY_LIMIT = 10
 
@@ -23,20 +24,8 @@ const chatSchema = z.object({
   locale: z.enum(["en", "es"]).optional().default("en"),
 })
 
-// IP seudonimizada (HMAC-SHA256 con secreto del servidor): permite rate-limit y
-// analítica sin almacenar la IP en claro (privacidad por diseño / ISO 27001).
-function hashIp(ip: string): string {
-  const secret = process.env.SESSION_SECRET ?? "no-secret"
-  return createHmac("sha256", `chat-ip:${secret}`).update(ip).digest("hex").slice(0, 32)
-}
-
-function getClientIp(request: Request): string {
-  return (
-    request.headers.get("x-real-ip") ||
-    request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
-    "unknown"
-  )
-}
+// La IP del chat se guarda solo seudonimizada (HMAC, ver lib/request-ip) para el límite
+// diario; la analítica general de visitas vive en visitor_events con su propia retención.
 
 function buildSystemInstruction(kb: string): string {
   return `You are the AI assistant on Christian Fonseca's portfolio website (christianfonseca.dev).
@@ -72,7 +61,7 @@ export async function POST(request: Request) {
     }
     const { message, history, locale } = parsed.data
 
-    const ip = getClientIp(request)
+    const ip = getClientIp(request.headers)
     const ipHash = hashIp(ip)
 
     // Allowlist (IPs con preguntas ilimitadas) y límite diario, configurables en el admin
@@ -151,6 +140,12 @@ export async function POST(request: Request) {
     } catch (error) {
       console.error("chat log error:", error)
     }
+    void trackServerEvent(request.headers, {
+      kind: "chat",
+      path: locale === "es" ? "/es/chat" : "/chat",
+      locale,
+      props: { model: outcome.model, fellBack: outcome.fellBack, remaining },
+    })
 
     return NextResponse.json({ answer, remaining })
   } catch (error) {

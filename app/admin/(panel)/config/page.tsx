@@ -7,6 +7,13 @@ import { getKnowledgeBase } from "@/lib/chat/knowledge"
 import { ConfigForm } from "@/components/admin/config-form"
 import { ChatConfigForm } from "@/components/admin/chat-config-form"
 import { KnowledgePanel } from "@/components/admin/knowledge-panel"
+import { ActivityConfigForm } from "@/components/admin/activity-config-form"
+import {
+  DEFAULT_AUDIT_RETENTION_DAYS,
+  DEFAULT_VISITOR_RETENTION_DAYS,
+  SETTING_AUDIT_RETENTION,
+  SETTING_VISITOR_RETENTION,
+} from "@/lib/activity"
 
 export const dynamic = "force-dynamic"
 
@@ -15,7 +22,7 @@ export default async function AdminConfigPage() {
   if (!me || me.role !== "admin") redirect("/")
 
   const hasApiKey = Boolean(process.env.GEMINI_API_KEY)
-  const [model, fallbackModel, catalog, dailyLimit, allowlist, extraContext, kb] = await Promise.all([
+  const [model, fallbackModel, catalog, dailyLimit, allowlist, extraContext, kb, visitorDays, auditDays] = await Promise.all([
     getSetting<string>("gemini_model", DEFAULT_GEMINI_MODEL),
     getSetting<string>(SETTING_FALLBACK, DEFAULT_GEMINI_FALLBACK_MODEL),
     getGeminiCatalog(),
@@ -23,6 +30,8 @@ export default async function AdminConfigPage() {
     getSetting<string[]>("chat_ip_allowlist", []),
     getSetting<string>("chat_extra_context", ""),
     getKnowledgeBase(),
+    getSetting<number>(SETTING_VISITOR_RETENTION, DEFAULT_VISITOR_RETENTION_DAYS),
+    getSetting<number>(SETTING_AUDIT_RETENTION, DEFAULT_AUDIT_RETENTION_DAYS),
   ])
 
   return (
@@ -74,6 +83,8 @@ export default async function AdminConfigPage() {
       <ChatConfigForm dailyLimit={dailyLimit} allowlist={allowlist} extraContext={extraContext} />
 
       <KnowledgePanel initial={kb} />
+
+      <ActivityConfigForm visitorDays={visitorDays} auditDays={auditDays} />
     </div>
   )
 }

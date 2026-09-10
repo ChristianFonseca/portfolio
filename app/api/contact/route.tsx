@@ -1,5 +1,8 @@
 import { NextResponse } from "next/server"
 import { z } from "zod"
+import { createRateLimiter } from "@/lib/rate-limit"
+import { getClientIp } from "@/lib/request-ip"
+import { trackServerEvent } from "@/lib/activity"
 
 const contactSchema = z.object({
   name: z.string().trim().min(1).max(200),
@@ -17,29 +20,8 @@ function escapeHtml(value: string): string {
     .replace(/'/g, "&#39;")
 }
 
-// In-memory rate limit: max 5 submissions per IP per 10 minutes.
-// nginx should also enforce limit_req on this route in production.
-const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000
-const RATE_LIMIT_MAX = 5
-const submissionsByIp = new Map<string, number[]>()
-
-function isRateLimited(ip: string): boolean {
-  const now = Date.now()
-  const recent = (submissionsByIp.get(ip) ?? []).filter((t) => now - t < RATE_LIMIT_WINDOW_MS)
-  if (recent.length >= RATE_LIMIT_MAX) {
-    submissionsByIp.set(ip, recent)
-    return true
-  }
-  recent.push(now)
-  submissionsByIp.set(ip, recent)
-  // Evita crecimiento sin límite si llegan muchas IPs distintas
-  if (submissionsByIp.size > 10000) {
-    for (const [key, times] of submissionsByIp) {
-      if (times.every((t) => now - t >= RATE_LIMIT_WINDOW_MS)) submissionsByIp.delete(key)
-    }
-  }
-  return false
-}
+// Rate limit: max 5 submissions per IP per 10 minutes (limitador compartido en memoria).
+const limiter = createRateLimiter({ windowMs: 10 * 60 * 1000, max: 5 })
 
 export async function POST(request: Request) {
   try {
@@ -49,12 +31,9 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Email service not configured" }, { status: 500 })
     }
 
-    // X-Real-IP la setea nuestro nginx; X-Forwarded-For puede traer valores del cliente
-    const ip =
-      request.headers.get("x-real-ip") ||
-      request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
-      "unknown"
-    if (isRateLimited(ip)) {
+    const ip = getClientIp(request.headers)
+    if (!limiter.check(ip)) {
+      void trackServerEvent(request.headers, { kind: "contact", path: "/", props: { ok: false, reason: "rate_limited" } })
       return NextResponse.json({ error: "Too many messages. Please try again later." }, { status: 429 })
     }
 
@@ -101,9 +80,12 @@ export async function POST(request: Request) {
     if (!res.ok) {
       const detail = await res.text().catch(() => "")
       console.error("Resend error:", res.status, detail)
+      void trackServerEvent(request.headers, { kind: "contact", path: "/", props: { ok: false, reason: `resend_${res.status}` } })
       return NextResponse.json({ error: "Failed to send email" }, { status: 502 })
     }
 
+    // Solo el hecho (no el contenido del mensaje) para la analítica.
+    void trackServerEvent(request.headers, { kind: "contact", path: "/", props: { ok: true, subjectLen: subject.length } })
     return NextResponse.json({ success: true, message: "Email sent successfully" }, { status: 200 })
   } catch (error) {
     console.error("Error sending email:", error)

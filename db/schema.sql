@@ -81,3 +81,43 @@ CREATE TABLE IF NOT EXISTS section_revisions (
   saved_by   text,
   saved_at   timestamptz NOT NULL DEFAULT now()
 );
+
+-- Analítica de visitantes (módulo Analytics): eventos del sitio público con IP en claro
+-- (retención configurable con purga automática) + hash para cruzar con chat_questions.
+CREATE TABLE IF NOT EXISTS visitor_events (
+  id         bigserial PRIMARY KEY,
+  ts         timestamptz NOT NULL DEFAULT now(),
+  session_id text,
+  kind       text NOT NULL,
+  path       text NOT NULL DEFAULT '',
+  locale     text NOT NULL DEFAULT '',
+  ip         inet,
+  ip_hash    text,
+  country    text NOT NULL DEFAULT '',
+  ua         text NOT NULL DEFAULT '',
+  referrer   text NOT NULL DEFAULT '',
+  props      jsonb NOT NULL DEFAULT '{}'::jsonb
+);
+
+CREATE INDEX IF NOT EXISTS visitor_events_ts_idx ON visitor_events (ts DESC);
+CREATE INDEX IF NOT EXISTS visitor_events_kind_ts_idx ON visitor_events (kind, ts DESC);
+CREATE INDEX IF NOT EXISTS visitor_events_session_idx ON visitor_events (session_id, ts);
+CREATE INDEX IF NOT EXISTS visitor_events_ip_ts_idx ON visitor_events (ip, ts DESC);
+
+-- Bitácora del admin (módulo Bitácora): quién hizo qué, desde qué IP.
+CREATE TABLE IF NOT EXISTS admin_audit (
+  id      bigserial PRIMARY KEY,
+  ts      timestamptz NOT NULL DEFAULT now(),
+  actor   text,
+  action  text NOT NULL,
+  target  text NOT NULL DEFAULT '',
+  ok      boolean NOT NULL DEFAULT true,
+  ip      inet,
+  country text NOT NULL DEFAULT '',
+  ua      text NOT NULL DEFAULT '',
+  detail  jsonb NOT NULL DEFAULT '{}'::jsonb
+);
+
+CREATE INDEX IF NOT EXISTS admin_audit_ts_idx ON admin_audit (ts DESC);
+CREATE INDEX IF NOT EXISTS admin_audit_actor_ts_idx ON admin_audit (actor, ts DESC);
+CREATE INDEX IF NOT EXISTS admin_audit_action_ts_idx ON admin_audit (action, ts DESC);

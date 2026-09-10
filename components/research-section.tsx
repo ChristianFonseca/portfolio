@@ -61,6 +61,7 @@ export function ResearchSection({
               <button
                 type="button"
                 onClick={() => setSelected(item)}
+                data-track={`research:${item.title}`}
                 aria-label={`${dict.projects.details}: ${item.title}`}
                 className="group flex flex-1 flex-col text-left"
               >

@@ -115,6 +115,7 @@ export function ProjectsSection({ section, dict }: { section: SectionEntry<Proje
               <button
                 type="button"
                 onClick={() => setSelected(project)}
+                data-track={`project:${project.title}`}
                 aria-label={`${dict.projects.details}: ${project.title}`}
                 className="group flex flex-1 flex-col text-left"
               >

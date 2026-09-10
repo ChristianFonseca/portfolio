@@ -4,6 +4,7 @@ import { getSessionUser } from "@/lib/auth"
 import { kindSchemas } from "@/lib/content/schemas"
 import { DEFAULT_GEMINI_FALLBACK_MODEL, DEFAULT_GEMINI_MODEL, getSetting } from "@/lib/settings"
 import { SETTING_FALLBACK, generateContent } from "@/lib/gemini"
+import { logAudit } from "@/lib/activity"
 
 // Además de las secciones, se pueden traducir artículos del blog (markdown:
 // la IA preserva el formato, código y links)
@@ -118,6 +119,13 @@ export async function POST(request: Request) {
       )
     }
 
+    void logAudit({
+      actor: user.email,
+      action: "translate",
+      target: kind,
+      detail: { from, to, model, fellBack: outcome.fellBack },
+      headers: request.headers,
+    })
     return NextResponse.json({ ok: true, data: parsed.data, model })
   } catch (error) {
     console.error("translate:", error)

@@ -99,8 +99,8 @@ export function ChatConfigForm({
         {message && <p className={`text-sm ${message.ok ? "text-emerald-500" : "text-red-400"}`}>{message.text}</p>}
       </div>
       <p className="mt-3 text-[11px] leading-relaxed text-muted-foreground/60">
-        Privacidad: las IPs de los visitantes nunca se guardan en claro — solo un hash irreversible para aplicar el
-        límite y agrupar la analítica.
+        Privacidad: en las preguntas del chat la IP se guarda solo como hash irreversible (para el límite diario). La
+        analítica de visitas (módulo Analytics) sí guarda la IP en claro, con la retención configurada más abajo.
       </p>
     </div>
   )

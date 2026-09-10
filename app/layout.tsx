@@ -3,6 +3,7 @@ import type { Metadata } from "next"
 import { headers } from "next/headers"
 import { Space_Grotesk, JetBrains_Mono, Instrument_Serif } from "next/font/google"
 import { ThemeProvider } from "@/components/theme-provider"
+import { ActivityTracker } from "@/components/activity-tracker"
 import "./globals.css"
 
 // Tipografías de marca (Brand Assets v1.0): Space Grotesk (sans),
@@ -75,6 +76,7 @@ export default async function RootLayout({
       <body className="font-sans" suppressHydrationWarning>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false} disableTransitionOnChange>
           {children}
+          <ActivityTracker />
         </ThemeProvider>
       </body>
     </html>
