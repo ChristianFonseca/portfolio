@@ -7,9 +7,11 @@ import { hashPassword, requireAdmin, requireAdminRole, type UserRole } from "@/l
 import { kindSchemas, localizedSchema, type SectionKind } from "@/lib/content/schemas"
 import { getSetting, setSetting } from "@/lib/settings"
 import {
+  SETTING_BLOCKED,
   SETTING_CATALOG,
   SETTING_FALLBACK,
   SETTING_INCIDENT,
+  getBlockedModels,
   getGeminiCatalog,
   listGeminiModels,
   modelStatus,
@@ -17,7 +19,7 @@ import {
   type GeminiCatalog,
   type GeminiIncident,
 } from "@/lib/gemini"
-import { buildKnowledgeBase, type KnowledgeBase } from "@/lib/chat/knowledge"
+import { KB_SOURCES, SETTING_KB_DISABLED, buildKnowledgeBase, type KnowledgeBase } from "@/lib/chat/knowledge"
 import { SETTING_AUDIT_RETENTION, SETTING_VISITOR_RETENTION, logAudit, purgeActivity } from "@/lib/activity"
 
 export type ActionResult = { ok: true } | { ok: false; error: string }
@@ -254,10 +256,13 @@ const fmtDate = (iso: string) =>
 async function validateModelChoice(model: string): Promise<{ ok: true; id: string } | { ok: false; error: string }> {
   const parsed = modelIdSchema.safeParse(model)
   if (!parsed.success) return { ok: false, error: parsed.error.issues[0].message }
-  const catalog = await getGeminiCatalog()
-  const status = modelStatus(parsed.data, catalog)
+  const [catalog, blocked] = await Promise.all([getGeminiCatalog(), getBlockedModels()])
+  const status = modelStatus(parsed.data, catalog, blocked)
   if (status === "deprecated") {
     return { ok: false, error: `"${parsed.data}" está deprecado o retirado por Google. Elige otro modelo.` }
+  }
+  if (status === "blocked") {
+    return { ok: false, error: `"${parsed.data}" está bloqueado manualmente. Desbloquéalo en la lista si quieres usarlo.` }
   }
   if (status === "missing" && catalog) {
     return {
@@ -334,6 +339,24 @@ export async function testGeminiModel(
   } catch (error) {
     console.error("testGeminiModel:", error)
     return { ok: false, error: "Error al probar el modelo" }
+  }
+}
+
+// Bloqueo/desbloqueo manual de un modelo (además de los deprecados detectados).
+export async function setGeminiBlocked(model: string, blocked: boolean): Promise<ActionResult> {
+  try {
+    const admin = await requireAdminRole()
+    const parsed = modelIdSchema.safeParse(model)
+    if (!parsed.success) return { ok: false, error: parsed.error.issues[0].message }
+    const current = await getBlockedModels()
+    const next = blocked ? Array.from(new Set([...current, parsed.data])) : current.filter((m) => m !== parsed.data)
+    if (next.length > 200) return { ok: false, error: "Demasiados modelos bloqueados" }
+    await setSetting(SETTING_BLOCKED, next)
+    void logAudit({ actor: admin.email, action: blocked ? "models.block" : "models.unblock", target: parsed.data })
+    return { ok: true }
+  } catch (error) {
+    console.error("setGeminiBlocked:", error)
+    return { ok: false, error: "Error al cambiar el bloqueo" }
   }
 }
 
@@ -496,6 +519,26 @@ export async function resetUserPassword(id: number, password: string): Promise<A
   } catch (error) {
     console.error("resetUserPassword:", error)
     return { ok: false, error: "Error al cambiar la contraseña" }
+  }
+}
+
+// Fuentes de la base de conocimiento: guarda las desactivadas y devuelve la base regenerada.
+export async function setKnowledgeSources(disabled: string[]): Promise<{ ok: true; kb: KnowledgeBase } | { ok: false; error: string }> {
+  try {
+    const admin = await requireAdmin()
+    const allowed = new Set<string>(KB_SOURCES.filter((s) => !s.locked).map((s) => s.key))
+    const parsed = z.array(z.string().max(30)).max(30).safeParse(disabled)
+    if (!parsed.success) return { ok: false, error: "Lista de fuentes inválida" }
+    const list = Array.from(new Set(parsed.data.filter((k) => allowed.has(k))))
+    await setSetting(SETTING_KB_DISABLED, list)
+    revalidateTag("content")
+    revalidateTag("posts")
+    const kb = await buildKnowledgeBase()
+    void logAudit({ actor: admin.email, action: "kb.sources", detail: { disabled: list, chars: kb.chars, approxTokens: kb.approxTokens } })
+    return { ok: true, kb }
+  } catch (error) {
+    console.error("setKnowledgeSources:", error)
+    return { ok: false, error: "Error al guardar las fuentes" }
   }
 }
 

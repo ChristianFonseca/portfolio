@@ -9,9 +9,33 @@ import type { ExperienceData } from "@/lib/content/schemas"
 // extra editable en Configuración. No es RAG: el texto completo (~10-15K tokens)
 // va en el system prompt de cada mensaje. Comparte los tags "content" y "posts",
 // así que guardar en el admin (secciones o posts) la actualiza sola.
+// Cada fuente se puede activar/desactivar desde el admin (settings.kb_disabled_sources).
+
+export const KB_SOURCES = [
+  { key: "profile", name: "Perfil (nombre, tagline, ubicación, certificaciones)", locked: true },
+  { key: "about", name: "About", locked: false },
+  { key: "skills", name: "Skills", locked: false },
+  { key: "languages", name: "Idiomas", locked: false },
+  { key: "experience", name: "Experiencia", locked: false },
+  { key: "teaching", name: "Docencia", locked: false },
+  { key: "projects", name: "Proyectos públicos", locked: false },
+  { key: "research", name: "Proyectos de investigación", locked: false },
+  { key: "faq", name: "FAQ", locked: false },
+  { key: "blog", name: "Blog (artículos publicados, recortados a 2.500 chars)", locked: false },
+  { key: "extra", name: "Contexto extra (Configuración → Chat)", locked: false },
+] as const
+
+export type KbSourceKey = (typeof KB_SOURCES)[number]["key"]
+export const SETTING_KB_DISABLED = "kb_disabled_sources"
 
 export interface KnowledgeSource {
+  key: KbSourceKey
   name: string
+  locked: boolean
+  /** Incluida en el texto (activada y con contenido). */
+  enabled: boolean
+  /** Hay contenido disponible (sección visible y no vacía). */
+  available: boolean
   items: number
   chars: number
 }
@@ -27,7 +51,7 @@ export interface KnowledgeBase {
 const POST_BODY_MAX = 2500
 const POSTS_MAX = 30
 
-function formatExperience(title: string, data: ExperienceData): string {
+function formatExperience(data: ExperienceData): string {
   return data.items
     .map(
       (i) =>
@@ -72,27 +96,44 @@ async function loadPosts(): Promise<PostRow[]> {
   }
 }
 
+export async function getDisabledSources(): Promise<KbSourceKey[]> {
+  const raw = await getSetting<string[]>(SETTING_KB_DISABLED, [])
+  const valid = new Set<string>(KB_SOURCES.filter((s) => !s.locked).map((s) => s.key))
+  return (Array.isArray(raw) ? raw : []).filter((k): k is KbSourceKey => valid.has(k))
+}
+
 // Construcción SIN cache (para el botón "Actualizar" del admin y la vista previa).
 export async function buildKnowledgeBase(): Promise<KnowledgeBase> {
-  const [content, extra, posts] = await Promise.all([
+  const [content, extra, posts, disabled] = await Promise.all([
     getContent("en"),
     getSetting<string>("chat_extra_context", ""),
     loadPosts(),
+    getDisabledSources(),
   ])
+  const off = new Set<string>(disabled)
 
-  const sources: KnowledgeSource[] = []
   const parts: string[] = []
-  const add = (name: string, items: number, body: string, heading?: string) => {
-    if (!body.trim()) return
-    const block = heading ? `## ${heading}\n${body}` : body
-    parts.push(block)
-    sources.push({ name, items, chars: block.length })
+  const sources: KnowledgeSource[] = []
+
+  // Registra una fuente: si está desactivada o no hay contenido, no entra al texto
+  // pero sí aparece en la lista (para el checkbox del admin).
+  const add = (key: KbSourceKey, items: number, body: string, heading?: string) => {
+    const def = KB_SOURCES.find((s) => s.key === key)!
+    const available = body.trim().length > 0
+    const enabled = available && !off.has(key)
+    let chars = 0
+    if (enabled) {
+      const block = heading ? `## ${heading}\n${body}` : body
+      parts.push(block)
+      chars = block.length
+    }
+    sources.push({ key, name: def.name, locked: def.locked, enabled, available, items: available ? items : 0, chars })
   }
 
   // Identidad: siempre (el hero define nombre/tagline aunque esté oculto en la landing).
   const hero = content.hero.data
   add(
-    "Perfil",
+    "profile",
     1,
     [
       `# ${hero.name} — ${hero.tagline}`,
@@ -105,75 +146,76 @@ export async function buildKnowledgeBase(): Promise<KnowledgeBase> {
       .join("\n"),
   )
 
-  if (content.about.visible) add("About", 1, content.about.data.text, "About")
+  add("about", 1, content.about.visible ? content.about.data.text : "", "About")
 
-  if (content.skills.visible) {
-    const groups = content.skills.data.groups
-      .map((g) => `- ${g.name}: ${g.badges.map((b) => (typeof b === "string" ? b : b.name)).join(", ")}`)
-      .join("\n")
-    add("Skills", content.skills.data.groups.length, groups, "Skills")
-    const langs = content.skills.data.languages ?? []
-    if (langs.length) add("Languages", langs.length, langs.map((l) => `${l.name}: ${l.level}`).join("; "), "Languages")
-  }
+  const groups = content.skills.visible ? content.skills.data.groups : []
+  add(
+    "skills",
+    groups.length,
+    groups.map((g) => `- ${g.name}: ${g.badges.map((b) => (typeof b === "string" ? b : b.name)).join(", ")}`).join("\n"),
+    "Skills",
+  )
+  const langs = content.skills.visible ? (content.skills.data.languages ?? []) : []
+  add("languages", langs.length, langs.map((l) => `${l.name}: ${l.level}`).join("; "), "Languages")
 
-  if (content.experience.visible)
-    add("Experience", content.experience.data.items.length, formatExperience(content.experience.title, content.experience.data), content.experience.title)
-  if (content.teaching.visible)
-    add("Teaching", content.teaching.data.items.length, formatExperience(content.teaching.title, content.teaching.data), content.teaching.title)
+  add(
+    "experience",
+    content.experience.data.items.length,
+    content.experience.visible ? formatExperience(content.experience.data) : "",
+    content.experience.title,
+  )
+  add(
+    "teaching",
+    content.teaching.data.items.length,
+    content.teaching.visible ? formatExperience(content.teaching.data) : "",
+    content.teaching.title,
+  )
 
-  if (content.publicProjects.visible) {
-    const items = content.publicProjects.data.items
-    add(
-      "Public Projects",
-      items.length,
-      items
-        .map((p) => {
-          const links = [p.repoUrl ? `repo: ${p.repoUrl}` : "", p.liveUrl ? `live: ${p.liveUrl}` : ""].filter(Boolean).join(", ")
-          return `- ${p.title}: ${p.description} ${p.bullets.join(" ")} (Tech: ${p.tech.join(", ")})${links ? ` [${links}]` : ""}`
-        })
-        .join("\n"),
-      content.publicProjects.title,
-    )
-  }
+  const projects = content.publicProjects.visible ? content.publicProjects.data.items : []
+  add(
+    "projects",
+    projects.length,
+    projects
+      .map((p) => {
+        const links = [p.repoUrl ? `repo: ${p.repoUrl}` : "", p.liveUrl ? `live: ${p.liveUrl}` : ""].filter(Boolean).join(", ")
+        return `- ${p.title}: ${p.description} ${p.bullets.join(" ")} (Tech: ${p.tech.join(", ")})${links ? ` [${links}]` : ""}`
+      })
+      .join("\n"),
+    content.publicProjects.title,
+  )
 
-  if (content.researchProjects.visible) {
-    const items = content.researchProjects.data.items
-    add(
-      "Research Projects",
-      items.length,
-      items
-        .map((p) => {
-          const where = [p.institution, p.department].filter(Boolean).join(" — ")
-          const when = p.startDate ? ` (${p.startDate}${p.endDate ? ` to ${p.endDate}` : ", present"})` : ""
-          const papers = p.papers?.length ? ` Papers: ${p.papers.map((x) => x.name).join("; ")}.` : ""
-          return `- ${p.title}${where ? ` at ${where}` : ""}${when}: ${p.description} ${p.bullets.join(" ")}${papers} (Tech: ${p.tech.join(", ")})`
-        })
-        .join("\n"),
-      content.researchProjects.title,
-    )
-  }
+  const research = content.researchProjects.visible ? content.researchProjects.data.items : []
+  add(
+    "research",
+    research.length,
+    research
+      .map((p) => {
+        const where = [p.institution, p.department].filter(Boolean).join(" — ")
+        const when = p.startDate ? ` (${p.startDate}${p.endDate ? ` to ${p.endDate}` : ", present"})` : ""
+        const papers = p.papers?.length ? ` Papers: ${p.papers.map((x) => x.name).join("; ")}.` : ""
+        return `- ${p.title}${where ? ` at ${where}` : ""}${when}: ${p.description} ${p.bullets.join(" ")}${papers} (Tech: ${p.tech.join(", ")})`
+      })
+      .join("\n"),
+    content.researchProjects.title,
+  )
 
-  if (content.faq.visible) {
-    const items = content.faq.data.items
-    add("FAQ", items.length, items.map((f) => `Q: ${f.question}\nA: ${f.answer}`).join("\n"), "Frequently asked questions")
-  }
+  const faq = content.faq.visible ? content.faq.data.items : []
+  add("faq", faq.length, faq.map((f) => `Q: ${f.question}\nA: ${f.answer}`).join("\n"), "Frequently asked questions")
 
-  if (posts.length) {
-    add(
-      "Blog",
-      posts.length,
-      posts
-        .map((p) => {
-          const body = plainMarkdown(p.body).slice(0, POST_BODY_MAX)
-          const date = p.published_at ? p.published_at.slice(0, 10) : ""
-          return `### ${p.title}${date ? ` (${date})` : ""} — christianfonseca.dev/blog/${p.slug}\n${p.excerpt}\n${body}${p.tags.length ? `\nTags: ${p.tags.join(", ")}` : ""}`
-        })
-        .join("\n\n"),
-      "Blog articles written by Christian",
-    )
-  }
+  add(
+    "blog",
+    posts.length,
+    posts
+      .map((p) => {
+        const body = plainMarkdown(p.body).slice(0, POST_BODY_MAX)
+        const date = p.published_at ? p.published_at.slice(0, 10) : ""
+        return `### ${p.title}${date ? ` (${date})` : ""} — christianfonseca.dev/blog/${p.slug}\n${p.excerpt}\n${body}${p.tags.length ? `\nTags: ${p.tags.join(", ")}` : ""}`
+      })
+      .join("\n\n"),
+    "Blog articles written by Christian",
+  )
 
-  if (extra.trim()) add("Contexto extra", 1, extra.trim(), "Additional information")
+  add("extra", extra.trim() ? 1 : 0, extra.trim(), "Additional information")
 
   const text = parts.join("\n\n")
   return {
@@ -185,6 +227,6 @@ export async function buildKnowledgeBase(): Promise<KnowledgeBase> {
   }
 }
 
-export const getKnowledgeBase = unstable_cache(buildKnowledgeBase, ["chat-knowledge-base-v2"], {
+export const getKnowledgeBase = unstable_cache(buildKnowledgeBase, ["chat-knowledge-base-v3"], {
   tags: ["content", "posts"],
 })

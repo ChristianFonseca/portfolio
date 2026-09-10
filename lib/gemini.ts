@@ -33,15 +33,46 @@ export interface GeminiIncident {
 export const SETTING_CATALOG = "gemini_models_catalog"
 export const SETTING_INCIDENT = "gemini_model_incident"
 export const SETTING_FALLBACK = "gemini_fallback_model"
+export const SETTING_BLOCKED = "gemini_blocked_models"
 
-// Familias ya retiradas por Google (no se pueden seleccionar aunque aparezcan).
-const RETIRED_FAMILIES = /^gemini-(1\.0|1\.5|pro(-vision)?$|ultra)/i
+// La API de modelos NO marca deprecaciones. Fuente: https://ai.google.dev/gemini-api/docs/deprecations
+// (revisada 2026-09-10). Solo modelos de texto; los de imagen/vídeo/embeddings ya se filtran.
+export const DEPRECATIONS_URL = "https://ai.google.dev/gemini-api/docs/deprecations"
+export const DEPRECATIONS_CHECKED = "2026-09-10"
+const OFFICIALLY_DEPRECATED = new Set([
+  "gemini-3.1-flash-lite-preview",
+  "gemini-3-pro-preview",
+  "gemini-2.5-pro-preview-03-25",
+  "gemini-2.5-pro-preview-05-06",
+  "gemini-2.5-pro-preview-06-05",
+  "gemini-2.5-flash-preview-05-20",
+  "gemini-2.5-flash-preview-09-25",
+  "gemini-2.5-flash-lite-preview-09-2025",
+  "gemini-2.0-flash",
+  "gemini-2.0-flash-001",
+  "gemini-2.0-flash-lite",
+  "gemini-2.0-flash-lite-001",
+  "gemini-2.0-flash-lite-preview",
+  "gemini-2.0-flash-lite-preview-02-05",
+])
+// Familias completas retiradas o en retirada (1.0, 1.5, 2.0, experimentales, "gemini-pro" clásico).
+const RETIRED_FAMILIES = /^gemini-(1\.0|1\.5|2\.0|exp|pro(-vision)?$|ultra)/i
+// Previews con fecha de la generación 2.5: todas superadas por su versión GA.
+const DATED_25_PREVIEW = /^gemini-2\.5-(flash|pro)(-lite)?-preview-\d/i
 // Modelos que no sirven para texto→texto en este sitio.
-const NON_TEXT = /(embedding|imagen|veo|tts|audio|live|image|computer-use|robotics|aqa|learnlm|deep-research)/i
+const NON_TEXT = /(embedding|imagen|veo|tts|audio|live|image|computer-use|robotics|aqa|learnlm|deep-research|omni)/i
 
 export function classifyDeprecated(id: string, description: string): boolean {
-  if (RETIRED_FAMILIES.test(id)) return true
+  const key = id.toLowerCase()
+  if (OFFICIALLY_DEPRECATED.has(key)) return true
+  if (RETIRED_FAMILIES.test(key) || DATED_25_PREVIEW.test(key)) return true
   return /deprecat|discontinu|legacy|retir|sunset|no longer/i.test(description)
+}
+
+// Bloqueo manual desde el admin (además de los deprecados detectados).
+export async function getBlockedModels(): Promise<string[]> {
+  const list = await getSetting<string[]>(SETTING_BLOCKED, [])
+  return Array.isArray(list) ? list : []
 }
 
 interface RawModel {
@@ -91,9 +122,14 @@ export async function getGeminiCatalog(): Promise<GeminiCatalog | null> {
   return getSetting<GeminiCatalog | null>(SETTING_CATALOG, null)
 }
 
-// Estado de un id frente al catálogo guardado: ok | deprecated | missing | unknown (sin catálogo).
-export function modelStatus(id: string, catalog: GeminiCatalog | null): "ok" | "deprecated" | "missing" | "unknown" {
-  if (!catalog) return RETIRED_FAMILIES.test(id) ? "deprecated" : "unknown"
+export type ModelStatus = "ok" | "deprecated" | "blocked" | "missing" | "unknown"
+
+// Estado de un id frente al catálogo guardado y la lista de bloqueo manual.
+// unknown = aún no hay catálogo descargado.
+export function modelStatus(id: string, catalog: GeminiCatalog | null, blocked: string[] = []): ModelStatus {
+  if (classifyDeprecated(id, "")) return "deprecated"
+  if (blocked.includes(id)) return "blocked"
+  if (!catalog) return "unknown"
   const found = catalog.models.find((m) => m.id === id)
   if (!found) return "missing"
   return found.deprecated ? "deprecated" : "ok"

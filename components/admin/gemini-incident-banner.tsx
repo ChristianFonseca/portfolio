@@ -1,7 +1,7 @@
 import Link from "next/link"
 import { AlertTriangle } from "lucide-react"
 import { DEFAULT_GEMINI_MODEL, getSetting } from "@/lib/settings"
-import { SETTING_INCIDENT, getGeminiCatalog, modelStatus, type GeminiIncident } from "@/lib/gemini"
+import { SETTING_INCIDENT, getBlockedModels, getGeminiCatalog, modelStatus, type GeminiIncident } from "@/lib/gemini"
 import { DismissIncidentButton } from "@/components/admin/dismiss-incident-button"
 
 const fmtDate = (iso: string) =>
@@ -10,13 +10,14 @@ const fmtDate = (iso: string) =>
 // Aviso persistente en todo el admin cuando el modelo Gemini configurado dejó de
 // existir (hubo un fallback real) o ya no aparece/está deprecado en el catálogo.
 export async function GeminiIncidentBanner() {
-  const [incident, catalog, model] = await Promise.all([
+  const [incident, catalog, model, blocked] = await Promise.all([
     getSetting<GeminiIncident | null>(SETTING_INCIDENT, null),
     getGeminiCatalog(),
     getSetting<string>("gemini_model", DEFAULT_GEMINI_MODEL),
+    getBlockedModels(),
   ])
-  const status = modelStatus(model, catalog)
-  const stale = status === "deprecated" || status === "missing"
+  const status = modelStatus(model, catalog, blocked)
+  const stale = status === "deprecated" || status === "missing" || status === "blocked"
   if (!incident && !stale) return null
 
   return (
@@ -36,8 +37,12 @@ export async function GeminiIncidentBanner() {
         {stale && (
           <p>
             El modelo configurado <b>{model}</b>{" "}
-            {status === "deprecated" ? "está deprecado" : "ya no aparece en el catálogo de la API"}: elige otro en
-            Configuración.
+            {status === "deprecated"
+              ? "está deprecado"
+              : status === "blocked"
+                ? "está bloqueado manualmente"
+                : "ya no aparece en el catálogo de la API"}
+            : elige otro en Configuración.
           </p>
         )}
       </div>

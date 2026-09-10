@@ -39,9 +39,11 @@ export function ChatConfigForm({
 
   return (
     <div className="mt-6 rounded-2xl border border-border bg-card/40 p-5">
-      <p className="mb-1 text-sm font-semibold">Chat con IA (RAG)</p>
+      <p className="mb-1 text-sm font-semibold">Chat: límites de uso y contexto extra</p>
       <p className="mb-4 text-xs text-muted-foreground">
-        El asistente responde solo con la información de tus secciones + el contexto extra de abajo.
+        Los límites frenan el abuso del asistente público. El <b>contexto extra</b> es texto libre que se añade a la
+        base de conocimiento de arriba como bloque "Additional information" (fuente "Contexto extra", con su propio
+        checkbox): sirve para cosas que no están en ninguna sección, como formación, disponibilidad o tarifas.
       </p>
 
       <div className="space-y-4">
@@ -76,7 +78,7 @@ export function ChatConfigForm({
         </div>
         <div>
           <label htmlFor="chat-extra" className="mb-1 block text-xs text-muted-foreground">
-            Contexto extra para el asistente (educación, certificaciones, disponibilidad, etc.)
+            Contexto extra (se añade a la base de conocimiento; educación, certificaciones, disponibilidad, etc.)
           </label>
           <textarea
             id="chat-extra"
