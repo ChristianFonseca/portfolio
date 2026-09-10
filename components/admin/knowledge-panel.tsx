@@ -5,15 +5,23 @@ import { Database, RefreshCw } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { rebuildKnowledgeBase } from "@/app/admin/actions"
 import type { KnowledgeBase } from "@/lib/chat/knowledge"
+import { estimateCostUsd, fmtSmallUsd, priceFor } from "@/lib/gemini-pricing"
 
 const fmtDate = (iso: string) =>
   new Date(iso).toLocaleString("es", { dateStyle: "medium", timeStyle: "short" })
 const fmtInt = (n: number) => n.toLocaleString("es")
 
-// Panel "Base de conocimiento del chat": qué recibe el modelo, cuánto pesa y un botón
-// para reconstruirla a mano (útil tras cambios por script o si el chat responde con
-// datos viejos). Al guardar secciones o posts desde el admin se actualiza sola.
-export function KnowledgePanel({ initial }: { initial: KnowledgeBase }) {
+// Tokens fijos que acompañan a la base en cada mensaje: reglas del system prompt (~300)
+// + historial medio (~600) + pregunta; y una respuesta típica de ~150 tokens.
+const OVERHEAD_INPUT_TOKENS = 1000
+const TYPICAL_OUTPUT_TOKENS = 150
+
+// Panel "Base de conocimiento del chat": qué recibe el modelo, cuánto pesa, cuánto cuesta
+// por mensaje con el modelo actual y un botón para reconstruirla a mano (útil tras cambios
+// por script o si el chat responde con datos viejos). Al guardar secciones o posts desde
+// el admin se actualiza sola.
+export function KnowledgePanel({ initial, modelId }: { initial: KnowledgeBase; modelId: string }) {
+  const price = priceFor(modelId)
   const [kb, setKb] = useState(initial)
   const [message, setMessage] = useState<{ ok: boolean; text: string } | null>(null)
   const [pending, startTransition] = useTransition()
@@ -50,7 +58,7 @@ export function KnowledgePanel({ initial }: { initial: KnowledgeBase }) {
         </Button>
       </div>
 
-      <div className="mt-4 grid gap-3 sm:grid-cols-3">
+      <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <div className="rounded-xl border border-border bg-background/40 px-4 py-3">
           <p className="text-[10px] uppercase tracking-wide text-muted-foreground">Última construcción</p>
           <p className="mt-0.5 text-sm font-semibold" suppressHydrationWarning>
@@ -66,6 +74,22 @@ export function KnowledgePanel({ initial }: { initial: KnowledgeBase }) {
         <div className="rounded-xl border border-border bg-background/40 px-4 py-3">
           <p className="text-[10px] uppercase tracking-wide text-muted-foreground">Fuentes</p>
           <p className="mt-0.5 text-sm font-semibold">{kb.sources.length} bloques</p>
+        </div>
+        <div className="rounded-xl border border-border bg-background/40 px-4 py-3">
+          <p className="text-[10px] uppercase tracking-wide text-muted-foreground">Costo por mensaje</p>
+          {price ? (
+            <>
+              <p className="mt-0.5 text-sm font-semibold text-emerald-600 dark:text-emerald-400">
+                ≈ {fmtSmallUsd(estimateCostUsd(price, kb.approxTokens + OVERHEAD_INPUT_TOKENS, TYPICAL_OUTPUT_TOKENS))}
+              </p>
+              <p className="text-[10px] text-muted-foreground/70">
+                con {modelId} · 1.000 msgs ≈{" "}
+                {fmtSmallUsd(estimateCostUsd(price, kb.approxTokens + OVERHEAD_INPUT_TOKENS, TYPICAL_OUTPUT_TOKENS) * 1000)}
+              </p>
+            </>
+          ) : (
+            <p className="mt-0.5 text-xs text-muted-foreground">sin precio publicado para {modelId}</p>
+          )}
         </div>
       </div>
 

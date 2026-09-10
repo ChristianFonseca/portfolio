@@ -6,6 +6,7 @@ import { AlertTriangle, Ban, CheckCircle2, FlaskConical, RefreshCw, ShieldCheck 
 import { Button } from "@/components/ui/button"
 import { refreshGeminiModels, setGeminiFallbackModel, setGeminiModel, testGeminiModel } from "@/app/admin/actions"
 import type { GeminiCatalog, GeminiModelInfo } from "@/lib/gemini"
+import { PRICING_UPDATED, PRICING_URL, fmtPricePair, priceFor } from "@/lib/gemini-pricing"
 
 interface SeedModel {
   id: string
@@ -135,10 +136,17 @@ export function ConfigForm({
           {refreshing ? "Consultando…" : "Actualizar modelos disponibles"}
         </Button>
       </div>
-      <p className="mb-4 text-[11px] text-muted-foreground/70" suppressHydrationWarning>
+      <p className="mb-1 text-[11px] text-muted-foreground/70" suppressHydrationWarning>
         {catalog
           ? `Catálogo real de la API: ${catalog.models.length} modelos · actualizado ${fmtDate(catalog.fetchedAt)}`
           : "Aún no se ha descargado el catálogo: se muestra una lista semilla. Pulsa “Actualizar modelos disponibles” para ver los modelos reales de tu API key."}
+      </p>
+      <p className="mb-4 text-[11px] text-muted-foreground/70">
+        Precios: nivel de pago, USD por 1M tokens, según la{" "}
+        <a href={PRICING_URL} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+          página oficial
+        </a>{" "}
+        al {PRICING_UPDATED} (la API no los expone; se actualizan a mano en <code>lib/gemini-pricing.ts</code>).
       </p>
 
       {currentUnavailable && (
@@ -196,6 +204,18 @@ export function ConfigForm({
                     </>
                   )}
                 </span>
+                {(() => {
+                  const price = priceFor(m.id)
+                  return price ? (
+                    <span className="block text-xs">
+                      <span className="font-medium text-emerald-600 dark:text-emerald-400">{fmtPricePair(price)}</span>
+                      {price.freeTier && <span className="text-muted-foreground"> · nivel gratuito disponible</span>}
+                      {price.note && <span className="text-muted-foreground"> · {price.note}</span>}
+                    </span>
+                  ) : (
+                    <span className="block text-[11px] text-muted-foreground/60">precio no publicado para este id</span>
+                  )
+                })()}
                 {m.description && !m.fromSeed && (
                   <span className="mt-0.5 block truncate text-[11px] text-muted-foreground/60" title={m.description}>
                     {m.description}

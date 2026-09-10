@@ -44,7 +44,7 @@ export async function POST(request: Request) {
   const apiKey = process.env.GEMINI_API_KEY
   if (!apiKey) {
     return NextResponse.json(
-      { error: "GEMINI_API_KEY no está configurada en el servidor. Agrégala al .env y reinicia." },
+      { error: "GEMINI_API_KEY no está configurada en el servidor. Cárgala en el proyecto de Bitwarden Secrets Manager y reinicia el contenedor." },
       { status: 501 },
     )
   }

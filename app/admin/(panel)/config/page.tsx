@@ -82,7 +82,7 @@ export default async function AdminConfigPage() {
 
       <ChatConfigForm dailyLimit={dailyLimit} allowlist={allowlist} extraContext={extraContext} />
 
-      <KnowledgePanel initial={kb} />
+      <KnowledgePanel initial={kb} modelId={model} />
 
       <ActivityConfigForm visitorDays={visitorDays} auditDays={auditDays} />
     </div>
