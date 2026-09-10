@@ -48,7 +48,7 @@ export function KnowledgePanel({ initial, modelId }: { initial: KnowledgeBase; m
   const handleToggle = (key: string, enable: boolean) => {
     setMessage(null)
     setTogglingKey(key)
-    const current = new Set(disabledKeys())
+    const current = new Set<string>(disabledKeys())
     if (enable) current.delete(key)
     else current.add(key)
     startTransition(async () => {
