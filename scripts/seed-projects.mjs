@@ -20,12 +20,16 @@ if (!rows.length) {
 }
 const current = rows[0].data ?? {}
 
-// Fusiona una lista de proyectos nueva con la existente (match por título),
+// Renombres de título: el título nuevo hereda media/URLs del anterior en la DB.
+const TITLE_ALIASES = { OrchestrAI: ["OrchestraIA"] }
+
+// Fusiona una lista de proyectos nueva con la existente (match por título o alias),
 // conservando media y URLs ya presentes en la DB.
 function mergeLocale(nextItems, prevItems) {
   const prevByTitle = new Map((prevItems ?? []).map((p) => [p.title, p]))
   return nextItems.map((p) => {
-    const prev = prevByTitle.get(p.title)
+    const prev =
+      prevByTitle.get(p.title) ?? (TITLE_ALIASES[p.title] ?? []).map((t) => prevByTitle.get(t)).find(Boolean)
     if (!prev) return p
     return {
       ...p,
