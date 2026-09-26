@@ -81,6 +81,18 @@ const META = [
     published_at: "2026-08-23T13:00:00Z",
   },
   {
+    slug: "the-site-nobody-could-find",
+    file: "invisible-site.md",
+    title: "The site nobody could find: when every dashboard is green and nobody is reading",
+    title_es: "El sitio que nadie encontraba: cuando todo está en verde y nadie te lee",
+    excerpt:
+      "Nothing was down. The server answered, the dashboards were green, the logs were clean. And for three months no search engine read a single line I published. On the failures that produce no symptom, and why every system needs one check performed from outside itself.",
+    excerpt_es:
+      "Nada estaba caído. El servidor respondía, los tableros en verde, los registros limpios. Y durante tres meses ningún buscador leyó una sola línea de lo que publiqué. Sobre los fallos que no producen ningún síntoma, y por qué todo sistema necesita una comprobación hecha desde fuera de sí mismo.",
+    tags: ["Observability", "SEO", "Monitoring", "DevOps", "Web"],
+    published_at: "2026-09-25T13:00:00Z",
+  },
+  {
     slug: "anatomy-of-a-real-rce",
     file: "rce-cloudflare.md",
     title: "Anatomy of a real RCE: patching CVE-2025-55182 and hardening with Cloudflare",

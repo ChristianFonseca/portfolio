@@ -35,3 +35,5 @@ next-env.d.ts
 # Monitoreo local (token CF/Telegram + reportes) — NO subir
 /monitoring/
 /monitor.ps1
+secrets/
+seo/
