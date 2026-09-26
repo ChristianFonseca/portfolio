@@ -11,7 +11,7 @@ export function BlogHeader({ locale, altHref }: { locale: Locale; altHref: strin
   const blog = locale === "es" ? "/es/blog" : "/blog"
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur-md">
-      <div className="mx-auto flex h-14 max-w-3xl items-center gap-5 px-6">
+      <div className="mx-auto flex h-14 max-w-5xl items-center gap-5 px-6">
         <Link href={home} aria-label="Christian Fonseca" className="transition-opacity hover:opacity-80">
           <BrandLogo variant="simbolo" className="h-8 w-auto" />
         </Link>

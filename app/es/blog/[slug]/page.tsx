@@ -64,7 +64,7 @@ export default async function BlogPostPageEs({ params }: { params: Promise<{ slu
     <main className="min-h-screen">
       <BlogHeader locale="es" altHref={`/blog/${post.slug}`} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <article className="mx-auto max-w-3xl px-6 py-12">
+      <article className="mx-auto max-w-5xl px-6 py-12">
         <Link
           href="/es/blog"
           className="mb-6 inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-primary"

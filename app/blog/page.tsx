@@ -27,7 +27,7 @@ export default async function BlogPage() {
   return (
     <main className="min-h-screen">
       <BlogHeader locale="en" altHref="/es/blog" />
-      <div className="mx-auto max-w-3xl px-6 py-12">
+      <div className="mx-auto max-w-5xl px-6 py-12">
         <h1 className="bg-gradient-to-r from-primary to-accent bg-clip-text text-4xl font-bold text-transparent">
           Blog
         </h1>

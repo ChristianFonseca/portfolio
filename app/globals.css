@@ -199,9 +199,22 @@
     background: transparent !important;
   }
 
-  /* Tipografía de artículos del blog (markdown renderizado) */
+  /* Tipografía de artículos del blog (markdown renderizado).
+     El contenedor es ancho (max-w-5xl), pero el texto corrido se queda en una medida
+     legible: a 1024px darían ~110 caracteres por línea, demasiados para leer cómodo.
+     Los diagramas, el vídeo, el código y las tablas sí usan todo el ancho. */
   .blog-prose {
     @apply text-foreground leading-relaxed;
+    --measure: 50rem; /* 800px: algo más ancho que antes, aún cómodo de leer */
+  }
+  .blog-prose > p,
+  .blog-prose > ul,
+  .blog-prose > ol,
+  .blog-prose > blockquote,
+  .blog-prose > h2,
+  .blog-prose > h3,
+  .blog-prose > h4 {
+    max-width: var(--measure);
   }
   .blog-prose h2 {
     @apply mt-10 mb-4 text-2xl font-bold;
