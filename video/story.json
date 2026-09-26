@@ -1,0 +1,194 @@
+{
+  "title": "The site nobody could find",
+  "width": 1920,
+  "height": 1080,
+  "fps": 30,
+  "total_seconds": 57,
+  "langs": ["en", "es"],
+  "output": {
+    "name": "invisible-site-{lang}",
+    "delivery_name": "invisible-site-{lang}"
+  },
+  "art_direction": "Portfolio brand, dark. Space Grotesk for headlines, JetBrains Mono for data and code. Purple→pink gradient reserved for the emphasised word of each headline and for brand dots. Green means 'the instrument says fine', red means 'the truth'. One idea per scene, generous negative space, nothing decorative that does not carry meaning.",
+  "scenes": [
+    {
+      "n": 1,
+      "slug": "s1-all-green",
+      "file": "01-s1-all-green.js",
+      "start": 0,
+      "end": 7.5,
+      "kicker": { "en": "01 · The dashboard", "es": "01 · El tablero" },
+      "headline": { "en": "Everything was *green*.", "es": "Todo estaba en *verde*." },
+      "str": {
+        "win": { "en": "status · production", "es": "estado · producción" },
+        "rows": [
+          { "label": { "en": "Uptime, 90 days", "es": "Disponibilidad, 90 días" }, "value": "100.00%" },
+          { "label": { "en": "Errors, last 24 h", "es": "Errores, últimas 24 h" }, "value": "0" },
+          { "label": { "en": "Response time, p95", "es": "Tiempo de respuesta, p95" }, "value": "180 ms" },
+          { "label": { "en": "Certificate", "es": "Certificado" }, "value": { "en": "valid", "es": "válido" } },
+          { "label": { "en": "Deploys this week", "es": "Despliegues esta semana", "": "" }, "value": "4" }
+        ],
+        "allgood": { "en": "ALL SYSTEMS NORMAL", "es": "TODO NORMAL" }
+      },
+      "copy_en": ["Everything was green."],
+      "copy_es": ["Todo estaba en verde."]
+    },
+    {
+      "n": 2,
+      "slug": "s2-nobody-reading",
+      "file": "02-s2-nobody-reading.js",
+      "start": 7.5,
+      "end": 16,
+      "kicker": { "en": "02 · Three months", "es": "02 · Tres meses" },
+      "headline": { "en": "And nobody was *reading*.", "es": "Y nadie estaba *leyendo*." },
+      "str": {
+        "published": { "en": "Articles published", "es": "Artículos publicados" },
+        "readers": { "en": "Readers from search", "es": "Lectores desde buscadores" },
+        "months": {
+          "en": ["JUN", "JUL", "AUG", "SEP"],
+          "es": ["JUN", "JUL", "AGO", "SEP"]
+        },
+        "note": {
+          "en": "Not a slow start. A closed channel.",
+          "es": "No es un arranque lento. Es un canal cerrado."
+        }
+      },
+      "copy_en": ["And nobody was reading.", "Seven articles. Zero readers from search."],
+      "copy_es": ["Y nadie estaba leyendo.", "Siete artículos. Cero lectores desde buscadores."]
+    },
+    {
+      "n": 3,
+      "slug": "s3-one-line",
+      "file": "03-s3-one-line.js",
+      "start": 16,
+      "end": 24.5,
+      "kicker": { "en": "03 · The cause", "es": "03 · La causa" },
+      "headline": {
+        "en": "*One line*, left over from development.",
+        "es": "*Una línea*, sobrante del desarrollo."
+      },
+      "str": {
+        "file": "robots.txt",
+        "lines": [
+          { "t": "# crawler access rules", "cls": "cmt", "t_es": "# reglas de acceso para rastreadores" },
+          { "t": "User-agent: *", "cls": "key" },
+          { "t": "Disallow: /", "cls": "bad", "flag": true },
+          { "t": "", "cls": "" },
+          { "t": "Sitemap: /sitemap.xml", "cls": "key" }
+        ],
+        "then": { "en": "Correct while building the site.", "es": "Correcta mientras se construía el sitio." },
+        "now": { "en": "Forgotten the day it went live.", "es": "Olvidada el día que salió a producción." }
+      },
+      "copy_en": ["One line, left over from development."],
+      "copy_es": ["Una línea, sobrante del desarrollo."]
+    },
+    {
+      "n": 4,
+      "slug": "s4-silent-break",
+      "file": "04-s4-silent-break.js",
+      "start": 24.5,
+      "end": 34,
+      "kicker": { "en": "04 · The silent break", "es": "04 · La rotura silenciosa" },
+      "headline": {
+        "en": "Nothing was broken. That was the *problem*.",
+        "es": "Nada estaba roto. Ese era el *problema*."
+      },
+      "str": {
+        "nodes": {
+          "en": ["Content published", "Crawler asks permission", "Pages crawled", "Pages indexed", "Impressions", "Visits"],
+          "es": ["Contenido publicado", "El rastreador pide permiso", "Páginas rastreadas", "Páginas indexadas", "Impresiones", "Visitas"]
+        },
+        "refused": { "en": "REFUSED", "es": "RECHAZADO" },
+        "silence": {
+          "en": ["no error raised", "no log line written", "no alert fired"],
+          "es": ["ningún error", "ninguna línea de log", "ninguna alerta"]
+        },
+        "badge": { "en": "ALL SYSTEMS NORMAL", "es": "TODO NORMAL" }
+      },
+      "copy_en": ["Nothing was broken. That was the problem.", "No error, no log, no alert."],
+      "copy_es": ["Nada estaba roto. Ese era el problema.", "Ningún error, ningún log, ninguna alerta."]
+    },
+    {
+      "n": 5,
+      "slug": "s5-zero-vs-few",
+      "file": "05-s5-zero-vs-few.js",
+      "start": 34,
+      "end": 42,
+      "kicker": { "en": "05 · The number", "es": "05 · El número" },
+      "headline": {
+        "en": "*Zero* is not a small number. It is a different one.",
+        "es": "*Cero* no es un número pequeño. Es otro número."
+      },
+      "str": {
+        "few": {
+          "title": { "en": "FEW", "es": "POCOS" },
+          "diag": { "en": "You are in the index, ranking badly.", "es": "Estás en el índice, posicionando mal." },
+          "fix": { "en": "Fixed by writing better.", "es": "Se arregla escribiendo mejor." }
+        },
+        "zero": {
+          "title": { "en": "ZERO", "es": "CERO" },
+          "diag": { "en": "You are not in the index at all.", "es": "No estás en el índice, en absoluto." },
+          "fix": { "en": "Not fixed by writing at all.", "es": "No se arregla escribiendo." }
+        },
+        "note": {
+          "en": "Your analytics measures who arrived. It is silent about everyone who never could.",
+          "es": "Tu analítica mide a quien llegó. Calla sobre todos los que nunca pudieron."
+        }
+      },
+      "copy_en": ["Zero is not a small number. It is a different one."],
+      "copy_es": ["Cero no es un número pequeño. Es otro número."]
+    },
+    {
+      "n": 6,
+      "slug": "s6-outside-view",
+      "file": "06-s6-outside-view.js",
+      "start": 42,
+      "end": 51,
+      "kicker": { "en": "06 · The lesson", "es": "06 · La lección" },
+      "headline": {
+        "en": "Every system needs one check from *outside itself*.",
+        "es": "Todo sistema necesita una comprobación desde *fuera de sí mismo*."
+      },
+      "str": {
+        "inside": {
+          "title": { "en": "FROM INSIDE", "es": "DESDE DENTRO" },
+          "sub": { "en": "can be green while failing", "es": "puede estar en verde mientras falla" },
+          "items": {
+            "en": ["Application logs", "Host metrics", "First-party analytics"],
+            "es": ["Logs de la aplicación", "Métricas del host", "Analítica propia"]
+          }
+        },
+        "outside": {
+          "title": { "en": "FROM OUTSIDE", "es": "DESDE FUERA" },
+          "sub": { "en": "sees what the world sees", "es": "ve lo que ve el mundo" },
+          "items": {
+            "en": ["Fetch as the crawler", "Index state from the provider", "Probe from another network"],
+            "es": ["Pedirla como el rastreador", "Estado del índice del proveedor", "Sondear desde otra red"]
+          }
+        },
+        "verdictIn": { "en": "everything is fine", "es": "todo está bien" },
+        "verdictOut": { "en": "nobody can see you", "es": "nadie puede verte" }
+      },
+      "copy_en": ["Every system needs one check performed from outside itself."],
+      "copy_es": ["Todo sistema necesita una comprobación hecha desde fuera de sí mismo."]
+    },
+    {
+      "n": 7,
+      "slug": "s7-close",
+      "file": "07-s7-close.js",
+      "start": 51,
+      "end": 57,
+      "kicker": null,
+      "headline": {
+        "en": "The instruments were not broken.\nThey were pointed *inward*.",
+        "es": "Los instrumentos no estaban rotos.\nApuntaban *hacia dentro*."
+      },
+      "str": {
+        "read": { "en": "Read the full write-up", "es": "Lee el artículo completo" },
+        "url": "christianfonseca.dev/blog"
+      },
+      "copy_en": ["The instruments were not broken. They were pointed inward."],
+      "copy_es": ["Los instrumentos no estaban rotos. Apuntaban hacia dentro."]
+    }
+  ]
+}

@@ -1,0 +1,219 @@
+/* Explainer video — brand sheet. Same tokens as the site's globals.css (dark theme).
+   Fonts are local woff2 (fonts/), so rendering never touches the network. */
+@import url("../fonts/faces.css");
+
+:root {
+  --bg: #000000;
+  --bg2: #080808;
+  --card: #0d0d0f;
+  --card-up: #141418;
+  --border: #232329;
+  --border-soft: #1a1a1f;
+  --fg: #eeeeee;
+  --dim: #9a8fb0;
+  --faint: #57535f;
+  --primary: #a855f7;
+  --primary-dim: #7a3fb5;
+  --primary-light: #c78dff;
+  --accent: #ec4899;
+  --ok: #34d399;
+  --ok-dim: #1d7d5b;
+  --warn: #fbbf24;
+  --bad: #f43f5e;
+  --bad-dim: #9f1239;
+
+  --font-sans: "Space Grotesk", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --font-serif: "Instrument Serif", Georgia, serif;
+  --grad: linear-gradient(90deg, var(--primary), var(--accent));
+}
+
+* { margin: 0; padding: 0; }
+html, body { background: #0a0a0c; overflow: hidden; }
+body.render { background: var(--bg); }
+#viewport { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
+body.render #viewport { transform: none !important; }
+
+/* ── The 1920x1080 canvas ── */
+#frame {
+  position: relative; width: 1920px; height: 1080px; overflow: hidden;
+  background: var(--bg); color: var(--fg);
+  font-family: var(--font-sans); font-weight: 500;
+  -webkit-font-smoothing: antialiased; text-rendering: geometricPrecision;
+  font-kerning: normal;
+}
+#frame *, #frame *::before, #frame *::after { box-sizing: border-box; }
+/* Every CSS animation is driven by the runtime clock (seek), never the wall clock. */
+#frame *, #frame *::before, #frame *::after { animation-play-state: paused !important; transition: none !important; }
+
+.layer, .stage { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; }
+.layer.bg { background: var(--bg); }
+.layer.hud { z-index: 100; pointer-events: none; }
+.abs { position: absolute; }
+
+/* Subtle brand glow, used as the backdrop of every scene. */
+.glow {
+  position: absolute; border-radius: 50%; filter: blur(90px); opacity: .5; pointer-events: none;
+}
+.glow.p { background: radial-gradient(circle, rgba(168,85,247,.55), transparent 70%); }
+.glow.a { background: radial-gradient(circle, rgba(236,72,153,.42), transparent 70%); }
+.grid-bg {
+  position: absolute; inset: 0; opacity: .5;
+  background-image: linear-gradient(rgba(255,255,255,.028) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(255,255,255,.028) 1px, transparent 1px);
+  background-size: 80px 80px;
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 45%, #000 40%, transparent 100%);
+}
+
+/* ── Type ── */
+.mono, .num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; font-weight: 500; }
+.serif { font-family: var(--font-serif); font-style: italic; }
+.muted { color: var(--dim); }
+
+.headline {
+  font-family: var(--font-sans); font-weight: 700; font-size: 82px; line-height: 1.08;
+  letter-spacing: -.022em; color: var(--fg);
+}
+.headline .w { display: inline-block; white-space: pre; }
+.headline .w.grad {
+  background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.headline .w.accent { color: var(--accent); }
+.headline .w.mono { font-family: var(--font-mono); font-weight: 600; font-size: .86em; color: var(--dim); }
+
+.sub {
+  font-family: var(--font-sans); font-weight: 500; font-size: 34px; line-height: 1.4;
+  letter-spacing: -.008em; color: var(--dim);
+}
+
+.kicker {
+  display: flex; align-items: center; gap: 12px;
+  font-family: var(--font-mono); font-weight: 600; font-size: 24px; letter-spacing: .14em;
+  text-transform: uppercase; color: var(--dim); white-space: nowrap;
+}
+.kicker .dot { width: 12px; height: 12px; border-radius: 50%; background: var(--grad); flex: none; }
+
+/* ── Surfaces ── */
+.card {
+  position: absolute; background: var(--card); border: 1px solid var(--border); border-radius: 22px;
+  box-shadow: 0 24px 60px -24px rgba(0,0,0,.9);
+}
+.card.up { background: var(--card-up); }
+
+.win { overflow: hidden; display: flex; flex-direction: column; }
+.winbar {
+  height: 52px; flex: none; display: flex; align-items: center; gap: 9px; padding: 0 20px;
+  background: #17171b; border-bottom: 1px solid var(--border);
+}
+.winbar .led { width: 12px; height: 12px; border-radius: 50%; background: #2e2e36; flex: none; }
+.wintitle {
+  margin-left: 14px; font-family: var(--font-mono); font-size: 19px; font-weight: 500; color: var(--faint);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.winbody { flex: 1; padding: 24px 28px; min-height: 0; position: relative; }
+
+/* ── Status rows / tiles / chips ── */
+.statrow { display: flex; align-items: center; gap: 16px; height: 56px; }
+.sdot { width: 14px; height: 14px; border-radius: 50%; flex: none; background: var(--faint); }
+.sdot.ok { background: var(--ok); box-shadow: 0 0 16px rgba(52,211,153,.55); }
+.sdot.bad { background: var(--bad); box-shadow: 0 0 16px rgba(244,63,94,.55); }
+.sdot.warn { background: var(--warn); box-shadow: 0 0 16px rgba(251,191,36,.5); }
+.slabel { flex: 1; font-size: 26px; font-weight: 500; color: var(--fg); }
+.sval { font-family: var(--font-mono); font-size: 26px; font-weight: 600; color: var(--dim); font-variant-numeric: tabular-nums; }
+.sval.ok { color: var(--ok); }
+.sval.bad { color: var(--bad); }
+.sval.warn { color: var(--warn); }
+
+.tile { display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 10px; }
+.tval {
+  font-family: var(--font-mono); font-weight: 700; font-size: 76px; line-height: 1;
+  color: var(--fg); font-variant-numeric: tabular-nums;
+}
+.tval.ok { color: var(--ok); }
+.tval.bad { color: var(--bad); }
+.tval.grad { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.tlabel {
+  font-family: var(--font-mono); font-size: 20px; font-weight: 500; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--faint); text-align: center;
+}
+
+.chip {
+  display: inline-flex; align-items: center; gap: 10px; height: 46px; padding: 0 20px; border-radius: 999px;
+  background: rgba(168,85,247,.1); border: 1px solid rgba(168,85,247,.32); color: var(--primary-light);
+  font-family: var(--font-mono); font-size: 21px; font-weight: 600; white-space: nowrap;
+}
+.chip.bad { background: rgba(244,63,94,.1); border-color: rgba(244,63,94,.35); color: #fda4b4; }
+.chip.ok { background: rgba(52,211,153,.1); border-color: rgba(52,211,153,.33); color: #6ee7b7; }
+.chip.ghost { background: rgba(255,255,255,.03); border-color: var(--border); color: var(--faint); }
+
+/* ── Flow diagram nodes ── */
+.fnode {
+  position: absolute; display: flex; align-items: center; justify-content: center; text-align: center;
+  padding: 0 22px; border-radius: 16px; background: var(--card-up); border: 1px solid var(--border);
+  font-size: 25px; font-weight: 600; line-height: 1.22; color: var(--fg);
+}
+.fnode.ok { border-color: rgba(52,211,153,.4); background: rgba(52,211,153,.07); }
+.fnode.bad { border-color: rgba(244,63,94,.45); background: rgba(244,63,94,.08); color: #ffd9e0; }
+.fnode.brand { border-color: rgba(168,85,247,.45); background: rgba(168,85,247,.09); }
+.fnode.ghost { border-style: dashed; border-color: var(--border); color: var(--faint); background: transparent; }
+.fnode .sm { font-family: var(--font-mono); font-size: 19px; font-weight: 500; color: var(--dim); }
+
+/* ── Code block ── */
+.code {
+  position: absolute; font-family: var(--font-mono); font-size: 27px; line-height: 1.62; font-weight: 500;
+  color: #c9c9d4; white-space: pre;
+}
+.code .cmt { color: var(--faint); }
+.code .key { color: var(--primary-light); }
+.code .str { color: #7dd3a8; }
+.code .bad { color: #ff8fa3; font-weight: 700; }
+.mark {
+  position: absolute; border-radius: 8px; background: rgba(244,63,94,.16);
+  border: 1px solid rgba(244,63,94,.5); pointer-events: none;
+}
+
+/* ── Watermark ── */
+.wm {
+  position: absolute; right: 56px; bottom: 44px; display: flex; align-items: center; gap: 12px;
+  font-family: var(--font-mono); font-size: 21px; font-weight: 500; color: var(--faint); letter-spacing: .02em;
+}
+.wm i { width: 10px; height: 10px; border-radius: 50%; background: var(--grad); }
+
+.scene-error {
+  position: absolute; left: 120px; top: 120px; width: 900px; padding: 24px 28px; border-radius: 18px;
+  background: #2a0d14; border: 2px solid var(--bad); color: #ffd9e0;
+  font: 500 20px/1.35 var(--font-mono); white-space: pre-wrap; z-index: 999;
+}
+
+/* ── Preview chrome (hidden in render mode) ── */
+#controls {
+  position: fixed; left: 0; right: 0; bottom: 0; height: 88px; padding: 10px 16px; box-sizing: border-box;
+  background: #111114; border-top: 1px solid #26262e; display: grid; gap: 8px;
+  grid-template-rows: 30px 30px; user-select: none; z-index: 10;
+}
+body.render #controls, body.render #grid { display: none !important; }
+#controls .row { display: flex; align-items: center; gap: 10px; min-width: 0; }
+#controls button {
+  height: 28px; min-width: 34px; padding: 0 10px; border-radius: 6px; border: 1px solid #33333d;
+  background: #1c1c22; color: #e6e6ea; font: 600 13px/1 system-ui, sans-serif; cursor: pointer;
+}
+#controls button.on { background: var(--primary-dim); border-color: var(--primary); }
+#controls .time {
+  font: 500 13px/1 "JetBrains Mono", monospace; font-variant-numeric: tabular-nums; color: #cfcfd8; white-space: nowrap;
+}
+#controls .spacer { flex: 1; }
+#scrub { position: relative; flex: 1; height: 30px; cursor: pointer; }
+#scrub .seg {
+  position: absolute; top: 0; height: 30px; border-right: 1px solid #0a0a0c; background: #22222a;
+  color: #8b8b99; font: 600 11px/30px system-ui, sans-serif; text-align: center; overflow: hidden;
+}
+#scrub .seg.cur { background: var(--primary-dim); color: #fff; }
+#scrub .head { position: absolute; top: -2px; width: 2px; height: 34px; background: var(--accent); }
+
+#grid { position: absolute; inset: 0; display: none; z-index: 900; pointer-events: none; }
+#grid.on { display: block; }
+#grid i { position: absolute; background: rgba(236,72,153,.3); }
+#grid b { position: absolute; border: 1px dashed rgba(168,85,247,.35); background: transparent; }
+#grid span {
+  position: absolute; font: 500 12px/1 "JetBrains Mono", monospace; color: rgba(236,72,153,.75);
+}

@@ -45,6 +45,35 @@ renderer.code = ({ text, lang }) => {
   return `<pre><code class="language-${escapeHtml(l)}">${escapeHtml(text)}</code></pre>`
 }
 
+// Imágenes y vídeo. `![alt](/video/x.mp4)` se convierte en un <video> con su póster
+// (mismo nombre, .jpg). Solo se aceptan rutas propias que empiecen por "/": así un
+// href hostil (javascript:, http://otro-sitio) nunca llega al atributo src.
+const isLocalPath = (href: string) => /^\/[^/\\]/.test(href)
+
+renderer.image = ({ href, title, text }) => {
+  const src = String(href || "")
+  const alt = escapeHtml(text || "")
+  const cap = title ? escapeHtml(title) : ""
+  if (!isLocalPath(src)) return alt
+  const safe = escapeHtml(src)
+  const video = /\.(mp4|webm)$/i.exec(src)
+  if (video) {
+    const type = video[1].toLowerCase() === "webm" ? "video/webm" : "video/mp4"
+    const poster = escapeHtml(src.replace(/\.(mp4|webm)$/i, ".jpg"))
+    return (
+      `<figure class="blog-figure"><video class="blog-video" controls playsinline preload="none"` +
+      ` poster="${poster}" aria-label="${alt}"><source src="${safe}" type="${type}" />${alt}</video>` +
+      (cap || alt ? `<figcaption>${cap || alt}</figcaption>` : "") +
+      `</figure>`
+    )
+  }
+  return (
+    `<figure class="blog-figure"><img src="${safe}" alt="${alt}" loading="lazy" decoding="async" />` +
+    (cap ? `<figcaption>${cap}</figcaption>` : "") +
+    `</figure>`
+  )
+}
+
 export function renderMarkdown(md: string): string {
   return marked.parse(md, { renderer, async: false, gfm: true }) as string
 }

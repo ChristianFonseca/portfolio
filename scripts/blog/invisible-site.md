@@ -2,6 +2,8 @@ Nothing was down. The server answered every request, the dashboards were green, 
 
 The cause was one line in a configuration file, left over from development: a rule telling crawlers to stay out. Correct while the site was being built. Forgotten the day it went live.
 
+![Explainer: how a site can be invisible to search while every dashboard stays green](/video/invisible-site-en.mp4 "The whole story in 57 seconds, no sound needed.")
+
 ## The failure that produces no symptom
 
 Most outages announce themselves. A process dies, a request times out, a status code turns red, something in the chain raises its hand. This one raised nothing, because nothing was broken. The server was doing exactly what it had been told to do: politely turning crawlers away.
@@ -85,6 +87,8 @@ The uncomfortable part was never the mistake. A leftover line in a config file i
 Nada estaba caído. El servidor respondía todas las peticiones, los tableros en verde, los registros de error vacíos. Y durante tres meses ningún buscador leyó una sola línea de lo que publiqué.
 
 La causa era una línea en un archivo de configuración, sobrante del desarrollo: una regla que le pedía a los rastreadores que no entraran. Correcta mientras se construía el sitio. Olvidada el día que salió a producción.
+
+![Explicativo: cómo un sitio puede ser invisible para los buscadores mientras todo sigue en verde](/video/invisible-site-es.mp4 "Toda la historia en 57 segundos, sin sonido.")
 
 ## El fallo que no produce ningún síntoma
 

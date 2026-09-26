@@ -247,6 +247,21 @@
   .blog-prose img {
     @apply my-6 max-w-full rounded-xl;
   }
+  /* Figuras: imagen o vídeo explicativo con su pie. El vídeo es 16:9 y mudo por diseño. */
+  .blog-prose figure.blog-figure {
+    @apply my-9;
+  }
+  .blog-prose figure.blog-figure img {
+    @apply my-0;
+  }
+  .blog-prose video.blog-video {
+    @apply w-full rounded-xl border border-border bg-black;
+    aspect-ratio: 16 / 9;
+    display: block;
+  }
+  .blog-prose figure.blog-figure figcaption {
+    @apply mt-3 text-center text-sm text-muted-foreground;
+  }
   .blog-prose hr {
     @apply my-8 border-border;
   }

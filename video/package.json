@@ -1,0 +1,17 @@
+{
+  "name": "portfolio-video",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Explainer videos for the blog: deterministic WAAPI timeline rendered frame by frame with Playwright + ffmpeg.",
+  "type": "module",
+  "scripts": {
+    "preview": "node serve.mjs",
+    "render:en": "node render.mjs --lang en",
+    "render:es": "node render.mjs --lang es",
+    "render": "node render.mjs --lang en && node render.mjs --lang es"
+  },
+  "dependencies": {
+    "ffmpeg-static": "^5.3.0",
+    "playwright": "^1.63.0"
+  }
+}
