@@ -192,7 +192,10 @@ export function Mascot({
       className={className}
       // width/height explícitos: evita el salto de layout antes de que el custom
       // element se registre (el script carga con lazyOnload).
-      style={{ width: size, height: size * (906 / 1020), display: "block" }}
+      // fontSize: el componente dibuja sus globos (la z, el ?, el !) en em sobre un
+      // font-size de 12px pensado para 76px. Un estilo en el propio elemento gana a
+      // su :host, así los globos mantienen la proporción en los otros tamaños.
+      style={{ width: size, height: size * (906 / 1020), display: "block", fontSize: (12 * size) / 76 }}
     />
   )
 }

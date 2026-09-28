@@ -4,8 +4,8 @@ import { useCallback, useEffect, useRef, useState } from "react"
 import { createPortal } from "react-dom"
 import { usePathname } from "next/navigation"
 import {
-  Award, Check, Copy, Download, Github, GraduationCap, Linkedin, Mail,
-  MessageCircle, Moon, MoveHorizontal, Play, Send, X,
+  ArrowLeft, Award, Check, Copy, Download, Github, GraduationCap, Linkedin, Mail,
+  MessageCircle, RotateCcw, Send, Settings, X,
 } from "lucide-react"
 import { getSessionId } from "@/lib/client-session"
 import { CONTACT_EMAIL, CV_FILENAME, CV_PATH, SOCIAL } from "@/lib/social"
@@ -18,9 +18,14 @@ import { Mascot, useMascot, usePrefersReducedMotion } from "./mascot"
 
 const K_CORNER = "assistant.corner"
 const K_CALM = "assistant.calm"
+const K_SIZE = "assistant.size"
+const K_TEXT = "assistant.text"
 const IDLE_MS = 90_000
 
 type Corner = "left" | "right"
+type Size = "s" | "m" | "l"
+const SIZES: Size[] = ["s", "m", "l"]
+const isSize = (v: string | null): v is Size => v === "s" || v === "m" || v === "l"
 type Tab = "chat" | "guide" | "contact"
 interface Msg { role: "user" | "assistant"; content: string; stored?: boolean }
 
@@ -39,11 +44,53 @@ const write = (k: string, v: string) => { try { localStorage.setItem(k, v) } cat
 
 const SOCIAL_ICON = { linkedin: Linkedin, github: Github, scholar: GraduationCap, credly: Award } as const
 
-// Escala de texto del panel: un punto por debajo de ${TXT}/${TXT_S} de Tailwind.
-// El interlineado va explícito porque un tamaño arbitrario no arrastra el leading
-// que sí traen las clases con nombre — sin esto las burbujas se apelmazarían.
-const TXT = "text-[13px] leading-[19px]"    // cuerpo: burbujas, campos, botones
-const TXT_S = "text-[11px] leading-[15px]"  // secundario: pestañas, chips, textos de entrada
+// Ancho del lanzador en px según la preferencia. En móvil el grande se contiene
+// para no tapar media pantalla.
+const LAUNCHER_PX: Record<Size, { desktop: number; mobile: number }> = {
+  s: { desktop: 56, mobile: 56 },
+  m: { desktop: 76, mobile: 76 },
+  l: { desktop: 100, mobile: 88 },
+}
+const LAUNCHER_BOTTOM = 24 // bottom-6
+const PANEL_GAP = 20 // entre el lanzador y el panel
+
+// Escala de texto del panel. El mediano es el de siempre (13 / 11 / 10 px con la
+// letra del navegador por defecto). Va en rem para que respete el tamaño de letra
+// que el visitante tenga configurado en su navegador. Las clases van escritas
+// enteras para que Tailwind las genere, y con el interlineado explícito porque un
+// tamaño arbitrario no arrastra el leading que sí traen las clases con nombre.
+//   body  → burbujas, campos, botones
+//   small → pestañas, chips, titular, textos de entrada
+//   micro → contador, pie, notas
+const TEXT_SCALE: Record<Size, { body: string; small: string; micro: string }> = {
+  s: {
+    body: "text-[0.75rem] leading-[1.0625rem]",
+    small: "text-[0.65625rem] leading-[0.875rem]",
+    micro: "text-[0.625rem] leading-[0.8125rem]",
+  },
+  m: {
+    body: "text-[0.8125rem] leading-[1.1875rem]",
+    small: "text-[0.6875rem] leading-[0.9375rem]",
+    micro: "text-[0.625rem] leading-[0.8125rem]",
+  },
+  l: {
+    body: "text-[0.9375rem] leading-[1.375rem]",
+    small: "text-[0.8125rem] leading-[1.0625rem]",
+    micro: "text-[0.71875rem] leading-[0.9375rem]",
+  },
+}
+
+function useIsSmallScreen(): boolean {
+  const [small, setSmall] = useState(false)
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 640px)")
+    const on = () => setSmall(mq.matches)
+    on()
+    mq.addEventListener("change", on)
+    return () => mq.removeEventListener("change", on)
+  }, [])
+  return small
+}
 
 export function AssistantWidget({
   dicts, dataByLocale,
@@ -68,11 +115,28 @@ export function AssistantWidget({
   const [tab, setTab] = useState<Tab>("chat")
   const [corner, setCorner] = useState<Corner>("right")
   const [calm, setCalm] = useState(false)
+  const [size, setSize] = useState<Size>("m")
+  const [textSize, setTextSize] = useState<Size>("m")
+  const [prefsOpen, setPrefsOpen] = useState(false)
   const reduced = usePrefersReducedMotion()
+  const smallScreen = useIsSmallScreen()
+  const TXT = TEXT_SCALE[textSize].body
+  const TXT_S = TEXT_SCALE[textSize].small
+  const TXT_XS = TEXT_SCALE[textSize].micro
+  const launcherPx = LAUNCHER_PX[size][smallScreen ? "mobile" : "desktop"]
+  // En móvil el panel ocupa el ancho menos 2rem: con 16px por lado queda centrado.
+  const sideGap = smallScreen ? 16 : 24
+  const panelBottom = LAUNCHER_BOTTOM + launcherPx + PANEL_GAP
 
   const { ref: mascotRef, flash, setBase, setPaused, release } = useMascot()
   const launcherRef = useRef<HTMLButtonElement>(null)
   const panelRef = useRef<HTMLDivElement>(null)
+  const prefsButtonRef = useRef<HTMLButtonElement>(null)
+  const prefsHeadingRef = useRef<HTMLHeadingElement>(null)
+  // El manejador de teclado lee esto por ref: si prefsOpen estuviera en sus
+  // dependencias, el efecto se reiniciaría y su autoenfoque del campo del chat le
+  // quitaría el foco al engranaje al salir de Preferencias.
+  const prefsOpenRef = useRef(false)
   const inputRef = useRef<HTMLTextAreaElement>(null)
   const logRef = useRef<HTMLDivElement>(null)
 
@@ -93,6 +157,10 @@ export function AssistantWidget({
     const c = read(K_CORNER)
     if (c === "left" || c === "right") setCorner(c)
     setCalm(read(K_CALM) === "1")
+    const s = read(K_SIZE)
+    if (isSize(s)) setSize(s)
+    const ts = read(K_TEXT)
+    if (isSize(ts)) setTextSize(ts)
   }, [])
 
   // saludo una vez por sesión
@@ -138,6 +206,7 @@ export function AssistantWidget({
 
   const close = useCallback(() => {
     setOpen(false)
+    setPrefsOpen(false)
     setBase("idle")
     launcherRef.current?.focus()
   }, [setBase])
@@ -146,14 +215,18 @@ export function AssistantWidget({
   // devolverle el foco al lanzador se lo robaría a lo que acaba de pulsar.
   const dismiss = useCallback(() => {
     setOpen(false)
+    setPrefsOpen(false)
     setBase("idle")
   }, [setBase])
 
   const trapFocus = useCallback((e: KeyboardEvent) => {
     const root = panelRef.current
     if (!root) return
+    // Los radios no marcados no reciben foco con Tab (el grupo entero es una sola
+    // parada), así que no pueden ser ni el primero ni el último de la trampa.
     const f = [...root.querySelectorAll<HTMLElement>('button,textarea,input,a[href],[tabindex]:not([tabindex="-1"])')]
-      .filter((el) => !el.hasAttribute("disabled"))
+      .filter((el) => !el.hasAttribute("disabled") && !el.closest("fieldset:disabled"))
+      .filter((el) => !(el instanceof HTMLInputElement && el.type === "radio" && !el.checked))
     if (!f.length) return
     const first = f[0], last = f[f.length - 1]
     if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus() }
@@ -163,13 +236,25 @@ export function AssistantWidget({
   useEffect(() => {
     if (!open) return
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") { e.stopPropagation(); close() }
+      if (e.key === "Escape") {
+        e.stopPropagation()
+        // Dentro de Preferencias, Escape vuelve al chat en vez de cerrar todo el panel.
+        if (prefsOpenRef.current) { setPrefsOpen(false); prefsButtonRef.current?.focus() }
+        else close()
+      }
       if (e.key === "Tab") trapFocus(e)
     }
     document.addEventListener("keydown", onKey, true)
     const id = setTimeout(() => { if (tab === "chat") inputRef.current?.focus() }, 60)
     return () => { document.removeEventListener("keydown", onKey, true); clearTimeout(id) }
   }, [open, tab, close, trapFocus])
+
+  // Al abrir Preferencias el foco va a su título, para que el lector de pantalla
+  // anuncie dónde está en vez de quedarse en el botón.
+  useEffect(() => {
+    prefsOpenRef.current = prefsOpen
+    if (prefsOpen) prefsHeadingRef.current?.focus()
+  }, [prefsOpen])
 
   // Pulsar fuera cierra el panel.
   //
@@ -258,10 +343,19 @@ export function AssistantWidget({
     setOpen(true)
     flash("chat", 1600)
   }
-  const toggleCalm = () => { const n = !calm; setCalm(n); write(K_CALM, n ? "1" : "0") }
-  const moveCorner = () => {
-    const n: Corner = corner === "right" ? "left" : "right"
-    setCorner(n); write(K_CORNER, n); flash("success", 900)
+  const choose = {
+    size: (v: Size) => { setSize(v); write(K_SIZE, v); flash("hello", 1400) },
+    text: (v: Size) => { setTextSize(v); write(K_TEXT, v) },
+    calm: (v: boolean) => { setCalm(v); write(K_CALM, v ? "1" : "0") },
+    corner: (v: Corner) => { setCorner(v); write(K_CORNER, v); flash("success", 900) },
+  }
+  const closePrefs = () => { setPrefsOpen(false); prefsButtonRef.current?.focus() }
+  // Vuelve al saludo y a las preguntas sugeridas. La cuota del servidor no cambia.
+  const newConversation = () => {
+    setMessages([{ role: "assistant", content: dict.chat.greeting }])
+    setNotice(null)
+    flash("hello", 1200)
+    inputRef.current?.focus()
   }
 
   const copyEmail = async () => {
@@ -296,7 +390,9 @@ export function AssistantWidget({
       const payload = await res.json().catch(() => ({}))
       clearTimeout(toThinking)
       release() // suelta `thinking` para que el desenlace se vea
-      if (res.status === 429) { flash("alert", 3000); setNotice({ kind: "alert", text: payload.error || t.limit }); return }
+      // Un 429 con JSON es el límite diario de la app. Sin JSON es la regla de Cloudflare,
+      // que bloquea unos segundos: decir "límite de hoy" ahí sería mentir.
+      if (res.status === 429) { flash("alert", 3000); setNotice({ kind: "alert", text: payload.error || t.tooFast }); return }
       if (res.status === 503) { setBase("sleep"); flash("sleep", 3000); setNotice({ kind: "sleep", text: t.offline }); return }
       if (!res.ok || !payload.answer) { flash("error", 2600); setNotice({ kind: "error", text: dict.chat.unavailable }); return }
       // Si Google bloqueó la respuesta llega una negativa normal: la mascota pone cara de duda.
@@ -356,7 +452,7 @@ export function AssistantWidget({
 
   if (!mounted) return null
 
-  const side = corner === "right" ? { right: 24 } : { left: 24 }
+  const side = corner === "right" ? { right: sideGap } : { left: sideGap }
   const JUMPS = [
     { hash: "research-projects", label: t.jumpResearch },
     { hash: "teaching", label: t.jumpTeaching },
@@ -367,6 +463,37 @@ export function AssistantWidget({
   const fieldCls =
     `w-full rounded-xl border border-border bg-background/60 px-3 py-2 ${TXT} outline-none focus:border-primary`
 
+  const sizeOptions = SIZES.map((v) => ({ value: v, label: t[`size_${v}`] }))
+  const prefsView = (
+    <div id="syn-prefs" className="flex-1 space-y-4 overflow-y-auto p-3.5">
+      <div className="flex items-center gap-2">
+        <button type="button" onClick={closePrefs} aria-label={t.prefsBack} title={t.prefsBack}
+          data-track="mascot:prefs-back"
+          className="-ml-1 rounded-lg p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground">
+          <ArrowLeft className="h-4 w-4" />
+        </button>
+        <h2 ref={prefsHeadingRef} tabIndex={-1} className={`${TXT} font-semibold outline-none`}>{t.prefs}</h2>
+      </div>
+
+      <Choice name="syn-size" legend={t.prefSize} small={TXT_S} value={size} options={sizeOptions} onChange={choose.size} />
+      <Choice name="syn-text" legend={t.prefText} small={TXT_S} value={textSize} options={sizeOptions} onChange={choose.text} />
+      <Choice
+        name="syn-motion" legend={t.prefMotion} small={TXT_S}
+        value={still ? "still" : "animated"}
+        options={[{ value: "animated", label: t.motionOn }, { value: "still", label: t.motionOff }]}
+        onChange={(v) => choose.calm(v === "still")}
+        disabled={reduced}
+        note={reduced ? t.motionReduced : undefined}
+      />
+      <Choice
+        name="syn-corner" legend={t.prefCorner} small={TXT_S} value={corner}
+        options={[{ value: "left", label: t.cornerLeft }, { value: "right", label: t.cornerRight }]}
+        onChange={choose.corner}
+      />
+
+    </div>
+  )
+
   const launcher = (
     <div data-assistant="" className="fixed bottom-6 z-[70] print:hidden" style={side}>
       <button
@@ -376,7 +503,7 @@ export function AssistantWidget({
         className="block rounded-full transition-transform hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-4 focus-visible:ring-offset-background"
         style={{ filter: "drop-shadow(0 10px 30px rgba(168,85,247,.35))" }}
       >
-        <Mascot size={76} still={still} elRef={mascotRef} />
+        <Mascot size={launcherPx} still={still} elRef={mascotRef} />
       </button>
     </div>
   )
@@ -384,8 +511,13 @@ export function AssistantWidget({
   const panel = open && (
     <div
       ref={panelRef} data-assistant="" role="dialog" aria-modal="false" aria-label={dict.chat.title}
-      className="fixed bottom-[7.5rem] z-[70] flex w-[min(24rem,calc(100vw-2rem))] max-h-[min(36rem,calc(100vh-11rem))] flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-2xl print:hidden"
-      style={corner === "right" ? { right: 24 } : { left: 24 }}
+      className="fixed z-[70] flex w-[min(24rem,calc(100vw-2rem))] flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-2xl print:hidden"
+      style={{
+        ...side,
+        bottom: panelBottom,
+        // dvh: en móvil no cuenta la barra de direcciones que aparece y desaparece.
+        maxHeight: `min(36rem, calc(100dvh - ${panelBottom + 56}px))`,
+      }}
     >
       {/* Quién es y cómo llegar a él. En el blog esto no existía en ninguna parte. */}
       <header className="border-b border-border bg-card/80 px-3.5 py-3">
@@ -394,9 +526,19 @@ export function AssistantWidget({
           <img src={data.photo} alt="" width={40} height={40} className="h-10 w-10 shrink-0 rounded-full object-cover" />
           <div className="min-w-0 flex-1">
             <p className={`truncate ${TXT} font-semibold`}>{data.name || dict.chat.title}</p>
-            <p className="truncate text-[11px] leading-tight text-muted-foreground">{data.tagline}</p>
-            {data.location && <p className="truncate text-[11px] text-muted-foreground/70">{data.location}</p>}
+            <p className={`truncate ${TXT_S} text-muted-foreground`}>{data.tagline}</p>
+            {data.location && <p className={`truncate ${TXT_S} text-muted-foreground/70`}>{data.location}</p>}
           </div>
+          <button
+            ref={prefsButtonRef} type="button" onClick={() => setPrefsOpen((v) => !v)}
+            aria-expanded={prefsOpen} aria-controls="syn-prefs" aria-label={t.prefs}
+            title={t.prefs} data-track="mascot:prefs"
+            className={`rounded-lg p-1.5 transition-colors hover:bg-muted hover:text-foreground ${
+              prefsOpen ? "bg-primary/15 text-primary" : "text-muted-foreground"
+            }`}
+          >
+            <Settings className="h-4 w-4" />
+          </button>
           <button
             type="button" onClick={close} aria-label={t.close} data-track="mascot:close"
             className="-mr-1 rounded-lg p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
@@ -424,7 +566,7 @@ export function AssistantWidget({
           })}
         </div>
         {(data.languages.length > 0 || data.certs.length > 0) && (
-          <p className="mt-2 truncate text-[11px] text-muted-foreground/70">
+          <p className={`mt-2 truncate ${TXT_S} text-muted-foreground/70`}>
             {[
               ...data.languages.map((l) => `${l.name} ${l.level}`),
               ...data.certs.map((c) => `${c.count ? c.count + " " : ""}${c.label}`),
@@ -433,6 +575,7 @@ export function AssistantWidget({
         )}
       </header>
 
+      {prefsOpen ? prefsView : (<>
       <nav className="flex gap-1 border-b border-border px-2 py-1.5" aria-label={dict.chat.title}>
         {([["chat", t.tabChat], ["guide", t.tabGuide], ["contact", t.tabContact]] as [Tab, string][]).map(([k, label]) => (
           <button
@@ -445,11 +588,20 @@ export function AssistantWidget({
             {label}
           </button>
         ))}
-        {remaining !== null && tab === "chat" && (
-          <span className="ml-auto self-center pr-1 text-[10px] text-muted-foreground/60">
-            {remaining} {remaining === 1 ? dict.chat.questionsLeftOne : dict.chat.questionsLeftMany}
-          </span>
-        )}
+        <span className="ml-auto flex items-center gap-1">
+          {remaining !== null && tab === "chat" && (
+            <span className={`pr-1 ${TXT_XS} text-muted-foreground/60`}>
+              {remaining} {remaining === 1 ? dict.chat.questionsLeftOne : dict.chat.questionsLeftMany}
+            </span>
+          )}
+          {tab === "chat" && messages.length > 1 && (
+            <button type="button" onClick={newConversation} disabled={busy} aria-label={t.newChat} title={t.newChat}
+              data-track="mascot:new-chat"
+              className="grid h-8 w-8 place-items-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground disabled:opacity-40">
+              <RotateCcw className="h-3.5 w-3.5" />
+            </button>
+          )}
+        </span>
       </nav>
 
       <div ref={logRef} className="flex-1 overflow-y-auto p-3.5">
@@ -461,7 +613,7 @@ export function AssistantWidget({
                   ? `max-w-[86%] rounded-2xl rounded-br-md border border-primary/35 bg-primary/15 px-3 py-2 ${TXT}`
                   : `max-w-[86%] rounded-2xl rounded-bl-md border border-border bg-muted/40 px-3 py-2 ${TXT}`}>
                   {m.content}
-                  {m.stored && <span className="mt-1.5 block text-[10px] text-muted-foreground/70">{t.storedAnswer}</span>}
+                  {m.stored && <span className={`mt-1.5 block ${TXT_XS} text-muted-foreground/70`}>{t.storedAnswer}</span>}
                 </div>
               </div>
             ))}
@@ -484,7 +636,7 @@ export function AssistantWidget({
                 ))}
               </div>
             )}
-            {notice && <Notice notice={notice} />}
+            {notice && <Notice notice={notice} small={TXT_S} />}
           </div>
         )}
 
@@ -535,7 +687,7 @@ export function AssistantWidget({
               className={`w-full rounded-xl bg-gradient-to-r from-primary to-accent px-3 py-2.5 ${TXT} font-semibold text-white disabled:opacity-50`}>
               {sending ? dict.contact.sending : dict.contact.send}
             </button>
-            {notice && <Notice notice={notice} />}
+            {notice && <Notice notice={notice} small={TXT_S} />}
           </form>
         ))}
       </div>
@@ -557,21 +709,11 @@ export function AssistantWidget({
           </button>
         </form>
       )}
+      </>)}
 
-      <footer className="flex items-center gap-1 border-t border-border px-2 py-1.5">
-        <button type="button" onClick={toggleCalm} aria-pressed={calm} data-track="mascot:calm"
-          className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-lg px-2 py-1 text-[11px] text-muted-foreground transition-colors hover:bg-muted hover:text-foreground">
-          {calm ? <Play className="h-3 w-3" /> : <Moon className="h-3 w-3" />}
-          {calm ? t.animate : t.calm}
-        </button>
-        <button type="button" onClick={moveCorner} data-track="mascot:move"
-          className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-lg px-2 py-1 text-[11px] text-muted-foreground transition-colors hover:bg-muted hover:text-foreground">
-          <MoveHorizontal className="h-3 w-3" />
-          {corner === "right" ? t.moveLeft : t.moveRight}
-        </button>
-        <span className="ml-auto hidden pr-1 text-right text-[10px] leading-tight text-muted-foreground/60 sm:block">
-          {t.grounded}
-        </span>
+      {/* Calma y esquina pasaron a Preferencias; aquí queda solo el aviso. */}
+      <footer className={`border-t border-border px-3.5 py-1.5 ${TXT_XS} text-muted-foreground/60`}>
+        {t.grounded}
       </footer>
     </div>
   )
@@ -586,10 +728,10 @@ export function AssistantWidget({
   )
 }
 
-function Notice({ notice }: { notice: { kind: "alert" | "error" | "sleep"; text: string } }) {
+function Notice({ notice, small }: { notice: { kind: "alert" | "error" | "sleep"; text: string }; small: string }) {
   return (
     <p role="status"
-      className={`rounded-xl border px-3 py-2 ${TXT_S} ${
+      className={`rounded-xl border px-3 py-2 ${small} ${
         notice.kind === "alert"
           ? "border-yellow-500/40 bg-yellow-500/10 text-yellow-600 dark:text-yellow-300"
           : notice.kind === "sleep"
@@ -598,5 +740,45 @@ function Notice({ notice }: { notice: { kind: "alert" | "error" | "sleep"; text:
       }`}>
       {notice.text}
     </p>
+  )
+}
+
+/**
+ * Grupo de opciones con radios nativos: las flechas del teclado, el foco y el anuncio
+ * del lector de pantalla funcionan solos. El radio va oculto a la vista y la etiqueta
+ * hace de botón (mínimo 32 px de alto, por encima de los 24 que pide WCAG 2.2).
+ */
+function Choice<T extends string>({
+  name, legend, value, options, onChange, small, disabled, note,
+}: {
+  name: string
+  legend: string
+  value: T
+  options: { value: T; label: string }[]
+  onChange: (v: T) => void
+  small: string
+  disabled?: boolean
+  note?: string
+}) {
+  return (
+    <fieldset disabled={disabled} className="disabled:opacity-60">
+      <legend className={`mb-1.5 ${small} font-semibold text-foreground`}>{legend}</legend>
+      <div className="grid auto-cols-fr grid-flow-col gap-1 rounded-xl border border-border bg-muted/30 p-1">
+        {options.map((o) => {
+          const checked = value === o.value
+          return (
+            <label key={o.value}
+              className={`flex min-h-8 cursor-pointer items-center justify-center rounded-lg px-2 text-center ${small} font-semibold transition-colors has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-primary ${
+                checked ? "bg-primary/15 text-primary" : "text-muted-foreground hover:text-foreground"
+              }`}>
+              <input type="radio" name={name} value={o.value} checked={checked} onChange={() => onChange(o.value)}
+                data-track={`mascot:pref:${name}:${o.value}`} className="sr-only" />
+              {o.label}
+            </label>
+          )
+        })}
+      </div>
+      {note && <p className={`mt-1.5 ${small} text-muted-foreground`}>{note}</p>}
+    </fieldset>
   )
 }
