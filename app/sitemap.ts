@@ -36,20 +36,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.7,
       alternates: { languages: { en: `${SITE}/blog`, es: `${SITE}/es/blog` } },
     },
-    {
-      url: `${SITE}/chat`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.3,
-      alternates: { languages: { en: `${SITE}/chat`, es: `${SITE}/es/chat` } },
-    },
-    {
-      url: `${SITE}/es/chat`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.3,
-      alternates: { languages: { en: `${SITE}/chat`, es: `${SITE}/es/chat` } },
-    },
   ]
 
   const posts = await getPublishedPosts("en")

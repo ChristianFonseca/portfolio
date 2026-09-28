@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Prototipo · mascota como widget</title>
+<style>
+  :root{
+    --bg:#000; --card:#0d0d0f; --card-up:#141418; --border:#232329;
+    --fg:#eee; --dim:#9a8fb0; --faint:#57535f;
+    --primary:#a855f7; --accent:#ec4899; --ok:#34d399; --bad:#f43f5e;
+    --grad:linear-gradient(90deg,var(--primary),var(--accent));
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--fg);font:500 16px/1.6 "Segoe UI",system-ui,sans-serif;min-height:100vh}
+  .page{max-width:1024px;margin:0 auto;padding:48px 24px 200px}
+  h1{font-size:34px;letter-spacing:-.02em;margin-bottom:8px}
+  h1 b{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .lead{color:var(--dim);margin-bottom:28px}
+  .panelbox{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px 20px;margin-bottom:16px}
+  .panelbox h2{font-size:15px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);margin-bottom:12px;font-family:ui-monospace,monospace}
+  .states{display:flex;flex-wrap:wrap;gap:8px}
+  .states button{background:var(--card-up);border:1px solid var(--border);color:var(--dim);border-radius:999px;
+    padding:7px 14px;font:600 13px/1 ui-monospace,monospace;cursor:pointer;transition:.15s}
+  .states button:hover{border-color:var(--primary);color:var(--fg)}
+  .states button.on{background:rgba(168,85,247,.16);border-color:var(--primary);color:#c78dff}
+  .note{color:var(--faint);font-size:14px;margin-top:10px}
+  kbd{background:var(--card-up);border:1px solid var(--border);border-radius:5px;padding:1px 6px;font:600 12px ui-monospace,monospace;color:var(--dim)}
+
+  /* ── widget flotante ── */
+  #dock{position:fixed;z-index:9000;right:24px;bottom:24px;touch-action:none}
+  #dock.dragging{cursor:grabbing}
+  #btn{background:none;border:0;padding:0;cursor:grab;display:block;filter:drop-shadow(0 10px 30px rgba(168,85,247,.35))}
+  #btn:focus-visible{outline:2px solid var(--primary);outline-offset:6px;border-radius:50%}
+  #bubble{position:absolute;bottom:100%;right:0;margin-bottom:6px;white-space:nowrap;background:var(--card-up);
+    border:1px solid var(--border);border-radius:12px;padding:8px 12px;font-size:14px;color:var(--dim);
+    opacity:0;transform:translateY(6px);transition:.25s;pointer-events:none}
+  #bubble.show{opacity:1;transform:translateY(0)}
+  #badge{position:absolute;top:2px;right:2px;width:20px;height:20px;border-radius:50%;background:var(--bad);
+    color:#fff;font:700 12px/20px system-ui;text-align:center;box-shadow:0 0 0 3px var(--bg);display:none}
+  #badge.on{display:block}
+
+  /* ── popup ── */
+  #pop{position:fixed;z-index:9001;width:400px;max-width:calc(100vw - 32px);height:560px;max-height:calc(100vh - 140px);
+    background:var(--card);border:1px solid var(--border);border-radius:20px;display:none;flex-direction:column;
+    overflow:hidden;box-shadow:0 30px 80px -20px #000}
+  #pop.open{display:flex}
+  .pophead{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid var(--border);background:var(--card-up)}
+  .pophead .who{font-weight:700;font-size:15px}
+  .pophead .sub{font-size:12px;color:var(--faint)}
+  .pophead .x{margin-left:auto;background:none;border:0;color:var(--faint);font-size:20px;cursor:pointer;line-height:1;padding:4px 8px;border-radius:8px}
+  .pophead .x:hover{background:rgba(255,255,255,.06);color:var(--fg)}
+  .tabs{display:flex;gap:2px;padding:8px 10px;border-bottom:1px solid var(--border);overflow-x:auto}
+  .tabs button{flex:none;background:none;border:0;color:var(--faint);font:600 13px/1 system-ui;padding:8px 12px;border-radius:9px;cursor:pointer}
+  .tabs button:hover{color:var(--fg)}
+  .tabs button.on{background:rgba(168,85,247,.14);color:#c78dff}
+  .body{flex:1;overflow-y:auto;padding:14px}
+  .msgs{display:flex;flex-direction:column;gap:10px}
+  .msg{max-width:86%;padding:10px 13px;border-radius:14px;font-size:14.5px;line-height:1.5}
+  .msg.bot{background:var(--card-up);border:1px solid var(--border);align-self:flex-start;border-bottom-left-radius:5px}
+  .msg.me{background:rgba(168,85,247,.18);border:1px solid rgba(168,85,247,.35);align-self:flex-end;border-bottom-right-radius:5px}
+  .chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}
+  .chips button{background:var(--card-up);border:1px solid var(--border);color:var(--dim);border-radius:999px;
+    padding:7px 12px;font-size:13px;cursor:pointer;text-align:left}
+  .chips button:hover{border-color:var(--primary);color:var(--fg)}
+  .composer{display:flex;gap:8px;padding:10px;border-top:1px solid var(--border);align-items:flex-end}
+  .composer textarea{flex:1;resize:none;background:var(--card-up);border:1px solid var(--border);border-radius:12px;
+    color:var(--fg);padding:10px 12px;font:500 14.5px/1.45 inherit;max-height:96px}
+  .composer textarea:focus{outline:none;border-color:var(--primary)}
+  .iconbtn{flex:none;width:40px;height:40px;border-radius:12px;border:1px solid var(--border);background:var(--card-up);
+    color:var(--dim);cursor:pointer;font-size:17px;display:grid;place-items:center}
+  .iconbtn:hover{border-color:var(--primary);color:var(--fg)}
+  .iconbtn.rec{background:rgba(244,63,94,.18);border-color:var(--bad);color:#fda4b4}
+  .iconbtn.send{background:var(--grad);border:0;color:#fff}
+  .stack{display:flex;flex-direction:column;gap:10px}
+  .row{display:flex;gap:11px;align-items:flex-start;padding:11px;border:1px solid var(--border);border-radius:13px;background:var(--card-up)}
+  .row .t{font-weight:700;font-size:14px}
+  .row .d{font-size:13px;color:var(--dim);line-height:1.45}
+  .row .em{font-size:19px;line-height:1}
+  .foot{padding:8px 12px;border-top:1px solid var(--border);font-size:11.5px;color:var(--faint);text-align:center}
+</style>
+</head>
+<body>
+<div class="page">
+  <h1>Prototipo: la mascota como <b>widget</b></h1>
+  <p class="lead">Página de pruebas local. La mascota de abajo a la derecha se puede <b>arrastrar</b> y su posición se recuerda. Púlsala para abrir el panel.</p>
+
+  <div class="panelbox">
+    <h2>Forzar un estado</h2>
+    <div class="states" id="statebar"></div>
+    <p class="note">En el widget real estos estados los dispara el contexto, no un botón. Aquí es para verlos.</p>
+  </div>
+
+  <div class="panelbox">
+    <h2>Qué probar</h2>
+    <p class="note">
+      Arrastra la mascota a cualquier esquina y recarga: vuelve donde la dejaste ·
+      No la toques 25 s y se duerme · Pulsa <kbd>Esc</kbd> con el panel abierto ·
+      Escribe algo en el chat para ver <code>review → thinking → success</code> ·
+      El botón del micrófono muestra <code>listening</code> (usa la Web Speech API si tu navegador la trae).
+    </p>
+  </div>
+
+  <div class="panelbox">
+    <h2>Relleno para poder hacer scroll</h2>
+    <p class="note">El widget debe quedarse fijo y no tapar nada importante al desplazarse.</p>
+  </div>
+</div>
+
+<!-- widget -->
+<div id="dock">
+  <div id="bubble"></div>
+  <button id="btn" aria-haspopup="dialog" aria-expanded="false" aria-label="Abrir asistente">
+    <brain-mascot id="m" state="idle" style="width:92px"></brain-mascot>
+    <span id="badge">1</span>
+  </button>
+</div>
+
+<div id="pop" role="dialog" aria-modal="false" aria-label="Asistente">
+  <div class="pophead">
+    <brain-mascot id="mini" state="idle" style="width:40px"></brain-mascot>
+    <div>
+      <div class="who">Asistente</div>
+      <div class="sub" id="popsub">Pregunta sobre Christian</div>
+    </div>
+    <button class="x" id="close" aria-label="Cerrar">✕</button>
+  </div>
+  <div class="tabs" id="tabs"></div>
+  <div class="body" id="body"></div>
+  <div class="composer" id="composer">
+    <textarea id="input" rows="1" placeholder="Escribe tu pregunta…"></textarea>
+    <button class="iconbtn" id="mic" aria-label="Dictar">🎤</button>
+    <button class="iconbtn send" id="send" aria-label="Enviar">↑</button>
+  </div>
+  <div class="foot">Prototipo local · las respuestas son simuladas</div>
+</div>
+
+<script src="./brain-mascot.js"></script>
+<script>
+const $ = s => document.querySelector(s);
+const m = $('#m'), mini = $('#mini'), pop = $('#pop'), btn = $('#btn'), dock = $('#dock');
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+// ── estado de la mascota ──
+let current = 'idle', sticky = null;
+function setState(s, ms) {
+  current = s; m.setAttribute('state', s); mini.setAttribute('state', s);
+  [...document.querySelectorAll('#statebar button')].forEach(b => b.classList.toggle('on', b.dataset.s === s));
+  clearTimeout(sticky);
+  if (ms) sticky = setTimeout(() => setState(pop.classList.contains('open') ? 'idle' : 'idle'), ms);
+}
+const STATES = ['idle','hello','review','thinking','loading','chat','success','error','listening','alert','confused','sleep'];
+$('#statebar').innerHTML = STATES.map(s => `<button data-s="${s}">${s}</button>`).join('');
+$('#statebar').onclick = e => { const b = e.target.closest('button'); if (b) setState(b.dataset.s); };
+
+function say(text, ms = 3200) {
+  const b = $('#bubble'); b.textContent = text; b.classList.add('show');
+  setTimeout(() => b.classList.remove('show'), ms);
+}
+
+// ── inactividad → sleep ──
+let idleTimer;
+function wake() {
+  clearTimeout(idleTimer);
+  if (current === 'sleep') setState('idle');
+  idleTimer = setTimeout(() => { if (!pop.classList.contains('open')) setState('sleep'); }, 25000);
+}
+['pointermove','keydown','scroll','pointerdown'].forEach(e => addEventListener(e, wake, { passive: true }));
+wake();
+
+// ── saludo una vez por sesión ──
+if (!sessionStorage.getItem('greeted')) {
+  sessionStorage.setItem('greeted', '1');
+  setTimeout(() => { setState('hello', 2600); say('¡Hola! Pregúntame lo que quieras.'); }, 900);
+}
+
+// ── arrastrar, con posición recordada ──
+(function drag() {
+  const saved = JSON.parse(localStorage.getItem('dockPos') || 'null');
+  if (saved) { dock.style.left = saved.x + 'px'; dock.style.top = saved.y + 'px'; dock.style.right = 'auto'; dock.style.bottom = 'auto'; }
+  let sx, sy, ox, oy, moved = false, on = false;
+  btn.addEventListener('pointerdown', e => {
+    on = true; moved = false; btn.setPointerCapture(e.pointerId);
+    const r = dock.getBoundingClientRect(); sx = e.clientX; sy = e.clientY; ox = r.left; oy = r.top;
+  });
+  btn.addEventListener('pointermove', e => {
+    if (!on) return;
+    const dx = e.clientX - sx, dy = e.clientY - sy;
+    if (!moved && Math.hypot(dx, dy) < 5) return;
+    moved = true; dock.classList.add('dragging');
+    const x = Math.min(Math.max(8, ox + dx), innerWidth - dock.offsetWidth - 8);
+    const y = Math.min(Math.max(8, oy + dy), innerHeight - dock.offsetHeight - 8);
+    dock.style.left = x + 'px'; dock.style.top = y + 'px'; dock.style.right = 'auto'; dock.style.bottom = 'auto';
+  });
+  btn.addEventListener('pointerup', e => {
+    if (!on) return; on = false; dock.classList.remove('dragging');
+    if (moved) {
+      const r = dock.getBoundingClientRect();
+      localStorage.setItem('dockPos', JSON.stringify({ x: Math.round(r.left), y: Math.round(r.top) }));
+      placePop();
+    } else toggle();
+  });
+})();
+
+// ── popup ──
+function placePop() {
+  const r = dock.getBoundingClientRect();
+  const w = Math.min(400, innerWidth - 32), h = Math.min(560, innerHeight - 140);
+  let left = r.left + r.width / 2 - w / 2;
+  left = Math.min(Math.max(12, left), innerWidth - w - 12);
+  let top = r.top - h - 12;
+  if (top < 12) top = Math.min(r.bottom + 12, innerHeight - h - 12);
+  pop.style.left = left + 'px'; pop.style.top = top + 'px';
+}
+function toggle(force) {
+  const open = force ?? !pop.classList.contains('open');
+  pop.classList.toggle('open', open);
+  btn.setAttribute('aria-expanded', String(open));
+  if (open) { placePop(); $('#badge').classList.remove('on'); setState('hello', 1800); $('#input').focus(); }
+  else setState('idle');
+}
+$('#close').onclick = () => toggle(false);
+addEventListener('keydown', e => { if (e.key === 'Escape' && pop.classList.contains('open')) toggle(false); });
+addEventListener('resize', () => { if (pop.classList.contains('open')) placePop(); });
+
+// ── pestañas ──
+const TABS = {
+  chat:    { label: 'Chat',      sub: 'Pregunta sobre Christian' },
+  guia:    { label: 'Guíame',    sub: '¿Qué buscas?' },
+  resumen: { label: 'Resumen',   sub: 'Esta página, en corto' },
+  contacto:{ label: 'Contacto',  sub: 'Hablemos' },
+};
+let tab = 'chat';
+$('#tabs').innerHTML = Object.entries(TABS).map(([k, v]) => `<button data-t="${k}">${v.label}</button>`).join('');
+$('#tabs').onclick = e => { const b = e.target.closest('button'); if (b) setTab(b.dataset.t); };
+
+function setTab(t) {
+  tab = t;
+  [...document.querySelectorAll('#tabs button')].forEach(b => b.classList.toggle('on', b.dataset.t === t));
+  $('#popsub').textContent = TABS[t].sub;
+  $('#composer').style.display = t === 'chat' ? 'flex' : 'none';
+  render();
+}
+
+const CHIPS = ['¿Qué experiencia tiene en IA?', '¿Está disponible para proyectos?', 'Cuéntame del incidente de seguridad', '¿Qué stack usa?'];
+let msgs = [{ who: 'bot', text: 'Hola. Puedo responder sobre la experiencia, los proyectos y los artículos de Christian. ¿Qué te gustaría saber?' }];
+
+function render() {
+  const b = $('#body');
+  if (tab === 'chat') {
+    b.innerHTML = `<div class="msgs">${msgs.map(x => `<div class="msg ${x.who}">${x.text}</div>`).join('')}</div>
+      ${msgs.length <= 1 ? `<div class="chips">${CHIPS.map(c => `<button>${c}</button>`).join('')}</div>` : ''}`;
+    b.querySelectorAll('.chips button').forEach(x => x.onclick = () => ask(x.textContent));
+    b.scrollTop = b.scrollHeight;
+  }
+  if (tab === 'guia') b.innerHTML = `<div class="stack">
+    ${[['🧭','Soy reclutador','Perfil, stack y disponibilidad en 30 segundos'],
+       ['💼','Busco a alguien para un proyecto','Casos parecidos al tuyo y cómo trabaja'],
+       ['🔬','Vengo por la investigación','Publicaciones, instituciones y proyectos'],
+       ['📖','Solo estoy leyendo','Los artículos que más recomienda']]
+      .map(([e,t,d]) => `<div class="row"><span class="em">${e}</span><div><div class="t">${t}</div><div class="d">${d}</div></div></div>`).join('')}
+  </div>`;
+  if (tab === 'resumen') b.innerHTML = `<div class="stack">
+    <div class="row"><span class="em">📄</span><div><div class="t">Esta página en 3 puntos</div>
+      <div class="d">Genera un resumen del contenido que estás viendo, sin salir de él.</div></div></div>
+    <div class="row"><span class="em">🎧</span><div><div class="t">Escúchalo</div>
+      <div class="d">Lectura en voz alta del artículo.</div></div></div>
+    <div class="row"><span class="em">🔗</span><div><div class="t">Relacionado</div>
+      <div class="d">Otros artículos y proyectos que tocan lo mismo.</div></div></div>
+  </div>`;
+  if (tab === 'contacto') b.innerHTML = `<div class="stack">
+    <div class="row"><span class="em">✉️</span><div><div class="t">Escribir un mensaje</div>
+      <div class="d">El mismo formulario del sitio, aquí dentro.</div></div></div>
+    <div class="row"><span class="em">📅</span><div><div class="t">Agendar una llamada</div>
+      <div class="d">Enlace a tu calendario.</div></div></div>
+    <div class="row"><span class="em">📥</span><div><div class="t">Descargar el CV</div>
+      <div class="d">PDF actualizado.</div></div></div>
+  </div>`;
+}
+
+// ── chat simulado: review → thinking → respuesta ──
+function ask(text) {
+  if (!text.trim()) return;
+  msgs.push({ who: 'me', text });
+  render();
+  setState('review');                       // consultando la base de conocimiento
+  setTimeout(() => setState('thinking'), 900); // redactando
+  setTimeout(() => {
+    const off = /tiempo|receta|f[úu]tbol|clima/i.test(text);
+    if (off) { setState('confused', 2600); msgs.push({ who: 'bot', text: 'Solo puedo hablar de Christian y su trabajo. ¿Quieres saber algo de su experiencia?' }); }
+    else { setState('success', 1800); msgs.push({ who: 'bot', text: '(respuesta simulada) En el widget real esto lo contesta el asistente con la base de conocimiento del sitio.' }); }
+    render();
+  }, 2400);
+}
+$('#send').onclick = () => { const v = $('#input').value; $('#input').value = ''; ask(v); };
+$('#input').addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); $('#send').click(); } });
+
+// ── voz: Web Speech API, dentro del chat ──
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+const mic = $('#mic');
+if (!SR) { mic.title = 'Tu navegador no soporta dictado'; mic.style.opacity = .4; }
+mic.onclick = () => {
+  if (!SR) { setState('confused', 2000); say('Este navegador no soporta dictado'); return; }
+  const r = new SR();
+  r.lang = document.documentElement.lang === 'en' ? 'en-US' : 'es-ES';
+  r.interimResults = true;
+  mic.classList.add('rec'); setState('listening');
+  r.onresult = e => { $('#input').value = [...e.results].map(x => x[0].transcript).join(''); };
+  r.onerror = () => { setState('error', 1800); mic.classList.remove('rec'); };
+  r.onend = () => { mic.classList.remove('rec'); setState('idle'); $('#input').focus(); };
+  r.start();
+};
+
+setTab('chat');
+</script>
+</body>
+</html>

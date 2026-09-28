@@ -12,8 +12,6 @@ import { Badge } from "@/components/ui/badge"
 import { MapPin, Mail, Linkedin, Download, ExternalLink, Github, GraduationCap, MessageCircle, Award } from "lucide-react"
 import { useState } from "react"
 import { SuccessModal } from "@/components/success-modal"
-import { PageTransition } from "@/components/page-transition"
-import { useRouter } from "next/navigation"
 import { getSessionId } from "@/lib/client-session"
 import type { LandingContent } from "@/lib/content/schemas"
 import type { Dictionary, Locale } from "@/lib/i18n/dictionaries"
@@ -61,16 +59,10 @@ export function Landing({
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [showSuccessModal, setShowSuccessModal] = useState(false)
-  const [isNavigating, setIsNavigating] = useState(false)
-  const router = useRouter()
-
-  const chatHref = locale === "es" ? "/es/chat" : "/chat"
+  // El chat ya no es una página: vive en el asistente flotante.
   const handleNavigateToChat = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault()
-    setIsNavigating(true)
-    setTimeout(() => {
-      router.push(chatHref)
-    }, 1500)
+    window.dispatchEvent(new CustomEvent("assistant:open"))
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -115,8 +107,6 @@ export function Landing({
 
   return (
     <main className="min-h-screen relative animate-page-fade">
-      {isNavigating && <PageTransition />}
-
       <ThemedBackground />
       <Navigation locale={locale} dict={dict} />
 
@@ -212,7 +202,7 @@ export function Landing({
                   className="w-52"
                   asChild
                 >
-                  <a href={chatHref} onClick={handleNavigateToChat} data-track="cta:chat">
+                  <a href="#" role="button" onClick={handleNavigateToChat} data-track="cta:chat">
                     <MessageCircle className="h-5 w-5 mr-2" />
                     {dict.hero.tryChat}
                   </a>
@@ -458,7 +448,7 @@ export function Landing({
 
           <div className="flex flex-wrap justify-center gap-6">
             <Button variant="outline" size="lg" asChild>
-              <a href={chatHref} onClick={handleNavigateToChat} data-track="cta:chat">
+              <a href="#" role="button" onClick={handleNavigateToChat} data-track="cta:chat">
                 <MessageCircle className="h-5 w-5 mr-2" />
                 {dict.hero.tryChat}
               </a>

@@ -18,11 +18,14 @@ export async function middleware(req: NextRequest) {
     const locale = pathname === "/es" || pathname.startsWith("/es/") ? "es" : "en"
     const requestHeaders = new Headers(req.headers)
     requestHeaders.set("x-locale", locale)
+    // Marca el host público. El layout monta el asistente solo con esta cabecera,
+    // así el admin no envía ni un byte del widget (la rama admin nunca la pone).
+    requestHeaders.set("x-public", "1")
     return NextResponse.next({ request: { headers: requestHeaders } })
   }
 
-  // Host admin: las rutas del sitio público (/es, /chat) no existen aquí — redirigen al panel
-  if (pathname === "/es" || pathname.startsWith("/es/") || pathname === "/chat" || pathname.startsWith("/chat/")) {
+  // Host admin: las rutas del sitio público (/es) no existen aquí — redirigen al panel
+  if (pathname === "/es" || pathname.startsWith("/es/")) {
     const url = req.nextUrl.clone()
     url.pathname = "/"
     return NextResponse.redirect(url)

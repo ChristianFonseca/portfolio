@@ -14,7 +14,7 @@ export async function GET() {
     ? `\n\n## Blog\n${posts.map((p) => `- [${p.title}](https://christianfonseca.dev/blog/${p.slug}): ${p.excerpt}`).join("\n")}`
     : ""
 
-  const body = `${kb}
+  const body = `${kb.text}
 
 ## Website
 - English: https://christianfonseca.dev

@@ -7,6 +7,14 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
+  // El chat dejó de ser una página: vive en el asistente flotante del layout.
+  // 301 permanente porque la URL no va a volver.
+  async redirects() {
+    return [
+      { source: "/chat", destination: "/", permanent: true },
+      { source: "/es/chat", destination: "/es", permanent: true },
+    ]
+  },
   async headers() {
     return [
       {

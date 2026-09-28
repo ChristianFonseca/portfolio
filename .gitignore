@@ -37,3 +37,7 @@ next-env.d.ts
 /monitor.ps1
 secrets/
 seo/
+
+# Utilidades locales con detalle de infraestructura (el repo es público)
+dev.ps1
+MONITORING-PLATFORM.prompt.md

@@ -4,6 +4,7 @@ import { headers } from "next/headers"
 import { Space_Grotesk, JetBrains_Mono, Instrument_Serif } from "next/font/google"
 import { ThemeProvider } from "@/components/theme-provider"
 import { ActivityTracker } from "@/components/activity-tracker"
+import { AssistantMount } from "@/components/assistant/assistant-mount"
 import "./globals.css"
 
 // Tipografías de marca (Brand Assets v1.0): Space Grotesk (sans),
@@ -66,6 +67,8 @@ export default async function RootLayout({
   // El middleware setea x-locale según la ruta (/es → es); default en
   const requestHeaders = await headers()
   const lang = requestHeaders.get("x-locale") === "es" ? "es" : "en"
+  // Solo el host público monta el asistente; el admin no recibe nada del widget.
+  const isPublic = requestHeaders.get("x-public") === "1"
 
   return (
     <html
@@ -77,6 +80,7 @@ export default async function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false} disableTransitionOnChange>
           {children}
           <ActivityTracker />
+          {isPublic && <AssistantMount locale={lang} />}
         </ThemeProvider>
       </body>
     </html>
