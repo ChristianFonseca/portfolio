@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation"
 import Link from "next/link"
-import { Users, ExternalLink, LayoutGrid, Settings, MessageSquare, FileText, BarChart3, ScrollText } from "lucide-react"
+import { Users, ExternalLink, LayoutGrid, Settings, MessageSquare, FileText, BarChart3, ScrollText, ShieldCheck } from "lucide-react"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { getSessionUser } from "@/lib/auth"
 import { sql } from "@/lib/db"
@@ -92,6 +92,17 @@ export default async function PanelLayout({ children }: { children: React.ReactN
                   Preguntas
                 </Link>
               </li>
+              {user.role === "admin" && (
+                <li>
+                  <Link
+                    href="/guardrails"
+                    className="flex items-center gap-2 rounded-lg px-2 py-2 text-sm text-muted-foreground transition-colors hover:bg-card/80 hover:text-foreground"
+                  >
+                    <ShieldCheck className="h-4 w-4" />
+                    Guardrails
+                  </Link>
+                </li>
+              )}
               <li>
                 <Link
                   href="/analytics"

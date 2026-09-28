@@ -20,7 +20,20 @@ import {
   type GeminiIncident,
 } from "@/lib/gemini"
 import { KB_SOURCES, SETTING_KB_DISABLED, buildKnowledgeBase, type KnowledgeBase } from "@/lib/chat/knowledge"
-import { SETTING_AUDIT_RETENTION, SETTING_VISITOR_RETENTION, logAudit, purgeActivity } from "@/lib/activity"
+import {
+  SETTING_AUDIT_RETENTION,
+  SETTING_CHAT_RETENTION,
+  SETTING_VISITOR_RETENTION,
+  logAudit,
+  purgeActivity,
+} from "@/lib/activity"
+import {
+  DEFAULT_CHAT_DAILY_LIMIT,
+  DEFAULT_CHAT_GLOBAL_LIMIT,
+  SETTING_CHAT_ALLOWLIST,
+  SETTING_CHAT_DAILY_LIMIT,
+  SETTING_CHAT_GLOBAL_LIMIT,
+} from "@/lib/chat/guardrails"
 
 export type ActionResult = { ok: true } | { ok: false; error: string }
 
@@ -72,6 +85,8 @@ export async function saveSection(slug: string, payload: SaveSectionPayload): Pr
 
 const chatConfigSchema = z.object({
   dailyLimit: z.number().int().min(1).max(1000),
+  // 0 apaga el chat.
+  globalLimit: z.number().int().min(0).max(100000),
   allowlist: z
     .array(
       z
@@ -216,6 +231,7 @@ export async function deletePost(id: number): Promise<ActionResult> {
 
 export async function setChatConfig(input: {
   dailyLimit: number
+  globalLimit: number
   allowlist: string[]
   extraContext: string
 }): Promise<ActionResult> {
@@ -223,21 +239,40 @@ export async function setChatConfig(input: {
     const admin = await requireAdminRole()
     const parsed = chatConfigSchema.safeParse(input)
     if (!parsed.success) return { ok: false, error: parsed.error.issues[0].message }
-    await setSetting("chat_daily_limit", parsed.data.dailyLimit)
-    await setSetting("chat_ip_allowlist", parsed.data.allowlist)
+    // Valores previos para la bitácora: si una sesión robada cambia algo, que se pueda
+    // ver qué había y deshacerlo.
+    const [prevDaily, prevGlobal, prevAllowlist, prevExtra] = await Promise.all([
+      getSetting<number>(SETTING_CHAT_DAILY_LIMIT, DEFAULT_CHAT_DAILY_LIMIT),
+      getSetting<number>(SETTING_CHAT_GLOBAL_LIMIT, DEFAULT_CHAT_GLOBAL_LIMIT),
+      getSetting<string[]>(SETTING_CHAT_ALLOWLIST, []),
+      getSetting<string>("chat_extra_context", ""),
+    ])
+    await setSetting(SETTING_CHAT_DAILY_LIMIT, parsed.data.dailyLimit)
+    await setSetting(SETTING_CHAT_GLOBAL_LIMIT, parsed.data.globalLimit)
+    await setSetting(SETTING_CHAT_ALLOWLIST, parsed.data.allowlist)
     await setSetting("chat_extra_context", parsed.data.extraContext)
     // El contexto extra alimenta la knowledge base del chat (cache tag "content")
     revalidateTag("content")
     void logAudit({
       actor: admin.email,
       action: "settings.chat",
-      detail: { dailyLimit: parsed.data.dailyLimit, allowlist: parsed.data.allowlist.length, extraChars: parsed.data.extraContext.length },
+      detail: {
+        dailyLimit: changed(prevDaily, parsed.data.dailyLimit),
+        globalLimit: changed(prevGlobal, parsed.data.globalLimit),
+        allowlist: changed(prevAllowlist, parsed.data.allowlist),
+        extraContext: changed(prevExtra, parsed.data.extraContext),
+      },
     })
     return { ok: true }
   } catch (error) {
     console.error("setChatConfig:", error)
     return { ok: false, error: "Error al guardar la configuración del chat" }
   }
+}
+
+// Para la bitácora: { before, after } solo si el valor cambió.
+function changed<T>(before: T, after: T): { before: T; after: T } | undefined {
+  return JSON.stringify(before) === JSON.stringify(after) ? undefined : { before, after }
 }
 
 // ---------- Gemini: modelos ----------
@@ -525,7 +560,8 @@ export async function resetUserPassword(id: number, password: string): Promise<A
 // Fuentes de la base de conocimiento: guarda las desactivadas y devuelve la base regenerada.
 export async function setKnowledgeSources(disabled: string[]): Promise<{ ok: true; kb: KnowledgeBase } | { ok: false; error: string }> {
   try {
-    const admin = await requireAdmin()
+    // Solo admin: decide qué entra en el prompt del chat, igual que el resto de Configuración.
+    const admin = await requireAdminRole()
     const allowed = new Set<string>(KB_SOURCES.filter((s) => !s.locked).map((s) => s.key))
     const parsed = z.array(z.string().max(30)).max(30).safeParse(disabled)
     if (!parsed.success) return { ok: false, error: "Lista de fuentes inválida" }
@@ -547,15 +583,29 @@ export async function setKnowledgeSources(disabled: string[]): Promise<{ ok: tru
 const activityConfigSchema = z.object({
   visitorDays: z.number().int().min(7).max(365),
   auditDays: z.number().int().min(30).max(730),
+  // 0 = conservar siempre
+  chatDays: z
+    .number()
+    .int()
+    .min(0)
+    .max(730)
+    .refine((n) => n === 0 || n >= 30),
 })
 
-export async function setActivityConfig(input: { visitorDays: number; auditDays: number }): Promise<ActionResult> {
+export async function setActivityConfig(input: {
+  visitorDays: number
+  auditDays: number
+  chatDays: number
+}): Promise<ActionResult> {
   try {
     const admin = await requireAdminRole()
     const parsed = activityConfigSchema.safeParse(input)
-    if (!parsed.success) return { ok: false, error: "Retención inválida: visitantes 7–365 días, bitácora 30–730 días" }
+    if (!parsed.success) {
+      return { ok: false, error: "Retención inválida: visitantes 7–365 días, bitácora 30–730, preguntas 0 (siempre) o 30–730" }
+    }
     await setSetting(SETTING_VISITOR_RETENTION, parsed.data.visitorDays)
     await setSetting(SETTING_AUDIT_RETENTION, parsed.data.auditDays)
+    await setSetting(SETTING_CHAT_RETENTION, parsed.data.chatDays)
     void logAudit({ actor: admin.email, action: "settings.activity", detail: parsed.data })
     return { ok: true }
   } catch (error) {
@@ -564,12 +614,14 @@ export async function setActivityConfig(input: { visitorDays: number; auditDays:
   }
 }
 
-export async function purgeActivityNow(): Promise<{ ok: true; visitors: number; audit: number } | { ok: false; error: string }> {
+export async function purgeActivityNow(): Promise<
+  { ok: true; visitors: number; audit: number; chat: number } | { ok: false; error: string }
+> {
   try {
     const admin = await requireAdminRole()
     const r = await purgeActivity()
     void logAudit({ actor: admin.email, action: "activity.purge", detail: r })
-    return { ok: true, visitors: r.visitors, audit: r.audit }
+    return { ok: true, visitors: r.visitors, audit: r.audit, chat: r.chat }
   } catch (error) {
     console.error("purgeActivityNow:", error)
     return { ok: false, error: "Error al purgar" }

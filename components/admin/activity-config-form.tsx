@@ -8,16 +8,25 @@ import { purgeActivityNow, setActivityConfig } from "@/app/admin/actions"
 const inputClass =
   "w-full px-3 py-2 rounded-lg bg-background/50 border border-border text-sm text-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
 
-export function ActivityConfigForm({ visitorDays, auditDays }: { visitorDays: number; auditDays: number }) {
+export function ActivityConfigForm({
+  visitorDays,
+  auditDays,
+  chatDays,
+}: {
+  visitorDays: number
+  auditDays: number
+  chatDays: number
+}) {
   const [visitors, setVisitors] = useState(String(visitorDays))
   const [audit, setAudit] = useState(String(auditDays))
+  const [chat, setChat] = useState(String(chatDays))
   const [message, setMessage] = useState<{ ok: boolean; text: string } | null>(null)
   const [saving, startSaving] = useTransition()
   const [purging, startPurging] = useTransition()
 
   const handleSave = () => {
     startSaving(async () => {
-      const result = await setActivityConfig({ visitorDays: Number(visitors), auditDays: Number(audit) })
+      const result = await setActivityConfig({ visitorDays: Number(visitors), auditDays: Number(audit), chatDays: Number(chat) })
       setMessage(result.ok ? { ok: true, text: "Retención guardada" } : { ok: false, text: result.error })
     })
   }
@@ -28,7 +37,10 @@ export function ActivityConfigForm({ visitorDays, auditDays }: { visitorDays: nu
       const result = await purgeActivityNow()
       setMessage(
         result.ok
-          ? { ok: true, text: `Purga aplicada: ${result.visitors} eventos de visitantes y ${result.audit} registros de bitácora eliminados.` }
+          ? {
+              ok: true,
+              text: `Purga aplicada: ${result.visitors} eventos de visitantes, ${result.audit} registros de bitácora y ${result.chat} preguntas del chat eliminados.`,
+            }
           : { ok: false, text: result.error },
       )
     })
@@ -36,11 +48,11 @@ export function ActivityConfigForm({ visitorDays, auditDays }: { visitorDays: nu
 
   return (
     <div className="mt-6 rounded-2xl border border-border bg-card/40 p-5">
-      <p className="mb-1 text-sm font-semibold">Analytics y Bitácora: retención</p>
+      <p className="mb-1 text-sm font-semibold">Analytics, Bitácora y Preguntas: retención</p>
       <p className="mb-4 text-xs text-muted-foreground">
         Los registros más antiguos se borran solos (purga oportunista en cada lote de eventos) o con el botón.
       </p>
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="grid gap-4 sm:grid-cols-3">
         <div>
           <label htmlFor="ret-visitors" className="mb-1 block text-xs text-muted-foreground">
             Eventos de visitantes (días, 7–365)
@@ -53,7 +65,17 @@ export function ActivityConfigForm({ visitorDays, auditDays }: { visitorDays: nu
           </label>
           <input id="ret-audit" type="number" min={30} max={730} value={audit} onChange={(e) => setAudit(e.target.value)} className={inputClass} />
         </div>
+        <div>
+          <label htmlFor="ret-chat" className="mb-1 block text-xs text-muted-foreground">
+            Preguntas del chat (días · 0 = siempre)
+          </label>
+          <input id="ret-chat" type="number" min={0} max={730} value={chat} onChange={(e) => setChat(e.target.value)} className={inputClass} />
+        </div>
       </div>
+      <p className="mt-2 text-[11px] text-muted-foreground/70">
+        Los visitantes a veces escriben su nombre, su correo o su empresa en el chat. Con 0 esas preguntas se guardan para
+        siempre. Los eventos de guardrails siguen la retención de visitantes.
+      </p>
       <div className="mt-4 flex flex-wrap items-center gap-3">
         <Button onClick={handleSave} disabled={saving}>
           {saving ? "Guardando…" : "Guardar retención"}

@@ -156,7 +156,7 @@ export async function probeGeminiModel(
   return { ok: true, ms, tokens: json.totalTokens ?? 0 }
 }
 
-function extractApiMessage(detail: string): string {
+export function extractApiMessage(detail: string): string {
   try {
     const j = JSON.parse(detail) as { error?: { message?: string } }
     return (j.error?.message ?? "").slice(0, 240)
@@ -188,17 +188,28 @@ export async function generateContent(args: {
   fallbackModel: string | null
   body: Record<string, unknown>
   context: "chat" | "translate"
+  /** Por llamada. Sin él no hay límite (la traducción de posts largos lo necesita así). */
+  timeoutMs?: number
 }): Promise<GenerateOutcome> {
   const call = async (model: string) => {
-    const res = await fetch(`${GEMINI_API}/models/${encodeURIComponent(model)}:generateContent`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "x-goog-api-key": args.apiKey },
-      body: JSON.stringify(args.body),
-      cache: "no-store",
-    })
-    if (res.ok) return { ok: true as const, payload: (await res.json()) as unknown, model }
-    const detail = await res.text().catch(() => "")
-    return { ok: false as const, status: res.status, detail, model }
+    try {
+      const res = await fetch(`${GEMINI_API}/models/${encodeURIComponent(model)}:generateContent`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "x-goog-api-key": args.apiKey },
+        body: JSON.stringify(args.body),
+        cache: "no-store",
+        signal: args.timeoutMs ? AbortSignal.timeout(args.timeoutMs) : undefined,
+      })
+      if (res.ok) return { ok: true as const, payload: (await res.json()) as unknown, model }
+      const detail = await res.text().catch(() => "")
+      return { ok: false as const, status: res.status, detail, model }
+    } catch (error) {
+      // Timeout o fallo de red: se devuelve como error en vez de lanzar, para que quien
+      // llama lo trate igual que cualquier otra respuesta fallida de la API.
+      const timedOut = error instanceof Error && (error.name === "TimeoutError" || error.name === "AbortError")
+      const detail = timedOut ? `timeout tras ${args.timeoutMs} ms` : error instanceof Error ? error.message : String(error)
+      return { ok: false as const, status: timedOut ? 504 : 0, detail, model }
+    }
   }
 
   const first = await call(args.model)

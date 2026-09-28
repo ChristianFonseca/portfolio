@@ -9,6 +9,7 @@ import {
 } from "lucide-react"
 import { getSessionId } from "@/lib/client-session"
 import { CONTACT_EMAIL, CV_FILENAME, CV_PATH, SOCIAL } from "@/lib/social"
+import { CHAT_MESSAGE_MAX } from "@/lib/chat/limits"
 import type { Dictionary, Locale } from "@/lib/i18n/dictionaries"
 import { Mascot, useMascot, usePrefersReducedMotion } from "./mascot"
 
@@ -275,7 +276,7 @@ export function AssistantWidget({
   async function send(text: string) {
     const q = text.trim()
     if (!q || busy) return
-    if (q.length > 500) { flash("confused", 2200); setNotice({ kind: "error", text: t.tooLong }); return }
+    if (q.length > CHAT_MESSAGE_MAX) { flash("confused", 2200); setNotice({ kind: "error", text: t.tooLong }); return }
     setNotice(null)
     setMessages((m) => [...m, { role: "user", content: q }])
     setInput(""); setBusy(true)
@@ -298,7 +299,8 @@ export function AssistantWidget({
       if (res.status === 429) { flash("alert", 3000); setNotice({ kind: "alert", text: payload.error || t.limit }); return }
       if (res.status === 503) { setBase("sleep"); flash("sleep", 3000); setNotice({ kind: "sleep", text: t.offline }); return }
       if (!res.ok || !payload.answer) { flash("error", 2600); setNotice({ kind: "error", text: dict.chat.unavailable }); return }
-      flash("success", 1400)
+      // Si Google bloqueó la respuesta llega una negativa normal: la mascota pone cara de duda.
+      flash(payload.blocked ? "confused" : "success", 1400)
       setMessages((m) => [...m, { role: "assistant", content: payload.answer }])
       if (typeof payload.remaining === "number" && payload.remaining >= 0) setRemaining(payload.remaining)
     } catch {
@@ -542,7 +544,7 @@ export function AssistantWidget({
         <form className="flex items-end gap-2 border-t border-border p-2.5"
           onSubmit={(e) => { e.preventDefault(); void send(input) }}>
           <textarea
-            ref={inputRef} rows={1} value={input} maxLength={500}
+            ref={inputRef} rows={1} value={input} maxLength={CHAT_MESSAGE_MAX}
             onChange={(e) => setInput(e.target.value)}
             onFocus={() => { if (!input) flash("listening", 1500) }}
             onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); void send(input) } }}

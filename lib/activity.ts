@@ -10,8 +10,12 @@ import { getClientIp, getCountry, getUserAgent, hashIp, ipOrNull } from "@/lib/r
 
 export const SETTING_VISITOR_RETENTION = "activity_retention_days"
 export const SETTING_AUDIT_RETENTION = "audit_retention_days"
+export const SETTING_CHAT_RETENTION = "chat_retention_days"
 export const DEFAULT_VISITOR_RETENTION_DAYS = 90
 export const DEFAULT_AUDIT_RETENTION_DAYS = 365
+// 0 = las preguntas del chat se conservan siempre (así era antes). Borrar ese historial
+// lo decide el admin, no un valor por defecto.
+export const DEFAULT_CHAT_RETENTION_DAYS = 0
 
 export type VisitorKind = "pageview" | "section" | "click" | "scroll" | "leave" | "chat" | "contact"
 
@@ -101,14 +105,29 @@ export async function logAudit(input: AuditInput): Promise<void> {
   }
 }
 
-export async function purgeActivity(): Promise<{ visitors: number; audit: number; visitorDays: number; auditDays: number }> {
-  const [visitorDays, auditDays] = await Promise.all([
+export async function purgeActivity(): Promise<{
+  visitors: number
+  audit: number
+  chat: number
+  guard: number
+  visitorDays: number
+  auditDays: number
+  chatDays: number
+}> {
+  const [visitorDays, auditDays, chatDays] = await Promise.all([
     getSetting<number>(SETTING_VISITOR_RETENTION, DEFAULT_VISITOR_RETENTION_DAYS),
     getSetting<number>(SETTING_AUDIT_RETENTION, DEFAULT_AUDIT_RETENTION_DAYS),
+    getSetting<number>(SETTING_CHAT_RETENTION, DEFAULT_CHAT_RETENTION_DAYS),
   ])
   const v = await sql`delete from visitor_events where ts < now() - make_interval(days => ${visitorDays})`
   const a = await sql`delete from admin_audit where ts < now() - make_interval(days => ${auditDays})`
-  return { visitors: v.count, audit: a.count, visitorDays, auditDays }
+  // Los eventos de guardrails siguen la retención de la analítica de visitantes.
+  const g = await sql`delete from chat_guard_events where bucket < now() - make_interval(days => ${visitorDays})`
+  const c =
+    chatDays > 0
+      ? await sql`delete from chat_questions where created_at < now() - make_interval(days => ${chatDays})`
+      : { count: 0 }
+  return { visitors: v.count, audit: a.count, chat: c.count, guard: g.count, visitorDays, auditDays, chatDays }
 }
 
 // Purga oportunista: ~1 de cada 100 lotes ingeridos (sin cron ni infraestructura extra).
@@ -116,7 +135,8 @@ export function maybePurge(): void {
   if (Math.random() >= 0.01) return
   purgeActivity()
     .then((r) => {
-      if (r.visitors || r.audit) console.log(`activity purge: ${r.visitors} eventos, ${r.audit} auditoría`)
+      if (r.visitors || r.audit || r.chat || r.guard)
+        console.log(`activity purge: ${r.visitors} eventos, ${r.audit} auditoría, ${r.chat} preguntas, ${r.guard} guardrails`)
     })
     .catch((error) => console.error("activity purge:", error))
 }

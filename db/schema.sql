@@ -29,17 +29,50 @@ CREATE TABLE IF NOT EXISTS settings (
 
 -- Preguntas del chat público. La IP se guarda SOLO seudonimizada (HMAC-SHA256),
 -- suficiente para rate-limiting y analítica sin almacenar datos personales en claro.
+-- Cada intento se reserva como 'pending' ANTES de llamar a Gemini y se cierra con su
+-- desenlace (outcome): answered | truncated | blocked | empty | error. net_hash es la
+-- clave del límite por IP (la IP en IPv4, el prefijo /64 en IPv6).
 CREATE TABLE IF NOT EXISTS chat_questions (
-  id         bigserial PRIMARY KEY,
-  ip_hash    text NOT NULL,
-  locale     text NOT NULL DEFAULT 'en',
-  question   text NOT NULL,
-  answer     text NOT NULL DEFAULT '',
-  model      text NOT NULL DEFAULT '',
-  created_at timestamptz NOT NULL DEFAULT now()
+  id             bigserial PRIMARY KEY,
+  ip_hash        text NOT NULL,
+  net_hash       text,
+  locale         text NOT NULL DEFAULT 'en',
+  question       text NOT NULL,
+  answer         text NOT NULL DEFAULT '',
+  model          text NOT NULL DEFAULT '',
+  outcome        text NOT NULL DEFAULT 'answered',
+  finish_reason  text NOT NULL DEFAULT '',
+  tokens_in      int,
+  tokens_out     int,
+  tokens_thought int,
+  history_turns  int,
+  created_at     timestamptz NOT NULL DEFAULT now()
 );
 
 CREATE INDEX IF NOT EXISTS chat_questions_ip_day_idx ON chat_questions (ip_hash, created_at);
+CREATE INDEX IF NOT EXISTS chat_questions_net_day_idx ON chat_questions (net_hash, created_at);
+CREATE INDEX IF NOT EXISTS chat_questions_created_idx ON chat_questions (created_at);
+-- Lo que cuenta para los límites: así las filas 'error' no frenan el conteo de la admisión.
+CREATE INDEX IF NOT EXISTS chat_questions_counted_idx ON chat_questions (created_at) WHERE outcome <> 'error';
+
+-- Cuándo actuó un guardrail que no deja fila en chat_questions (límites, entradas
+-- inválidas, errores de Gemini). Agregado por hora, tipo e IP.
+CREATE TABLE IF NOT EXISTS chat_guard_events (
+  id       bigserial PRIMARY KEY,
+  bucket   timestamptz NOT NULL,
+  kind     text NOT NULL,
+  ip_hash  text NOT NULL DEFAULT '',
+  status   int NOT NULL DEFAULT 0,
+  n        int NOT NULL DEFAULT 1,
+  first_ts timestamptz NOT NULL DEFAULT now(),
+  last_ts  timestamptz NOT NULL DEFAULT now(),
+  locale   text NOT NULL DEFAULT '',
+  model    text NOT NULL DEFAULT '',
+  detail   jsonb NOT NULL DEFAULT '{}'::jsonb,
+  UNIQUE (bucket, kind, ip_hash, status)
+);
+
+CREATE INDEX IF NOT EXISTS chat_guard_events_bucket_idx ON chat_guard_events (bucket DESC);
 
 -- Blog bilingüe (markdown por idioma; publicar exige ambos idiomas completos)
 CREATE TABLE IF NOT EXISTS posts (

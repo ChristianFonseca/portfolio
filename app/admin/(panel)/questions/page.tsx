@@ -11,7 +11,18 @@ interface QuestionRow {
   question: string
   answer: string
   model: string
+  outcome: string
+  finish_reason: string
   created_at: string
+}
+
+// Desenlaces que no son una respuesta normal (ver lib/chat/guardrails.ts).
+const OUTCOME_BADGE: Record<string, { label: string; className: string }> = {
+  truncated: { label: "Cortada", className: "border-yellow-500/40 text-yellow-600 dark:text-yellow-300" },
+  blocked: { label: "Bloqueada por Google", className: "border-red-500/40 text-red-500 dark:text-red-300" },
+  empty: { label: "Sin respuesta", className: "border-red-500/40 text-red-500 dark:text-red-300" },
+  rejected: { label: "Rechazada por Gemini", className: "border-red-500/40 text-red-500 dark:text-red-300" },
+  error: { label: "Error de Gemini", className: "border-red-500/40 text-red-500 dark:text-red-300" },
 }
 
 interface Stats {
@@ -28,16 +39,16 @@ export default async function AdminQuestionsPage() {
   try {
     const [rows, statRows] = await Promise.all([
       sql<QuestionRow[]>`
-        select id, ip_hash, locale, question, answer, model,
+        select id, ip_hash, locale, question, answer, model, outcome, finish_reason,
                to_char(created_at, 'DD Mon YYYY, HH24:MI') as created_at
-        from chat_questions order by id desc limit 100
+        from chat_questions where outcome <> 'pending' order by id desc limit 100
       `,
       sql<Stats[]>`
         select count(*)::text as total,
                count(*) filter (where created_at > now() - interval '24 hours')::text as today,
                count(*) filter (where created_at > now() - interval '7 days')::text as week,
                count(distinct ip_hash)::text as unique_ips
-        from chat_questions
+        from chat_questions where outcome <> 'pending'
       `,
     ])
     questions = rows
@@ -58,7 +69,11 @@ export default async function AdminQuestionsPage() {
     <div>
       <h1 className="text-2xl font-bold">Preguntas del chat</h1>
       <p className="mb-8 mt-1 text-sm text-muted-foreground">
-        Todo lo que los visitantes le preguntan al asistente. Las IPs se guardan solo como hash irreversible.
+        Todo lo que los visitantes le preguntan al asistente. Aquí la IP se guarda como hash, pero cada pregunta también
+        crea un evento en Analytics con la IP en claro.{" "}
+        <a href="/guardrails" className="text-primary hover:underline">
+          Ver guardrails
+        </a>
       </p>
 
       {dbError ? (
@@ -86,6 +101,14 @@ export default async function AdminQuestionsPage() {
                   <summary className="flex cursor-pointer list-none items-center gap-3 px-5 py-3.5 [&::-webkit-details-marker]:hidden">
                     <MessageSquare className="h-4 w-4 shrink-0 text-primary/60" />
                     <span className="min-w-0 flex-1 truncate text-sm">{q.question}</span>
+                    {OUTCOME_BADGE[q.outcome] && (
+                      <span
+                        className={`shrink-0 rounded-full border px-2 py-0.5 text-[10px] ${OUTCOME_BADGE[q.outcome].className}`}
+                        title={q.finish_reason}
+                      >
+                        {OUTCOME_BADGE[q.outcome].label}
+                      </span>
+                    )}
                     <Badge variant="secondary" className="shrink-0 text-[10px] uppercase">
                       {q.locale}
                     </Badge>
@@ -102,9 +125,14 @@ export default async function AdminQuestionsPage() {
                     </p>
                     <p className="mb-4 whitespace-pre-wrap">{q.question}</p>
                     <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                      Respuesta ({q.model})
+                      Respuesta ({q.model || "—"}){q.finish_reason && q.outcome !== "answered" ? ` · ${q.finish_reason}` : ""}
                     </p>
-                    <p className="whitespace-pre-wrap text-muted-foreground">{q.answer}</p>
+                    <p className="whitespace-pre-wrap text-muted-foreground">
+                      {q.answer ||
+                        (q.outcome === "blocked"
+                          ? "Google bloqueó la respuesta. El visitante recibió una negativa genérica."
+                          : "—")}
+                    </p>
                   </div>
                 </details>
               ))}

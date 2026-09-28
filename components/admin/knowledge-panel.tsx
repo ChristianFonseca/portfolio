@@ -166,7 +166,7 @@ export function KnowledgePanel({ initial, modelId }: { initial: KnowledgeBase; m
       {message && <p className={`mt-3 text-sm ${message.ok ? "text-emerald-500" : "text-red-400"}`}>{message.text}</p>}
 
       <p className="mb-1.5 mt-4 text-[11px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
-        Texto exacto que recibe el modelo ({fmtInt(kb.chars)} caracteres)
+        Base de conocimiento ({fmtInt(kb.chars)} caracteres) · va dentro del prompt, junto a las reglas de Guardrails
       </p>
       <pre className="max-h-[28rem] overflow-auto whitespace-pre-wrap rounded-xl border border-border bg-background/60 p-3 text-[11px] leading-relaxed text-foreground/80">
         {kb.text}

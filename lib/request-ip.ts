@@ -16,6 +16,28 @@ export function getClientIp(headers: Headers): string {
   return "unknown"
 }
 
+// Clave para el límite por IP. Con IPv6, cualquiera con una /64 (lo normal en una
+// conexión doméstica) puede ir cambiando de dirección, así que se agrupa por el
+// prefijo /64. Las IPv4 mapeadas (::ffff:1.2.3.4) cuentan como la IPv4.
+export function rateKey(ip: string): string {
+  const mapped = /^::ffff:(\d{1,3}(?:\.\d{1,3}){3})$/i.exec(ip)
+  if (mapped) return mapped[1]
+  if (isIP(ip) !== 6) return ip
+  return `${ipv6Groups(ip).slice(0, 4).join(":")}::/64`
+}
+
+// Los 8 grupos de una IPv6 ya expandida y normalizada ("::" rellenado con ceros).
+function ipv6Groups(ip: string): string[] {
+  const [head, tail] = ip.toLowerCase().split("::")
+  const part = (s: string | undefined) => (s ? s.split(":") : [])
+  // Una IPv4 incrustada al final ocupa dos grupos.
+  const width = (g: string[]) => g.reduce((n, x) => n + (x.includes(".") ? 2 : 1), 0)
+  const h = part(head)
+  const t = part(tail)
+  const zeros = tail === undefined ? [] : Array(Math.max(0, 8 - width(h) - width(t))).fill("0")
+  return [...h, ...zeros, ...t].map((g) => (g.includes(".") ? g : parseInt(g, 16).toString(16)))
+}
+
 // Para columnas inet: null si no es una IP válida.
 export function ipOrNull(ip: string): string | null {
   return isIP(ip) ? ip : null
