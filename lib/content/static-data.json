@@ -819,7 +819,7 @@
             },
             {
               "title": "Atalaya",
-              "description": "Atalaya watches a small server that hosts several web projects and alerts only when something needs action. It replaced four overlapping monitors whose 100 alerts in one week were all noise. A privileged Bash agent with no network collects host facts every minute. An unprivileged Node.js/TypeScript hub evaluates 68 kinds of checks, analyzes Cloudflare traffic and tracks off-site backups.",
+              "description": "A personal monitoring and security platform, currently used only on my own infrastructure: the VPS that hosts my web projects and my local PC. It alerts only when something needs action, and it replaced four overlapping monitors whose 100 alerts in one week were all noise. A privileged Bash agent with no network collects host facts every minute, and an unprivileged Node.js/TypeScript hub evaluates 68 kinds of checks, analyzes Cloudflare traffic and tracks off-site backups.",
               "image": "",
               "repoUrl": "",
               "liveUrl": "",
@@ -1047,7 +1047,7 @@
             },
             {
               "title": "Atalaya",
-              "description": "Atalaya vigila un servidor pequeño que aloja varios proyectos web y avisa solo cuando algo requiere acción. Reemplazó cuatro monitores solapados cuyas 100 alertas en una semana fueron todas ruido. Un agente en Bash con privilegios y sin red recolecta hechos del host cada minuto. Un hub en Node.js/TypeScript sin privilegios evalúa 68 tipos de chequeo, analiza el tráfico de Cloudflare y vigila los backups externos.",
+              "description": "Plataforma personal de monitoreo y seguridad que hoy uso solo en mi propia infraestructura: el VPS donde alojo mis proyectos web y mi PC local. Avisa solo cuando algo requiere acción, y reemplazó cuatro monitores solapados cuyas 100 alertas en una semana fueron todas ruido. Un agente en Bash con privilegios y sin red recolecta hechos del host cada minuto, y un hub en Node.js/TypeScript sin privilegios evalúa 68 tipos de chequeo, analiza el tráfico de Cloudflare y vigila los backups externos.",
               "image": "",
               "repoUrl": "",
               "liveUrl": "",
