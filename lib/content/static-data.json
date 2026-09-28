@@ -816,6 +816,42 @@
                 "Extras: day/night mode, optional engine sound, turbulence on tool failure, a wait-time mini-game with unlockable plane skins, and a post-flight summary of the session."
               ],
               "images": []
+            },
+            {
+              "title": "Atalaya",
+              "description": "Atalaya watches a small server that hosts several web projects and alerts only when something needs action. It replaced four overlapping monitors whose 100 alerts in one week were all noise. A privileged Bash agent with no network collects host facts every minute. An unprivileged Node.js/TypeScript hub evaluates 68 kinds of checks, analyzes Cloudflare traffic and tracks off-site backups.",
+              "image": "",
+              "repoUrl": "",
+              "liveUrl": "",
+              "tech": [
+                "TypeScript",
+                "Node.js",
+                "SQLite",
+                "Bash",
+                "Docker",
+                "Docker Compose",
+                "systemd",
+                "Zod",
+                "YAML",
+                "Cloudflare",
+                "Cloudflare GraphQL API",
+                "Telegram Bot API",
+                "healthchecks.io",
+                "Claude Code",
+                "nginx",
+                "rclone",
+                "Cloudflare R2",
+                "PowerShell"
+              ],
+              "bullets": [
+                "Audited the existing monitoring before writing code: of 100 alerts sent in one week, none matched a real incident, and two unscoped rules produced 68% of them.",
+                "Split privilege by design. A root Bash agent with no network writes facts to a spool. The Node.js hub reads that spool through a read-only mount and runs as non-root, on a read-only filesystem, with all capabilities dropped and no Docker socket.",
+                "Built an alert engine with stable fingerprints, per-rule cooldowns, automatic resolution, flapping grouping and expiring silences with mandatory reasons. It also has a false-positive budget that demotes noisy rules but never integrity checks.",
+                "Integrated Cloudflare REST and GraphQL analytics into a 0–100 zone security score whose every deduction comes with its fix, an offline world map of attack origins, and a split of app 5xx errors from restarts.",
+                "Added a read-only AI reviewer (Claude) that treats attacker-written paths and User-Agents as possible prompt injection. It proposes fixes that run only from a whitelist of 6 idempotent scripts.",
+                "Monitored encrypted off-site Postgres backups: freshness, weekly and monthly tiers, restore tests, and whether the bucket lock really blocks deletion by the server's own token."
+              ],
+              "images": []
             }
           ]
         },
@@ -1006,6 +1042,42 @@
                 "La extensión misma es la 'torre de control': un servidor HTTP en Node sin dependencias que normaliza cada evento de hook y lo envía a los webviews de VS Code vía postMessage y a los navegadores vía Server-Sent Events.",
                 "Instalación/desinstalación con un clic de los hooks globales de Claude Code en ~/.claude/settings.json (con respaldo), un botón en la barra de estado, y renderizado en la barra lateral, un panel o un segundo monitor en localhost:4747.",
                 "Extras: modo día/noche, sonido de motor opcional, turbulencia ante fallos de herramientas, un minijuego para la espera con skins de avión desbloqueables y un resumen post-vuelo de la sesión."
+              ],
+              "images": []
+            },
+            {
+              "title": "Atalaya",
+              "description": "Atalaya vigila un servidor pequeño que aloja varios proyectos web y avisa solo cuando algo requiere acción. Reemplazó cuatro monitores solapados cuyas 100 alertas en una semana fueron todas ruido. Un agente en Bash con privilegios y sin red recolecta hechos del host cada minuto. Un hub en Node.js/TypeScript sin privilegios evalúa 68 tipos de chequeo, analiza el tráfico de Cloudflare y vigila los backups externos.",
+              "image": "",
+              "repoUrl": "",
+              "liveUrl": "",
+              "tech": [
+                "TypeScript",
+                "Node.js",
+                "SQLite",
+                "Bash",
+                "Docker",
+                "Docker Compose",
+                "systemd",
+                "Zod",
+                "YAML",
+                "Cloudflare",
+                "Cloudflare GraphQL API",
+                "Telegram Bot API",
+                "healthchecks.io",
+                "Claude Code",
+                "nginx",
+                "rclone",
+                "Cloudflare R2",
+                "PowerShell"
+              ],
+              "bullets": [
+                "Audité el monitoreo existente antes de escribir código: de 100 alertas enviadas en una semana, ninguna correspondió a un incidente real, y dos reglas sin acotar produjeron el 68 %.",
+                "Separé los privilegios desde el diseño. Un agente en Bash con root y sin red escribe hechos en un spool. El hub en Node.js lee ese spool montado en solo lectura, sin root, con sistema de archivos de solo lectura, sin capabilities y sin el socket de Docker.",
+                "Construí un motor de alertas con huellas estables, enfriamiento por regla, resolución automática, agrupación de intermitencias y silencios con vencimiento y motivo obligatorio. Tiene además un presupuesto de falsos positivos que degrada las reglas ruidosas, nunca las de integridad.",
+                "Integré la analítica REST y GraphQL de Cloudflare en una nota de seguridad de 0 a 100 por zona, donde cada descuento trae su arreglo, un mapa mundial sin conexión del origen de los ataques y una separación de los 5xx de la app frente a los reinicios.",
+                "Añadí un revisor con IA (Claude) de solo lectura que trata las rutas y los User-Agent escritos por atacantes como posible inyección de prompts. Propone reparaciones que solo se ejecutan desde una lista blanca de 6 scripts idempotentes.",
+                "Vigilé los backups cifrados de Postgres fuera del servidor: frescura, niveles semanal y mensual, pruebas de restauración y si el bloqueo del bucket de verdad impide borrar con el token del propio servidor."
               ],
               "images": []
             }
