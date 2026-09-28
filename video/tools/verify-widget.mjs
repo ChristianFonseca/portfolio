@@ -1,6 +1,6 @@
 import { chromium } from "playwright"
 
-const B = "http://localhost:3100"
+const B = process.argv[2] || "http://localhost:3100"
 let fails = 0
 const chk = (c, m) => { if (!c) fails++; console.log(`${c ? "OK   " : "FALLO"} ${m}`) }
 
