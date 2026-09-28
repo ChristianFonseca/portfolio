@@ -38,6 +38,12 @@ const write = (k: string, v: string) => { try { localStorage.setItem(k, v) } cat
 
 const SOCIAL_ICON = { linkedin: Linkedin, github: Github, scholar: GraduationCap, credly: Award } as const
 
+// Escala de texto del panel: un punto por debajo de ${TXT}/${TXT_S} de Tailwind.
+// El interlineado va explícito porque un tamaño arbitrario no arrastra el leading
+// que sí traen las clases con nombre — sin esto las burbujas se apelmazarían.
+const TXT = "text-[13px] leading-[19px]"    // cuerpo: burbujas, campos, botones
+const TXT_S = "text-[11px] leading-[15px]"  // secundario: pestañas, chips, textos de entrada
+
 export function AssistantWidget({
   locale, dict, data,
 }: { locale: Locale; dict: Dictionary; data: AssistantData }) {
@@ -334,9 +340,9 @@ export function AssistantWidget({
     { hash: "faq", label: t.jumpFaq },
   ]
   const chipCls =
-    "inline-flex items-center gap-1.5 rounded-full border border-border bg-muted/40 px-3 py-1.5 text-xs text-muted-foreground transition-colors hover:border-primary hover:text-foreground"
+    `inline-flex items-center gap-1.5 rounded-full border border-border bg-muted/40 px-3 py-1.5 ${TXT_S} text-muted-foreground transition-colors hover:border-primary hover:text-foreground`
   const fieldCls =
-    "w-full rounded-xl border border-border bg-background/60 px-3 py-2 text-sm outline-none focus:border-primary"
+    `w-full rounded-xl border border-border bg-background/60 px-3 py-2 ${TXT} outline-none focus:border-primary`
 
   const launcher = (
     <div data-assistant="" className="fixed bottom-6 z-[70] print:hidden" style={side}>
@@ -364,7 +370,7 @@ export function AssistantWidget({
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={data.photo} alt="" width={40} height={40} className="h-10 w-10 shrink-0 rounded-full object-cover" />
           <div className="min-w-0 flex-1">
-            <p className="truncate text-sm font-semibold">{data.name || dict.chat.title}</p>
+            <p className={`truncate ${TXT} font-semibold`}>{data.name || dict.chat.title}</p>
             <p className="truncate text-[11px] leading-tight text-muted-foreground">{data.tagline}</p>
             {data.location && <p className="truncate text-[11px] text-muted-foreground/70">{data.location}</p>}
           </div>
@@ -409,7 +415,7 @@ export function AssistantWidget({
           <button
             key={k} type="button" onClick={() => setTab(k)} aria-current={tab === k}
             data-track={`mascot:tab:${k}`}
-            className={`rounded-lg px-2.5 py-1.5 text-xs font-semibold transition-colors ${
+            className={`rounded-lg px-2.5 py-1.5 ${TXT_S} font-semibold transition-colors ${
               tab === k ? "bg-primary/15 text-primary" : "text-muted-foreground hover:text-foreground"
             }`}
           >
@@ -429,8 +435,8 @@ export function AssistantWidget({
             {messages.map((m, i) => (
               <div key={i} className={m.role === "user" ? "flex justify-end" : ""}>
                 <div className={m.role === "user"
-                  ? "max-w-[86%] rounded-2xl rounded-br-md border border-primary/35 bg-primary/15 px-3 py-2 text-sm"
-                  : "max-w-[86%] rounded-2xl rounded-bl-md border border-border bg-muted/40 px-3 py-2 text-sm"}>
+                  ? `max-w-[86%] rounded-2xl rounded-br-md border border-primary/35 bg-primary/15 px-3 py-2 ${TXT}`
+                  : `max-w-[86%] rounded-2xl rounded-bl-md border border-border bg-muted/40 px-3 py-2 ${TXT}`}>
                   {m.content}
                   {m.stored && <span className="mt-1.5 block text-[10px] text-muted-foreground/70">{t.storedAnswer}</span>}
                 </div>
@@ -449,7 +455,7 @@ export function AssistantWidget({
               <div className="space-y-1.5 pt-1">
                 {data.faq.map((f, i) => (
                   <button key={i} type="button" onClick={() => answerStored(f)} data-track={`mascot:faq:${i}`}
-                    className="block w-full rounded-xl border border-border bg-muted/30 px-3 py-2 text-left text-xs text-muted-foreground transition-colors hover:border-primary hover:text-foreground">
+                    className={`block w-full rounded-xl border border-border bg-muted/30 px-3 py-2 text-left ${TXT_S} text-muted-foreground transition-colors hover:border-primary hover:text-foreground`}>
                     {f.q}
                   </button>
                 ))}
@@ -461,10 +467,10 @@ export function AssistantWidget({
 
         {tab === "guide" && (
           <div className="space-y-2">
-            <p className="text-xs text-muted-foreground">{t.guideLead}</p>
+            <p className={`${TXT_S} text-muted-foreground`}>{t.guideLead}</p>
             {JUMPS.map((j) => (
               <button key={j.hash} type="button" onClick={() => jump(j.hash)} data-track={`mascot:jump:${j.hash}`}
-                className="flex w-full items-center gap-2 rounded-xl border border-border bg-muted/30 px-3 py-2.5 text-left text-sm transition-colors hover:border-primary">
+                className={`flex w-full items-center gap-2 rounded-xl border border-border bg-muted/30 px-3 py-2.5 text-left ${TXT} transition-colors hover:border-primary`}>
                 <MessageCircle className="h-4 w-4 shrink-0 text-primary" />
                 {j.label}
               </button>
@@ -474,25 +480,25 @@ export function AssistantWidget({
 
         {tab === "contact" && (onLanding ? (
           <div className="space-y-3">
-            <p className="text-xs text-muted-foreground">{t.contactOnPage}</p>
+            <p className={`${TXT_S} text-muted-foreground`}>{t.contactOnPage}</p>
             <button type="button" onClick={() => jump("contact")} data-track="mascot:jump:contact"
-              className="w-full rounded-xl bg-gradient-to-r from-primary to-accent px-3 py-2.5 text-sm font-semibold text-white">
+              className={`w-full rounded-xl bg-gradient-to-r from-primary to-accent px-3 py-2.5 ${TXT} font-semibold text-white`}>
               {dict.nav.contact}
             </button>
             <a href={`mailto:${CONTACT_EMAIL}`} data-track="mascot:mailto"
-              className="flex items-center justify-center gap-2 rounded-xl border border-border px-3 py-2.5 text-sm transition-colors hover:border-primary">
+              className={`flex items-center justify-center gap-2 rounded-xl border border-border px-3 py-2.5 ${TXT} transition-colors hover:border-primary`}>
               <Mail className="h-4 w-4" /> {dict.contact.directEmail}
             </a>
           </div>
         ) : sent ? (
           <div className="space-y-2 py-6 text-center">
             <Check className="mx-auto h-8 w-8 text-emerald-500" />
-            <p className="text-sm font-semibold">{t.sentTitle}</p>
-            <p className="text-xs text-muted-foreground">{t.sentBody}</p>
+            <p className={`${TXT} font-semibold`}>{t.sentTitle}</p>
+            <p className={`${TXT_S} text-muted-foreground`}>{t.sentBody}</p>
           </div>
         ) : (
           <form className="space-y-2.5" onSubmit={sendContact}>
-            <p className="text-xs text-muted-foreground">{t.contactLead}</p>
+            <p className={`${TXT_S} text-muted-foreground`}>{t.contactLead}</p>
             <input required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })}
               onFocus={() => flash("listening", 1400)} maxLength={200}
               placeholder={dict.contact.namePlaceholder} aria-label={dict.contact.name} className={fieldCls} />
@@ -503,7 +509,7 @@ export function AssistantWidget({
               placeholder={dict.contact.messagePlaceholder} aria-label={dict.contact.message}
               className={`${fieldCls} resize-none`} />
             <button type="submit" disabled={sending} data-track="mascot:contact-send"
-              className="w-full rounded-xl bg-gradient-to-r from-primary to-accent px-3 py-2.5 text-sm font-semibold text-white disabled:opacity-50">
+              className={`w-full rounded-xl bg-gradient-to-r from-primary to-accent px-3 py-2.5 ${TXT} font-semibold text-white disabled:opacity-50`}>
               {sending ? dict.contact.sending : dict.contact.send}
             </button>
             {notice && <Notice notice={notice} />}
@@ -520,7 +526,7 @@ export function AssistantWidget({
             onFocus={() => { if (!input) flash("listening", 1500) }}
             onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); void send(input) } }}
             placeholder={dict.chat.placeholder} aria-label={dict.chat.placeholder}
-            className="max-h-24 flex-1 resize-none rounded-xl border border-border bg-background/60 px-3 py-2 text-sm outline-none focus:border-primary"
+            className={`max-h-24 flex-1 resize-none rounded-xl border border-border bg-background/60 px-3 py-2 ${TXT} outline-none focus:border-primary`}
           />
           <button type="submit" disabled={busy || !input.trim()} aria-label={t.send} data-track="mascot:send"
             className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-gradient-to-r from-primary to-accent text-white disabled:opacity-40">
@@ -560,7 +566,7 @@ export function AssistantWidget({
 function Notice({ notice }: { notice: { kind: "alert" | "error" | "sleep"; text: string } }) {
   return (
     <p role="status"
-      className={`rounded-xl border px-3 py-2 text-xs ${
+      className={`rounded-xl border px-3 py-2 ${TXT_S} ${
         notice.kind === "alert"
           ? "border-yellow-500/40 bg-yellow-500/10 text-yellow-600 dark:text-yellow-300"
           : notice.kind === "sleep"
