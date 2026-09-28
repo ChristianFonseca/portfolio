@@ -171,6 +171,9 @@ export async function buildKnowledgeBase(): Promise<KnowledgeBase> {
     content.teaching.title,
   )
 
+  // Un bloque con título por proyecto, no una línea. Con cada proyecto en una sola línea
+  // de 1.000+ caracteres el modelo mezclaba entradas vecinas: "¿Qué es Atalaya?" salía
+  // descrito como CrabAir (ver video/tools/test/kb-confusion.mjs).
   const projects = content.publicProjects.visible ? content.publicProjects.data.items : []
   add(
     "projects",
@@ -178,9 +181,17 @@ export async function buildKnowledgeBase(): Promise<KnowledgeBase> {
     projects
       .map((p) => {
         const links = [p.repoUrl ? `repo: ${p.repoUrl}` : "", p.liveUrl ? `live: ${p.liveUrl}` : ""].filter(Boolean).join(", ")
-        return `- ${p.title}: ${p.description} ${p.bullets.join(" ")} (Tech: ${p.tech.join(", ")})${links ? ` [${links}]` : ""}`
+        return [
+          `### ${p.title}`,
+          p.description,
+          p.bullets.length ? `Highlights: ${p.bullets.join(" ")}` : "",
+          `Tech: ${p.tech.join(", ")}`,
+          links ? `Links: ${links}` : "",
+        ]
+          .filter(Boolean)
+          .join("\n")
       })
-      .join("\n"),
+      .join("\n\n"),
     content.publicProjects.title,
   )
 
@@ -193,9 +204,17 @@ export async function buildKnowledgeBase(): Promise<KnowledgeBase> {
         const where = [p.institution, p.department].filter(Boolean).join(" — ")
         const when = p.startDate ? ` (${p.startDate}${p.endDate ? ` to ${p.endDate}` : ", present"})` : ""
         const papers = p.papers?.length ? ` Papers: ${p.papers.map((x) => x.name).join("; ")}.` : ""
-        return `- ${p.title}${where ? ` at ${where}` : ""}${when}: ${p.description} ${p.bullets.join(" ")}${papers} (Tech: ${p.tech.join(", ")})`
+        return [
+          `### ${p.title}${where ? ` at ${where}` : ""}${when}`,
+          p.description,
+          p.bullets.length ? `Highlights: ${p.bullets.join(" ")}` : "",
+          papers.trim(),
+          `Tech: ${p.tech.join(", ")}`,
+        ]
+          .filter(Boolean)
+          .join("\n")
       })
-      .join("\n"),
+      .join("\n\n"),
     content.researchProjects.title,
   )
 
@@ -227,6 +246,6 @@ export async function buildKnowledgeBase(): Promise<KnowledgeBase> {
   }
 }
 
-export const getKnowledgeBase = unstable_cache(buildKnowledgeBase, ["chat-knowledge-base-v3"], {
+export const getKnowledgeBase = unstable_cache(buildKnowledgeBase, ["chat-knowledge-base-v4"], {
   tags: ["content", "posts"],
 })
