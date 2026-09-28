@@ -127,6 +127,13 @@ export function AssistantWidget({
     launcherRef.current?.focus()
   }, [setBase])
 
+  // Cerrar sin tocar el foco. Al pulsar fuera el usuario ya eligió a dónde ir:
+  // devolverle el foco al lanzador se lo robaría a lo que acaba de pulsar.
+  const dismiss = useCallback(() => {
+    setOpen(false)
+    setBase("idle")
+  }, [setBase])
+
   const trapFocus = useCallback((e: KeyboardEvent) => {
     const root = panelRef.current
     if (!root) return
@@ -148,6 +155,63 @@ export function AssistantWidget({
     const id = setTimeout(() => { if (tab === "chat") inputRef.current?.focus() }, 60)
     return () => { document.removeEventListener("keydown", onKey, true); clearTimeout(id) }
   }, [open, tab, close, trapFocus])
+
+  // Pulsar fuera cierra el panel.
+  //
+  // Se mira el par pointerdown/pointerup y no el click: si cualquiera de los dos
+  // cae dentro del widget no se cierra, así arrastrar para seleccionar texto del
+  // panel y soltar fuera (o al revés) no lo hace desaparecer. Además el DOM puede
+  // cambiar entre pulsar y soltar — un chip de FAQ desaparece al pulsarlo — y para
+  // entonces closest() sobre un nodo ya desprendido no encuentra nada.
+  //
+  // composedPath() en vez de event.target porque la mascota es un custom element
+  // con shadow DOM: el evento se retargetea al host, pero el path lo atraviesa.
+  // El lanzador también lleva data-assistant, así que pulsarlo sigue siendo su
+  // propio toggle en vez de cerrar y reabrir.
+  useEffect(() => {
+    if (!open) return
+    const inside = (e: Event) =>
+      e.composedPath().some((n) => n instanceof Element && n.hasAttribute("data-assistant"))
+    // La barra de scroll de la página cae fuera de clientWidth/clientHeight;
+    // arrastrarla no es "pulsar fuera".
+    const onScrollbar = (e: PointerEvent) => {
+      const d = document.documentElement
+      return e.clientX > d.clientWidth || e.clientY > d.clientHeight
+    }
+    let downOutside = false
+    // Se anota en pointerdown, no en pointerup: el navegador mueve el foco en el
+    // mousedown intermedio, así que para cuando se suelta el botón ya se perdió
+    // el dato de si estaba dentro del panel.
+    let downFocusInside = false
+    const onDown = (e: PointerEvent) => {
+      downOutside = !inside(e) && !onScrollbar(e)
+      downFocusInside = !!panelRef.current?.contains(document.activeElement)
+    }
+    const onUp = (e: PointerEvent) => {
+      const out = downOutside && !inside(e) && !onScrollbar(e)
+      const hadFocus = downFocusInside
+      downOutside = false
+      downFocusInside = false
+      if (!out) return
+      dismiss()
+      // Si el clic cayó en algo que no toma el foco y el foco estaba dentro del
+      // panel, al desmontarse se queda en <body> y el teclado pierde el sitio.
+      // Solo entonces vuelve al lanzador; nunca se lo quita a quien sí lo tomó.
+      if (hadFocus) {
+        requestAnimationFrame(() => {
+          if (!document.activeElement || document.activeElement === document.body) {
+            launcherRef.current?.focus({ preventScroll: true })
+          }
+        })
+      }
+    }
+    document.addEventListener("pointerdown", onDown, true)
+    document.addEventListener("pointerup", onUp, true)
+    return () => {
+      document.removeEventListener("pointerdown", onDown, true)
+      document.removeEventListener("pointerup", onUp, true)
+    }
+  }, [open, dismiss])
 
   useEffect(() => {
     logRef.current?.scrollTo({ top: logRef.current.scrollHeight, behavior: "smooth" })
