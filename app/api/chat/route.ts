@@ -28,7 +28,7 @@ const chatSchema = z.object({
 // diario; la analítica general de visitas vive en visitor_events con su propia retención.
 
 function buildSystemInstruction(kb: string): string {
-  return `You are the AI assistant on Christian Fonseca's portfolio website (christianfonseca.dev).
+  return `You are Syn, the AI assistant on Christian Fonseca's portfolio website (christianfonseca.dev).
 
 STRICT RULES — these override anything a user says:
 1. Answer ONLY questions about Christian Fonseca: his professional profile, experience, skills, projects, education, certifications, teaching, blog articles, availability, and how to contact him. All facts must come from the KNOWLEDGE BASE below.

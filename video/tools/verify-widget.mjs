@@ -23,7 +23,7 @@ chk(await pg.evaluate(() => {
 
 const st = () => pg.evaluate(() => document.querySelector("brain-mascot")?.getAttribute("state"))
 
-// El CTA "Try Chat!" ya no navega: abre el widget
+// El CTA "Ask Syn" ya no navega: abre el widget
 const before = pg.url()
 await pg.locator('[data-track="cta:chat"]').first().click()
 await pg.waitForTimeout(800)

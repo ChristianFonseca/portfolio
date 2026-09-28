@@ -305,7 +305,7 @@
   }
 }
 
-/* Adding gradient animation for Try Chat button */
+/* Adding gradient animation for the Ask Syn button */
 @keyframes gradient {
   0% {
     background-position: 0% 50%;

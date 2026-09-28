@@ -202,9 +202,9 @@ export function Landing({
                   className="w-52"
                   asChild
                 >
-                  <a href="#" role="button" onClick={handleNavigateToChat} data-track="cta:chat">
+                  <a href="#" role="button" onClick={handleNavigateToChat} data-track="cta:chat" aria-label={dict.hero.chatCtaLabel}>
                     <MessageCircle className="h-5 w-5 mr-2" />
-                    {dict.hero.tryChat}
+                    {dict.hero.chatCta}
                   </a>
                 </Button>
                 <Button variant="outline" size="lg" className="w-52" asChild>
@@ -448,9 +448,9 @@ export function Landing({
 
           <div className="flex flex-wrap justify-center gap-6">
             <Button variant="outline" size="lg" asChild>
-              <a href="#" role="button" onClick={handleNavigateToChat} data-track="cta:chat">
+              <a href="#" role="button" onClick={handleNavigateToChat} data-track="cta:chat" aria-label={dict.hero.chatCtaLabel}>
                 <MessageCircle className="h-5 w-5 mr-2" />
-                {dict.hero.tryChat}
+                {dict.hero.chatCta}
               </a>
             </Button>
             <Button

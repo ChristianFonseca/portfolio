@@ -15,7 +15,10 @@ export const dictionaries = {
       contact: "Contact",
     },
     hero: {
-      tryChat: "Try Chat!",
+      chatCta: "Ask Syn",
+      // Nombre accesible del CTA. "Syn" a secas no le dice nada a quien no ve la
+      // mascota; empieza por el texto visible para cumplir WCAG 2.5.3.
+      chatCtaLabel: "Ask Syn, Christian's AI assistant",
       downloadCV: "Download CV",
     },
     profile: {
@@ -63,7 +66,7 @@ export const dictionaries = {
       title: "Chat with AI Assistant",
       subtitle: "Ask anything about Christian's experience, skills or projects — answers are grounded in his real profile.",
       greeting:
-        "Hello! I'm Christian's AI assistant. I can help you learn more about his experience, skills, and projects. What would you like to know?",
+        "Hello! I'm Syn, Christian's AI assistant. I can help you learn more about his experience, skills, and projects. What would you like to know?",
       placeholder: "Ask me anything about Christian's experience...",
       back: "Back to Portfolio",
       questionsLeftOne: "question left today.",
@@ -111,7 +114,8 @@ export const dictionaries = {
       contact: "Contacto",
     },
     hero: {
-      tryChat: "¡Prueba el Chat!",
+      chatCta: "Pregúntale a Syn",
+      chatCtaLabel: "Pregúntale a Syn, el asistente de IA de Christian",
       downloadCV: "Descargar CV",
     },
     profile: {
@@ -160,7 +164,7 @@ export const dictionaries = {
       subtitle:
         "Pregunta lo que quieras sobre la experiencia, habilidades o proyectos de Christian — las respuestas se basan en su perfil real.",
       greeting:
-        "¡Hola! Soy el asistente de IA de Christian. Puedo ayudarte a conocer más sobre su experiencia, habilidades y proyectos. ¿Qué te gustaría saber?",
+        "¡Hola! Soy Syn, el asistente de IA de Christian. Puedo ayudarte a conocer más sobre su experiencia, habilidades y proyectos. ¿Qué te gustaría saber?",
       placeholder: "Pregúntame lo que quieras sobre la experiencia de Christian...",
       back: "Volver al Portafolio",
       questionsLeftOne: "pregunta restante hoy.",

@@ -245,7 +245,7 @@ export function AssistantWidget({
   }, [messages, busy])
 
   // Cualquier parte del sitio puede abrir el asistente disparando este evento.
-  // Lo usa el botón "Try Chat!" del hero, que antes navegaba a /chat.
+  // Lo usa el botón "Ask Syn" del hero, que antes navegaba a /chat.
   useEffect(() => {
     const onOpen = () => { setOpen(true); setTab("chat"); flash("chat", 1600) }
     window.addEventListener("assistant:open", onOpen)

@@ -4,7 +4,7 @@ let fails = 0
 const chk = (c, m) => { if (!c) fails++; console.log(`${c ? "OK   " : "OJO "} ${m}`) }
 const b = await chromium.launch()
 
-// A) El CTA "Try Chat!" con el panel YA abierto: pointerup fuera cierra y el
+// A) El CTA "Ask Syn" con el panel YA abierto: pointerup fuera cierra y el
 //    click reabre. ¿Se ve el parpadeo o el usuario no nota nada?
 const pg = await b.newPage({ viewport: { width: 1280, height: 900 } })
 await pg.goto(B, { waitUntil: "networkidle" })
