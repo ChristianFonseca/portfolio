@@ -28,8 +28,7 @@ await measure("Cabecera · nombre", '[role="dialog"] header p[class*="font-semib
 await measure("Cabecera · titular y ubicación", '[role="dialog"] header p[class*="11px"]')
 await measure("Cabecera · chips (CV, email)", '[data-track="mascot:cv"]')
 await measure("Contador de preguntas", '[role="dialog"] nav span')
-await measure("Pie · modo calmado / mover", '[data-track="mascot:calm"]')
-await measure("Pie · línea de procedencia", '[role="dialog"] footer span[class*="10px"]')
+await measure("Pie · aviso", '[role="dialog"] footer')
 
 await pg.locator('[data-track="mascot:tab:guide"]').click(); await pg.waitForTimeout(300)
 await measure("Guía · texto de entrada", '[role="dialog"] p[class*="11px"]')

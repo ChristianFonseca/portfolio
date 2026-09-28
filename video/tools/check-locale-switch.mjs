@@ -17,7 +17,7 @@ const snap = async (label) => {
       pestañas: [...p.querySelectorAll('[data-track^="mascot:tab:"]')].map((x) => x.textContent.trim()).join(" / "),
       saludo: (p.querySelector('[class*="86%"]')?.textContent ?? "-").slice(0, 52),
       faq1: (p.querySelector('[data-track="mascot:faq:0"]')?.textContent ?? "-").slice(0, 48),
-      pie: (p.querySelector('[data-track="mascot:calm"]')?.textContent ?? "-").trim(),
+      pie: (p.querySelector("footer")?.textContent ?? "-").trim().slice(0, 40),
       placeholder: p.querySelector("textarea")?.placeholder?.slice(0, 40) ?? "-",
     }
   })

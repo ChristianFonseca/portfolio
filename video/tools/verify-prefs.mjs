@@ -12,7 +12,7 @@ pg.on("pageerror", (e) => errs.push(e.message))
 
 const launcher = () => pg.locator('[data-track="mascot:launcher"]')
 const openPanel = async () => { if (!(await pg.locator('[role="dialog"]').count())) { await launcher().click(); await pg.waitForTimeout(500) } }
-const openPrefs = async () => { await openPanel(); if (!(await pg.locator('[data-track="mascot:prefs"][aria-pressed="true"]').count())) { await pg.locator('[data-track="mascot:prefs"]').click(); await pg.waitForTimeout(250) } }
+const openPrefs = async () => { await openPanel(); if (!(await pg.locator('[data-track="mascot:prefs"][aria-expanded="true"]').count())) { await pg.locator('[data-track="mascot:prefs"]').click(); await pg.waitForTimeout(250) } }
 const pick = async (name, v) => { await pg.locator(`label:has(input[data-track="mascot:pref:${name}:${v}"])`).click(); await pg.waitForTimeout(350) }
 const launcherW = () => launcher().evaluate((el) => Math.round(el.getBoundingClientRect().width))
 const panelGap = () => pg.evaluate(() => {

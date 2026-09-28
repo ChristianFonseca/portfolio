@@ -80,16 +80,16 @@ const TEXT_SCALE: Record<Size, { body: string; small: string; micro: string }> =
   },
 }
 
-function useIsSmallScreen(): boolean {
-  const [small, setSmall] = useState(false)
+function useMediaQuery(query: string): boolean {
+  const [matches, setMatches] = useState(false)
   useEffect(() => {
-    const mq = window.matchMedia("(max-width: 640px)")
-    const on = () => setSmall(mq.matches)
+    const mq = window.matchMedia(query)
+    const on = () => setMatches(mq.matches)
     on()
     mq.addEventListener("change", on)
     return () => mq.removeEventListener("change", on)
-  }, [])
-  return small
+  }, [query])
+  return matches
 }
 
 export function AssistantWidget({
@@ -119,14 +119,18 @@ export function AssistantWidget({
   const [textSize, setTextSize] = useState<Size>("m")
   const [prefsOpen, setPrefsOpen] = useState(false)
   const reduced = usePrefersReducedMotion()
-  const smallScreen = useIsSmallScreen()
+  const smallScreen = useMediaQuery("(max-width: 640px), (max-height: 500px)")
+  // Pantalla baja (móvil en horizontal, ~390px): el panel va encima del lanzador y
+  // apenas le queda alto, así que se recortan márgenes y el lanzador no pasa de 76px.
+  const shortScreen = useMediaQuery("(max-height: 500px)")
   const TXT = TEXT_SCALE[textSize].body
   const TXT_S = TEXT_SCALE[textSize].small
   const TXT_XS = TEXT_SCALE[textSize].micro
-  const launcherPx = LAUNCHER_PX[size][smallScreen ? "mobile" : "desktop"]
+  const launcherPx = Math.min(LAUNCHER_PX[size][smallScreen ? "mobile" : "desktop"], shortScreen ? 76 : Infinity)
   // En móvil el panel ocupa el ancho menos 2rem: con 16px por lado queda centrado.
   const sideGap = smallScreen ? 16 : 24
-  const panelBottom = LAUNCHER_BOTTOM + launcherPx + PANEL_GAP
+  const panelBottom = LAUNCHER_BOTTOM + launcherPx + (shortScreen ? 12 : PANEL_GAP)
+  const panelTopMargin = shortScreen ? 12 : 56
 
   const { ref: mascotRef, flash, setBase, setPaused, release } = useMascot()
   const launcherRef = useRef<HTMLButtonElement>(null)
@@ -330,10 +334,16 @@ export function AssistantWidget({
     logRef.current?.scrollTo({ top: logRef.current.scrollHeight, behavior: "smooth" })
   }, [messages, busy])
 
+  // El registro se vuelve a montar al salir de Preferencias o cambiar de pestaña, y
+  // arrancaría arriba del todo: se lleva abajo sin animación.
+  useEffect(() => {
+    if (open && !prefsOpen) logRef.current?.scrollTo({ top: logRef.current.scrollHeight })
+  }, [open, prefsOpen, tab])
+
   // Cualquier parte del sitio puede abrir el asistente disparando este evento.
   // Lo usa el botón "Ask Syn" del hero, que antes navegaba a /chat.
   useEffect(() => {
-    const onOpen = () => { setOpen(true); setTab("chat"); flash("chat", 1600) }
+    const onOpen = () => { setOpen(true); setPrefsOpen(false); setTab("chat"); flash("chat", 1600) }
     window.addEventListener("assistant:open", onOpen)
     return () => window.removeEventListener("assistant:open", onOpen)
   }, [flash])
@@ -516,7 +526,7 @@ export function AssistantWidget({
         ...side,
         bottom: panelBottom,
         // dvh: en móvil no cuenta la barra de direcciones que aparece y desaparece.
-        maxHeight: `min(36rem, calc(100dvh - ${panelBottom + 56}px))`,
+        maxHeight: `min(36rem, calc(100dvh - ${panelBottom + panelTopMargin}px))`,
       }}
     >
       {/* Quién es y cómo llegar a él. En el blog esto no existía en ninguna parte. */}
@@ -546,7 +556,9 @@ export function AssistantWidget({
             <X className="h-4 w-4" />
           </button>
         </div>
-        <div className="mt-2.5 flex flex-wrap gap-1.5">
+        {/* Los chips y la línea de idiomas se ocultan en pantallas bajas y en Preferencias:
+            ahí el espacio vertical es para el contenido. */}
+        <div className={`mt-2.5 flex-wrap gap-1.5 [@media(max-height:560px)]:hidden ${prefsOpen ? "hidden" : "flex"}`}>
           <a href={CV_PATH} download={CV_FILENAME} data-track="mascot:cv" className={chipCls}>
             <Download className="h-3 w-3" /> {dict.hero.downloadCV}
           </a>
@@ -566,7 +578,7 @@ export function AssistantWidget({
           })}
         </div>
         {(data.languages.length > 0 || data.certs.length > 0) && (
-          <p className={`mt-2 truncate ${TXT_S} text-muted-foreground/70`}>
+          <p className={`mt-2 truncate ${TXT_S} text-muted-foreground/70 [@media(max-height:560px)]:hidden ${prefsOpen ? "hidden" : ""}`}>
             {[
               ...data.languages.map((l) => `${l.name} ${l.level}`),
               ...data.certs.map((c) => `${c.count ? c.count + " " : ""}${c.label}`),
@@ -588,16 +600,16 @@ export function AssistantWidget({
             {label}
           </button>
         ))}
-        <span className="ml-auto flex items-center gap-1">
+        <span className="ml-auto flex min-w-0 items-center gap-1">
           {remaining !== null && tab === "chat" && (
-            <span className={`pr-1 ${TXT_XS} text-muted-foreground/60`}>
+            <span className={`truncate whitespace-nowrap pr-1 ${TXT_XS} text-muted-foreground/60`}>
               {remaining} {remaining === 1 ? dict.chat.questionsLeftOne : dict.chat.questionsLeftMany}
             </span>
           )}
           {tab === "chat" && messages.length > 1 && (
             <button type="button" onClick={newConversation} disabled={busy} aria-label={t.newChat} title={t.newChat}
               data-track="mascot:new-chat"
-              className="grid h-8 w-8 place-items-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground disabled:opacity-40">
+              className="grid h-8 w-8 shrink-0 place-items-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground disabled:opacity-40">
               <RotateCcw className="h-3.5 w-3.5" />
             </button>
           )}
@@ -712,7 +724,7 @@ export function AssistantWidget({
       </>)}
 
       {/* Calma y esquina pasaron a Preferencias; aquí queda solo el aviso. */}
-      <footer className={`border-t border-border px-3.5 py-1.5 ${TXT_XS} text-muted-foreground/60`}>
+      <footer className={`border-t border-border px-3.5 py-1.5 ${TXT_XS} text-muted-foreground`}>
         {t.grounded}
       </footer>
     </div>
@@ -747,6 +759,13 @@ function Notice({ notice, small }: { notice: { kind: "alert" | "error" | "sleep"
  * Grupo de opciones con radios nativos: las flechas del teclado, el foco y el anuncio
  * del lector de pantalla funcionan solos. El radio va oculto a la vista y la etiqueta
  * hace de botón (mínimo 32 px de alto, por encima de los 24 que pide WCAG 2.2).
+ *
+ * - `relative` en la etiqueta: el radio oculto es absolute y sin esto se posicionaba
+ *   contra el panel, fuera de la zona con scroll. Al enfocarlo el panel entero se
+ *   desplazaba y la opción quedaba tapada.
+ * - La opción elegida lleva borde y ✓, no solo color (WCAG 1.4.1 y 1.4.11).
+ * - Bloqueado (el sistema pide reducir el movimiento): en vez de radios atenuados, una
+ *   frase con el valor y el motivo, a contraste completo.
  */
 function Choice<T extends string>({
   name, legend, value, options, onChange, small, disabled, note,
@@ -760,25 +779,38 @@ function Choice<T extends string>({
   disabled?: boolean
   note?: string
 }) {
+  if (disabled) {
+    const current = options.find((o) => o.value === value)?.label ?? ""
+    return (
+      <div role="group" aria-label={legend}>
+        <p className={`mb-1.5 ${small} font-semibold text-foreground`}>{legend}</p>
+        <p className={`rounded-xl border border-border bg-muted/30 px-3 py-2 ${small} text-muted-foreground`}>
+          <b className="text-foreground">{current}</b>{note ? ` · ${note}` : ""}
+        </p>
+      </div>
+    )
+  }
   return (
-    <fieldset disabled={disabled} className="disabled:opacity-60">
+    <fieldset>
       <legend className={`mb-1.5 ${small} font-semibold text-foreground`}>{legend}</legend>
       <div className="grid auto-cols-fr grid-flow-col gap-1 rounded-xl border border-border bg-muted/30 p-1">
         {options.map((o) => {
           const checked = value === o.value
           return (
             <label key={o.value}
-              className={`flex min-h-8 cursor-pointer items-center justify-center rounded-lg px-2 text-center ${small} font-semibold transition-colors has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-primary ${
-                checked ? "bg-primary/15 text-primary" : "text-muted-foreground hover:text-foreground"
+              className={`relative flex min-h-8 cursor-pointer items-center justify-center gap-1 rounded-lg border px-2 text-center ${small} transition-colors has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-primary ${
+                checked
+                  ? "border-primary bg-primary/20 font-semibold text-primary"
+                  : "border-transparent font-medium text-muted-foreground hover:text-foreground"
               }`}>
               <input type="radio" name={name} value={o.value} checked={checked} onChange={() => onChange(o.value)}
                 data-track={`mascot:pref:${name}:${o.value}`} className="sr-only" />
+              {checked && <Check aria-hidden="true" className="h-3.5 w-3.5 shrink-0" />}
               {o.label}
             </label>
           )
         })}
       </div>
-      {note && <p className={`mt-1.5 ${small} text-muted-foreground`}>{note}</p>}
     </fieldset>
   )
 }
