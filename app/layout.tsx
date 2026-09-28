@@ -5,6 +5,7 @@ import { Space_Grotesk, JetBrains_Mono, Instrument_Serif } from "next/font/googl
 import { ThemeProvider } from "@/components/theme-provider"
 import { ActivityTracker } from "@/components/activity-tracker"
 import { AssistantMount } from "@/components/assistant/assistant-mount"
+import { LocaleSync } from "@/components/locale-sync"
 import "./globals.css"
 
 // Tipografías de marca (Brand Assets v1.0): Space Grotesk (sans),
@@ -80,7 +81,8 @@ export default async function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false} disableTransitionOnChange>
           {children}
           <ActivityTracker />
-          {isPublic && <AssistantMount locale={lang} />}
+          {isPublic && <LocaleSync />}
+          {isPublic && <AssistantMount />}
         </ThemeProvider>
       </body>
     </html>

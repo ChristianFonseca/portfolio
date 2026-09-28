@@ -45,10 +45,18 @@ const TXT = "text-[13px] leading-[19px]"    // cuerpo: burbujas, campos, botones
 const TXT_S = "text-[11px] leading-[15px]"  // secundario: pestañas, chips, textos de entrada
 
 export function AssistantWidget({
-  locale, dict, data,
-}: { locale: Locale; dict: Dictionary; data: AssistantData }) {
-  const t = dict.assistant
+  dicts, dataByLocale,
+}: { dicts: Record<Locale, Dictionary>; dataByLocale: Record<Locale, AssistantData> }) {
   const pathname = usePathname() || "/"
+  // El locale se deriva de la ruta, no de un prop del servidor: /es y / comparten
+  // el layout raíz, y Next no vuelve a renderizar los layouts por encima del
+  // segmento que cambia. Con un prop, cambiar de idioma con el botón de la barra
+  // dejaba el panel entero en el idioma anterior hasta recargar. Por eso el
+  // servidor manda los dos idiomas ya resueltos y aquí se elige el de la ruta.
+  const locale: Locale = pathname === "/es" || pathname.startsWith("/es/") ? "es" : "en"
+  const dict = dicts[locale]
+  const data = dataByLocale[locale]
+  const t = dict.assistant
   // En la landing el formulario de contacto ya existe: la pestaña solo lleva a él.
   // En el blog no hay ninguno, así que el panel monta uno de verdad.
   const onLanding = pathname === "/" || pathname === "/es"
@@ -218,6 +226,19 @@ export function AssistantWidget({
       document.removeEventListener("pointerup", onUp, true)
     }
   }, [open, dismiss])
+
+  // El resto del panel se reidioma solo al cambiar `dict`, pero estos dos no:
+  // el saludo entró en `messages` en el primer render y el aviso guarda texto ya
+  // resuelto. El saludo se cambia solo si no hay conversación todavía — si la
+  // hay, el hilo se queda en el idioma en que se escribió. El aviso se descarta,
+  // que es mejor que enseñarlo en el idioma anterior.
+  const greeting = dict.chat.greeting
+  useEffect(() => {
+    setMessages((m) => (m.length === 1 && m[0].role === "assistant" && !m[0].stored && m[0].content !== greeting
+      ? [{ role: "assistant", content: greeting }]
+      : m))
+    setNotice(null)
+  }, [greeting])
 
   useEffect(() => {
     logRef.current?.scrollTo({ top: logRef.current.scrollHeight, behavior: "smooth" })
