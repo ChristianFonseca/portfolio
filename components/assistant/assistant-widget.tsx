@@ -12,6 +12,7 @@ import { CONTACT_EMAIL, CV_FILENAME, CV_PATH, SOCIAL } from "@/lib/social"
 import { CHAT_MESSAGE_MAX } from "@/lib/chat/limits"
 import type { Dictionary, Locale } from "@/lib/i18n/dictionaries"
 import { Mascot, useMascot, usePrefersReducedMotion } from "./mascot"
+import { RichText } from "./rich-text"
 
 // Widget del asistente: la mascota como lanzador flotante + panel con pestañas.
 // Sustituye a la página /chat. Vive en el layout público (nunca en el admin).
@@ -621,10 +622,12 @@ export function AssistantWidget({
           <div className="space-y-2.5">
             {messages.map((m, i) => (
               <div key={i} className={m.role === "user" ? "flex justify-end" : ""}>
+                {/* El visitante ve su texto tal cual (con sus saltos de línea); las respuestas
+                    de Syn se pintan con su formato. overflow-wrap: una URL larga no desborda. */}
                 <div className={m.role === "user"
-                  ? `max-w-[86%] rounded-2xl rounded-br-md border border-primary/35 bg-primary/15 px-3 py-2 ${TXT}`
-                  : `max-w-[86%] rounded-2xl rounded-bl-md border border-border bg-muted/40 px-3 py-2 ${TXT}`}>
-                  {m.content}
+                  ? `max-w-[86%] whitespace-pre-wrap rounded-2xl rounded-br-md border border-primary/35 bg-primary/15 px-3 py-2 [overflow-wrap:anywhere] ${TXT}`
+                  : `max-w-[86%] rounded-2xl rounded-bl-md border border-border bg-muted/40 px-3 py-2 [overflow-wrap:anywhere] ${TXT}`}>
+                  {m.role === "user" ? m.content : <RichText text={m.content} />}
                   {m.stored && <span className={`mt-1.5 block ${TXT_XS} text-muted-foreground/70`}>{t.storedAnswer}</span>}
                 </div>
               </div>

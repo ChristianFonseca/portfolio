@@ -73,8 +73,10 @@ export const CHAT_RULES: ChatRule[] = [
   },
   {
     id: "style",
-    label: "Breve y en texto plano",
-    text: "Be concise (under 120 words), friendly and professional. Plain text only, no markdown headers. When you mention a blog article, include its URL.",
+    label: "Breve y con formato ligero",
+    // El widget pinta este subconjunto de Markdown (lib/chat/markdown.ts); lo demás se
+    // vería como texto, así que se le pide al modelo que no lo use.
+    text: "Be concise (under 120 words), friendly and professional. You may use **bold** for key terms and short bullet lists; no headings, tables, code blocks or images. When you mention a blog article, include its full URL.",
   },
 ]
 
