@@ -180,7 +180,13 @@ export async function buildKnowledgeBase(): Promise<KnowledgeBase> {
     projects.length,
     projects
       .map((p) => {
-        const links = [p.repoUrl ? `repo: ${p.repoUrl}` : "", p.liveUrl ? `live: ${p.liveUrl}` : ""].filter(Boolean).join(", ")
+        const links = [
+          p.repoUrl ? `repo: ${p.repoUrl}` : "",
+          p.liveUrl ? `live: ${p.liveUrl}` : "",
+          p.downloadUrl ? `download: ${p.downloadUrl}` : "",
+        ]
+          .filter(Boolean)
+          .join(", ")
         return [
           `### ${p.title}`,
           p.description,

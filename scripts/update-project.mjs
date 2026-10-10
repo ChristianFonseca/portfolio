@@ -4,13 +4,14 @@
 // editado en el admin se respeta. Antes guarda una revisión en section_revisions, igual
 // que el admin, para poder deshacerlo.
 // Uso: DATABASE_URL=... PROJECT_TITLE="Atalaya" FIELDS="description" node scripts/update-project.mjs
-//      FIELDS admite: description, bullets, tech (separados por coma; por defecto description)
+//      FIELDS admite: description, bullets, tech, images, repoUrl, liveUrl, downloadUrl
+//      (separados por coma; por defecto description)
 import postgres from "postgres"
 import { projectsEn, projectsEs } from "./projects-data.mjs"
 
 const { DATABASE_URL, PROJECT_TITLE } = process.env
 const FIELDS = (process.env.FIELDS || "description").split(",").map((f) => f.trim()).filter(Boolean)
-const ALLOWED = new Set(["description", "bullets", "tech"])
+const ALLOWED = new Set(["description", "bullets", "tech", "images", "repoUrl", "liveUrl", "downloadUrl"])
 if (!DATABASE_URL || !PROJECT_TITLE) {
   console.error("Faltan DATABASE_URL y/o PROJECT_TITLE")
   process.exit(1)

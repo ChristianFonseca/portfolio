@@ -48,6 +48,8 @@ export const projectsSchema = z.object({
         // Chips derivados: Live si hay liveUrl, Open source si hay repoUrl, Private si ninguno
         repoUrl: z.string().max(300).default(""),
         liveUrl: z.string().max(300).default(""),
+        // Descarga (release de GitHub, tienda…): apps de escritorio sin sitio en vivo
+        downloadUrl: z.string().max(300).default(""),
         // Detalle extendido para el modal "más información"
         bullets: z.array(z.string().min(1).max(400)).max(12).default([]),
       }),

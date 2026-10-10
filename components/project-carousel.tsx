@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react"
 import { ChevronLeft, ChevronRight } from "lucide-react"
+import { ProjectImage } from "@/components/project-image"
 
 // Carrusel simple: scroll horizontal con snap (swipe / trackpad / arrastre táctil).
 // Flechas para desktop y puntos que reflejan la foto activa.
@@ -33,8 +34,7 @@ export function ProjectCarousel({ images, title }: { images: string[]; title: st
         className="flex aspect-[16/9] w-full snap-x snap-mandatory overflow-x-auto overflow-y-hidden rounded-xl border border-border bg-black/40 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       >
         {images.map((src, i) => (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
+          <ProjectImage
             key={`${src}-${i}`}
             src={src}
             alt={`${title} — ${i + 1}`}

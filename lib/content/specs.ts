@@ -93,7 +93,14 @@ export const kindSpecs: Record<SectionKind, FieldSpec[]> = {
           label: "Sitio en vivo",
           type: "text",
           shared: true,
-          hint: "si lo llenas, muestra el chip 'Live' (ej. https://furtale.pet). Sin sitio ni repo = 'Private'",
+          hint: "si lo llenas, muestra el chip 'Live' (ej. https://furtale.pet). Sin sitio, repo ni descarga = 'Private'",
+        },
+        {
+          key: "downloadUrl",
+          label: "Descarga",
+          type: "text",
+          shared: true,
+          hint: "para apps de escritorio: release de GitHub o tienda. Muestra el chip y el botón 'Descargar'",
         },
         {
           key: "tech",

@@ -1,12 +1,13 @@
 "use client"
 
 import { useState } from "react"
-import { Github, ExternalLink, Lock, Globe, ArrowUpRight, ImageIcon } from "lucide-react"
+import { Github, ExternalLink, Lock, Globe, ArrowUpRight, ImageIcon, Download } from "lucide-react"
 import { BubbleCard } from "@/components/bubble-card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
 import { ProjectCarousel } from "@/components/project-carousel"
+import { ProjectImage } from "@/components/project-image"
 import type { ProjectsData, SectionEntry } from "@/lib/content/schemas"
 import type { Dictionary } from "@/lib/i18n/dictionaries"
 
@@ -27,9 +28,9 @@ const CARD_GRADIENTS = [
   "from-red-500/20 to-pink-500/20",
 ]
 
-// Chips derivados de los datos: Live si hay sitio, Open source si hay repo,
-// Private si no hay ninguno. Los dos primeros son enlaces; Private es solo estado.
-// Ambos ejes son independientes (un proyecto puede ser Live + Open source).
+// Chips derivados de los datos: Live si hay sitio, Open source si hay repo, Download
+// si hay descarga, Private si no hay ninguno. Los tres primeros son enlaces; Private
+// es solo estado. Son independientes (un proyecto puede ser Live + Open source).
 function StatusChips({
   project,
   dict,
@@ -44,8 +45,9 @@ function StatusChips({
   const liveCls = "border-emerald-500/40 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
   const repoCls = "border-primary/40 bg-primary/10 text-primary"
   const privateCls = "border-border bg-muted/40 text-muted-foreground"
+  const downloadCls = "border-sky-500/40 bg-sky-500/10 text-sky-600 dark:text-sky-400"
 
-  if (!project.liveUrl && !project.repoUrl) {
+  if (!project.liveUrl && !project.repoUrl && !project.downloadUrl) {
     return (
       <span className={`${chip} ${privateCls}`}>
         <Lock className="h-3 w-3" />
@@ -90,6 +92,23 @@ function StatusChips({
             {dict.projects.openSource}
           </span>
         ))}
+      {project.downloadUrl &&
+        (asLinks ? (
+          <a
+            href={project.downloadUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`${chip} ${downloadCls} transition-transform hover:-translate-y-0.5`}
+          >
+            <Download className="h-3 w-3" />
+            {dict.projects.download}
+          </a>
+        ) : (
+          <span className={`${chip} ${downloadCls}`}>
+            <Download className="h-3 w-3" />
+            {dict.projects.download}
+          </span>
+        ))}
     </>
   )
 }
@@ -126,10 +145,11 @@ export function ProjectsSection({ section, dict }: { section: SectionEntry<Proje
                 >
                   {galleryOf(project).length > 0 ? (
                     <>
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
+                      {/* lazy: las tarjetas quedan bajo el pliegue y una portada animada pesa */}
+                      <ProjectImage
                         src={galleryOf(project)[0]}
                         alt={project.title}
+                        loading="lazy"
                         className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                       />
                       {galleryOf(project).length > 1 && (
@@ -225,13 +245,21 @@ export function ProjectsSection({ section, dict }: { section: SectionEntry<Proje
                       </div>
                     </div>
 
-                    {(selected.repoUrl || selected.liveUrl) && (
+                    {(selected.repoUrl || selected.liveUrl || selected.downloadUrl) && (
                       <div className="flex flex-wrap gap-3 pt-1">
                         {selected.liveUrl && (
                           <Button asChild>
                             <a href={selected.liveUrl} target="_blank" rel="noopener noreferrer">
                               <ExternalLink className="mr-2 h-4 w-4" />
                               {dict.projects.visitSite}
+                            </a>
+                          </Button>
+                        )}
+                        {selected.downloadUrl && (
+                          <Button variant={selected.liveUrl ? "outline" : "default"} asChild>
+                            <a href={selected.downloadUrl} target="_blank" rel="noopener noreferrer">
+                              <Download className="mr-2 h-4 w-4" />
+                              {dict.projects.download}
                             </a>
                           </Button>
                         )}
