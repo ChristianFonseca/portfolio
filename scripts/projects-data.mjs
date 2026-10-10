@@ -117,6 +117,24 @@ export const projectsEn = [
       "Monitored encrypted off-site Postgres backups: freshness, weekly and monthly tiers, restore tests, and whether the bucket lock really blocks deletion by the server's own token.",
     ],
   },
+  {
+    title: "VSC Splitter",
+    description:
+      "A Windows desktop app for developers who keep many VS Code windows open across several monitors. It shows the monitors as they are physically arranged, lets you split each screen into custom zones and drag windows into them, then moves and resizes every window in one click and restores the arrangement after restarts. Built in C# with WPF on .NET 10, using Win32 and DWM APIs for pixel-exact placement.",
+    image: "",
+    images: ["/projects/vsc-splitter/01-editor-4-monitores.webp", "/projects/vsc-splitter/02-zonas-a-medida.webp"],
+    repoUrl: "https://github.com/ChristianFonseca/monitor_screen_splitter",
+    liveUrl: "",
+    tech: ["C#", ".NET 10", "WPF", "Win32 API", "DWM API", "DisplayConfig API", "xUnit", "System.Text.Json", "Windows Forms", "PowerShell"],
+    bullets: [
+      "Built a visual editor that mirrors the real monitor arrangement, with 14 layout presets, custom grids up to 12×12, draggable boundaries, merged zones, gaps and margins.",
+      "Implemented pixel-exact window placement by measuring each window's invisible resize borders through the DWM frame bounds, so neighbouring windows line up without gaps or overlaps.",
+      "Designed integer track math in which adjacent zones share rounded boundaries, keeping tiling exact for any proportions, gaps and margins, and covered it with unit tests on odd monitor sizes.",
+      "Made profiles survive restarts: windows are identified by the folder name parsed from VS Code titles, closed windows keep their zone as placeholders, and reappearing windows are placed automatically.",
+      "Added recovery tools: capturing the current arrangement by overlap matching, reopening missing folders from VS Code's own storage.json, tray mode and start with Windows.",
+      "Wrote 56 automated tests, including an integration test that moves a real window and checks its visible frame to the pixel.",
+    ],
+  },
 ]
 
 export const projectsEs = [
@@ -233,6 +251,24 @@ export const projectsEs = [
       "Integré la analítica REST y GraphQL de Cloudflare en una nota de seguridad de 0 a 100 por zona, donde cada descuento trae su arreglo, un mapa mundial sin conexión del origen de los ataques y una separación de los 5xx de la app frente a los reinicios.",
       "Añadí un revisor con IA (Claude) de solo lectura que trata las rutas y los User-Agent escritos por atacantes como posible inyección de prompts. Propone reparaciones que solo se ejecutan desde una lista blanca de 6 scripts idempotentes.",
       "Vigilé los backups cifrados de Postgres fuera del servidor: frescura, niveles semanal y mensual, pruebas de restauración y si el bloqueo del bucket de verdad impide borrar con el token del propio servidor.",
+    ],
+  },
+  {
+    title: "VSC Splitter",
+    description:
+      "Aplicación de escritorio para Windows pensada para quienes trabajan con muchas ventanas de VS Code en varios monitores. Muestra los monitores con su disposición real, permite dividir cada pantalla en zonas a medida y arrastrar las ventanas a ellas, y luego las mueve y redimensiona con un clic, recuperando la distribución tras los reinicios. Desarrollada en C# con WPF sobre .NET 10 y las API Win32 y DWM para una colocación exacta al píxel.",
+    image: "",
+    images: ["/projects/vsc-splitter/01-editor-4-monitores.webp", "/projects/vsc-splitter/02-zonas-a-medida.webp"],
+    repoUrl: "https://github.com/ChristianFonseca/monitor_screen_splitter",
+    liveUrl: "",
+    tech: ["C#", ".NET 10", "WPF", "Win32 API", "DWM API", "DisplayConfig API", "xUnit", "System.Text.Json", "Windows Forms", "PowerShell"],
+    bullets: [
+      "Construí un editor visual que replica la disposición real de los monitores, con 14 plantillas, cuadrículas de hasta 12×12, bordes arrastrables, zonas unidas, espaciado y márgenes.",
+      "Implementé una colocación exacta al píxel midiendo los bordes invisibles de cada ventana mediante los límites de marco de DWM, para que las ventanas vecinas queden alineadas sin huecos ni solapes.",
+      "Diseñé un cálculo entero de filas y columnas en el que las zonas contiguas comparten bordes redondeados, lo que mantiene la división exacta con cualquier proporción, espaciado o margen; lo cubrí con pruebas unitarias en tamaños de monitor impares.",
+      "Hice que los perfiles sobrevivan a los reinicios: identifico cada ventana por el nombre de su carpeta en el título de VS Code, conservo su zona cuando se cierra y la recoloco automáticamente cuando reaparece.",
+      "Añadí herramientas de recuperación: captura de la distribución actual por solapamiento, reapertura de carpetas faltantes a partir del storage.json de VS Code, modo bandeja e inicio con Windows.",
+      "Escribí 56 pruebas automatizadas, incluida una prueba de integración que mueve una ventana real y verifica su marco visible al píxel.",
     ],
   },
 ]
