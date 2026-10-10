@@ -122,9 +122,10 @@ export const projectsEn = [
     description:
       "A Windows desktop app for developers who keep many VS Code windows open across several monitors. It shows the monitors as they are physically arranged, lets you split each screen into custom zones and drag windows into them, then moves and resizes every window in one click and restores the arrangement after restarts. Built in C# with WPF on .NET 10, using Win32 and DWM APIs for pixel-exact placement.",
     image: "",
-    images: ["/projects/vsc-splitter/01-editor-4-monitores.webp", "/projects/vsc-splitter/02-zonas-a-medida.webp"],
+    images: ["/projects/vsc-splitter/00-demo.anim.webp", "/projects/vsc-splitter/01-editor-4-monitores.webp", "/projects/vsc-splitter/02-zonas-a-medida.webp"],
     repoUrl: "https://github.com/ChristianFonseca/monitor_screen_splitter",
     liveUrl: "",
+    downloadUrl: "https://github.com/ChristianFonseca/monitor_screen_splitter/releases/latest",
     tech: ["C#", ".NET 10", "WPF", "Win32 API", "DWM API", "DisplayConfig API", "xUnit", "System.Text.Json", "Windows Forms", "PowerShell"],
     bullets: [
       "Built a visual editor that mirrors the real monitor arrangement, with 14 layout presets, custom grids up to 12×12, draggable boundaries, merged zones, gaps and margins.",
@@ -258,9 +259,10 @@ export const projectsEs = [
     description:
       "Aplicación de escritorio para Windows pensada para quienes trabajan con muchas ventanas de VS Code en varios monitores. Muestra los monitores con su disposición real, permite dividir cada pantalla en zonas a medida y arrastrar las ventanas a ellas, y luego las mueve y redimensiona con un clic, recuperando la distribución tras los reinicios. Desarrollada en C# con WPF sobre .NET 10 y las API Win32 y DWM para una colocación exacta al píxel.",
     image: "",
-    images: ["/projects/vsc-splitter/01-editor-4-monitores.webp", "/projects/vsc-splitter/02-zonas-a-medida.webp"],
+    images: ["/projects/vsc-splitter/00-demo.anim.webp", "/projects/vsc-splitter/01-editor-4-monitores.webp", "/projects/vsc-splitter/02-zonas-a-medida.webp"],
     repoUrl: "https://github.com/ChristianFonseca/monitor_screen_splitter",
     liveUrl: "",
+    downloadUrl: "https://github.com/ChristianFonseca/monitor_screen_splitter/releases/latest",
     tech: ["C#", ".NET 10", "WPF", "Win32 API", "DWM API", "DisplayConfig API", "xUnit", "System.Text.Json", "Windows Forms", "PowerShell"],
     bullets: [
       "Construí un editor visual que replica la disposición real de los monitores, con 14 plantillas, cuadrículas de hasta 12×12, bordes arrastrables, zonas unidas, espaciado y márgenes.",

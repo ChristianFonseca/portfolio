@@ -880,9 +880,11 @@
                 "Wrote 56 automated tests, including an integration test that moves a real window and checks its visible frame to the pixel."
               ],
               "images": [
+                "/projects/vsc-splitter/00-demo.anim.webp",
                 "/projects/vsc-splitter/01-editor-4-monitores.webp",
                 "/projects/vsc-splitter/02-zonas-a-medida.webp"
-              ]
+              ],
+              "downloadUrl": "https://github.com/ChristianFonseca/monitor_screen_splitter/releases/latest"
             }
           ]
         },
@@ -1139,9 +1141,11 @@
                 "Escribí 56 pruebas automatizadas, incluida una prueba de integración que mueve una ventana real y verifica su marco visible al píxel."
               ],
               "images": [
+                "/projects/vsc-splitter/00-demo.anim.webp",
                 "/projects/vsc-splitter/01-editor-4-monitores.webp",
                 "/projects/vsc-splitter/02-zonas-a-medida.webp"
-              ]
+              ],
+              "downloadUrl": "https://github.com/ChristianFonseca/monitor_screen_splitter/releases/latest"
             }
           ]
         }
