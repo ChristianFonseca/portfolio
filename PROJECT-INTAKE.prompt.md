@@ -102,6 +102,8 @@ git shortlog -sn --all | head            # contributors (for "solo vs team" only
 - description: <mismos límites>
 - bullets: <mismos límites; primera persona del singular en pasado: "Implementé…", "Diseñé…", "Reduje…">
 
+**No bullets about having tests.** Do not write a bullet whose point is that tests exist or how many there are (e.g. "Wrote 56 automated tests…" / "Escribí 56 pruebas automatizadas…"), and do not append test counts to other bullets ("…, backed by 146 passing tests"). Testing is expected of any serious project, so it reads as filler. Test counts still belong in section E as facts.
+
 ## I. Open questions for the owner
 - <anything unverifiable or ambiguous: institution/dates, whether it may be shown publicly, which screenshots to use, whether metrics can be disclosed, product vs research placement…>
 ```
@@ -109,6 +111,7 @@ git shortlog -sn --all | head            # contributors (for "solo vs team" only
 ## Quality bar before you answer
 
 - Every number in E/H has a source in the repo/docs, or it is `unavailable`.
+- No bullet in H is about having tests or a test count (EN or ES).
 - `tech_primary` uses canonical casing and contains only things actually used in the code/manifests.
 - Dates in C come from git (or docs if git history was squashed/imported — say which).
 - EN and ES drafts say the same things; ES is neutral Spanish.
