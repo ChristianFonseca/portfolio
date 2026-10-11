@@ -234,9 +234,21 @@ export function SectionEditor({
     })
     shared ? touchShared() : handleTouch()
   }
+  // Subir, bajar, quitar y añadir son estructura, no texto: se aplican a los dos idiomas.
+  // Las listas EN y ES van emparejadas por posición (los campos compartidos, como las
+  // imágenes o las URLs, dependen de ello), así que el orden tiene que ser el mismo. No
+  // desactualizan el otro idioma porque no cambia ningún texto. Si las listas no tuvieran
+  // el mismo largo, emparejar por posición sería un error: solo se toca el idioma activo y
+  // el otro queda pendiente de traducir, como antes.
+  const listsAligned = (key: string) =>
+    ((models.en[key] as FormItem[] | undefined)?.length ?? 0) === ((models.es[key] as FormItem[] | undefined)?.length ?? 0)
   const mutateItems = (key: string, fn: (items: FormItem[]) => FormItem[]) => {
-    setModels((prev) => ({ ...prev, [active]: { ...prev[active], [key]: fn([...(prev[active][key] as FormItem[])]) } }))
-    handleTouch()
+    const both = listsAligned(key)
+    setModels((prev) => {
+      const apply = (loc: Locale) => ({ ...prev[loc], [key]: fn([...((prev[loc][key] as FormItem[]) ?? [])]) })
+      return both ? { en: apply("en"), es: apply("es") } : { ...prev, [active]: apply(active) }
+    })
+    both ? touchShared() : handleTouch()
   }
 
   const handleTranslate = async () => {
@@ -506,7 +518,8 @@ export function SectionEditor({
                           type="button"
                           aria-label="Eliminar"
                           onClick={() => {
-                            if (confirm(`¿Eliminar este ${field.itemName} (solo en ${active.toUpperCase()})?`)) {
+                            const scope = listsAligned(field.key) ? "en inglés y en español" : `solo en ${active.toUpperCase()}`
+                            if (confirm(`¿Eliminar este ${field.itemName} (${scope})?`)) {
                               mutateItems(field.key, (items) => items.filter((_, j) => j !== i))
                             }
                           }}
@@ -603,7 +616,7 @@ export function SectionEditor({
                     onClick={() => mutateItems(field.key, (items) => [...items, emptyItem(field.fields)])}
                     className="w-full rounded-2xl border border-dashed border-border py-3.5 text-sm text-muted-foreground hover:border-primary hover:text-primary transition-colors"
                   >
-                    + Agregar {field.itemName} ({active.toUpperCase()})
+                    + Agregar {field.itemName}{listsAligned(field.key) ? " (EN y ES)" : ` (${active.toUpperCase()})`}
                   </button>
                 </div>
               </div>
