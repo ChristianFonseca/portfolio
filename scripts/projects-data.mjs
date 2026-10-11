@@ -133,7 +133,6 @@ export const projectsEn = [
       "Designed integer track math in which adjacent zones share rounded boundaries, keeping tiling exact for any proportions, gaps and margins, and covered it with unit tests on odd monitor sizes.",
       "Made profiles survive restarts: windows are identified by the folder name parsed from VS Code titles, closed windows keep their zone as placeholders, and reappearing windows are placed automatically.",
       "Added recovery tools: capturing the current arrangement by overlap matching, reopening missing folders from VS Code's own storage.json, tray mode and start with Windows.",
-      "Wrote 56 automated tests, including an integration test that moves a real window and checks its visible frame to the pixel.",
     ],
   },
 ]
@@ -270,7 +269,6 @@ export const projectsEs = [
       "Diseñé un cálculo entero de filas y columnas en el que las zonas contiguas comparten bordes redondeados, lo que mantiene la división exacta con cualquier proporción, espaciado o margen; lo cubrí con pruebas unitarias en tamaños de monitor impares.",
       "Hice que los perfiles sobrevivan a los reinicios: identifico cada ventana por el nombre de su carpeta en el título de VS Code, conservo su zona cuando se cierra y la recoloco automáticamente cuando reaparece.",
       "Añadí herramientas de recuperación: captura de la distribución actual por solapamiento, reapertura de carpetas faltantes a partir del storage.json de VS Code, modo bandeja e inicio con Windows.",
-      "Escribí 56 pruebas automatizadas, incluida una prueba de integración que mueve una ventana real y verifica su marco visible al píxel.",
     ],
   },
 ]
