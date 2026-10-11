@@ -755,7 +755,7 @@
                 "Designed agents mode with a Docker code sandbox (no network, read-only root, memory/pid limits), per-agent USD budgets, step caps, human approval gates and web search routed to each provider's cheapest grounding-capable model.",
                 "Shipped 81 validated flow templates (research proposals, MBA, conversational debates), 27 bilingual expert personas and an AI flow builder that turns a plain-text description into a validated, auto-laid-out graph.",
                 "Implemented SaaS auth and billing: Argon2id, 15-minute JWTs with rotating refresh tokens and reuse detection, data-driven RBAC, audit log, plans with monthly credits, Stripe subscriptions and BYOK provider keys, mapped to ISO/IEC 27001 controls.",
-                "Exposed the product as an MCP server with admin-issued scoped API keys so Claude Code or Cursor can list, generate, run and await flows and read their reports; backed by 21 test files with 146 passing cases."
+                "Exposed the product as an MCP server with admin-issued scoped API keys so Claude Code or Cursor can list, generate, run and await flows and read their reports."
               ],
               "images": []
             },
@@ -874,7 +874,7 @@
               "bullets": [
                 "Built a visual editor that mirrors the real monitor arrangement, with 14 layout presets, custom grids up to 12×12, draggable boundaries, merged zones, gaps and margins.",
                 "Implemented pixel-exact window placement by measuring each window's invisible resize borders through the DWM frame bounds, so neighbouring windows line up without gaps or overlaps.",
-                "Designed integer track math in which adjacent zones share rounded boundaries, keeping tiling exact for any proportions, gaps and margins, and covered it with unit tests on odd monitor sizes.",
+                "Designed integer track math in which adjacent zones share rounded boundaries, keeping tiling exact for any proportions, gaps and margins.",
                 "Made profiles survive restarts: windows are identified by the folder name parsed from VS Code titles, closed windows keep their zone as placeholders, and reappearing windows are placed automatically.",
                 "Added recovery tools: capturing the current arrangement by overlap matching, reopening missing folders from VS Code's own storage.json, tray mode and start with Windows."
               ],
@@ -1015,7 +1015,7 @@
                 "Diseñé el modo agentes con un sandbox Docker para código (sin red, raíz de solo lectura, límites de memoria y procesos), presupuestos en USD por agente, tope de pasos, puertas de aprobación humana y búsqueda web enrutada al modelo más barato con grounding de cada proveedor.",
                 "Publiqué 81 plantillas de flujo validadas (propuestas de investigación, MBA, debates conversacionales), 27 expertos bilingües y un generador con IA que convierte una descripción en texto en un grafo validado y ordenado automáticamente.",
                 "Implementé autenticación y cobros de SaaS: Argon2id, JWT de 15 minutos con tokens de refresco rotativos y detección de reutilización, RBAC basado en datos, bitácora de auditoría, planes con créditos mensuales, suscripciones con Stripe y claves propias (BYOK), mapeados a controles ISO/IEC 27001.",
-                "Expuse el producto como servidor MCP con claves de API con permisos por ámbito emitidas por el administrador, para que Claude Code o Cursor listen, generen, ejecuten y esperen flujos y lean sus informes; respaldado por 21 archivos de prueba con 146 casos en verde."
+                "Expuse el producto como servidor MCP con claves de API con permisos por ámbito emitidas por el administrador, para que Claude Code o Cursor listen, generen, ejecuten y esperen flujos y lean sus informes."
               ],
               "images": []
             },
@@ -1134,7 +1134,7 @@
               "bullets": [
                 "Construí un editor visual que replica la disposición real de los monitores, con 14 plantillas, cuadrículas de hasta 12×12, bordes arrastrables, zonas unidas, espaciado y márgenes.",
                 "Implementé una colocación exacta al píxel midiendo los bordes invisibles de cada ventana mediante los límites de marco de DWM, para que las ventanas vecinas queden alineadas sin huecos ni solapes.",
-                "Diseñé un cálculo entero de filas y columnas en el que las zonas contiguas comparten bordes redondeados, lo que mantiene la división exacta con cualquier proporción, espaciado o margen; lo cubrí con pruebas unitarias en tamaños de monitor impares.",
+                "Diseñé un cálculo entero de filas y columnas en el que las zonas contiguas comparten bordes redondeados, lo que mantiene la división exacta con cualquier proporción, espaciado o margen.",
                 "Hice que los perfiles sobrevivan a los reinicios: identifico cada ventana por el nombre de su carpeta en el título de VS Code, conservo su zona cuando se cierra y la recoloco automáticamente cuando reaparece.",
                 "Añadí herramientas de recuperación: captura de la distribución actual por solapamiento, reapertura de carpetas faltantes a partir del storage.json de VS Code, modo bandeja e inicio con Windows."
               ],
