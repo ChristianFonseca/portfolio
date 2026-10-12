@@ -1,12 +1,24 @@
+# portfolio (christianfonseca.dev) con la variante B (fase 5 de PLAN-secretos-implementacion.md).
+# Reemplaza a /var/www/portfolio/docker-compose.yml, que antes se guarda como docker-compose.yml.pre-sops.
+#
+# Qué cambia:
+#  - Los 6 secretos ya no los trae `bws run` con el token de /root/portfolio-bws.env (que se borra
+#    en la fase 10): sops los descifra al arrancar, en memoria, desde
+#    /etc/secrets/portfolio/prod/app.enc.yaml, con la clave de esta app (0400 root).
+#  - Arranca como root solo para descifrar; sops baja a «node» (uid 1000, el de siempre) y la
+#    app corre sin capacidades, con el sistema de archivos de solo lectura y sin volcados.
+# Lo demás queda igual: puerto, redes, subidas y los tmpfs.
 services:
   portfolio-web:
     build: .
     container_name: portfolio-web
     restart: unless-stopped
-    # Solo el token de Bitwarden (root:600). Los secretos de la app los trae bws en runtime.
-    env_file: /root/portfolio-bws.env
+    user: "0:0"                                  # solo el arranque; sops baja a «node»
+    entrypoint: ["sops", "exec-env", "--same-process", "--user", "node",
+                 "/run/secrets/app.enc.yaml", "exec node server.js"]
     environment:
       UPLOADS_DIR: /data/uploads
+      SOPS_AGE_KEY_FILE: /run/secrets/age.key    # una ruta, no un valor
     ports: ["127.0.0.1:8001:3000"]
     # Endurecimiento: limita el radio de un futuro RCE
     read_only: true
@@ -14,8 +26,13 @@ services:
       - no-new-privileges:true
     cap_drop:
       - ALL
+    cap_add: [SETUID, SETGID]                    # solo para que sops cambie de usuario
+    ulimits:
+      core: 0
     volumes:
       - /var/lib/portfolio/uploads:/data/uploads
+      - /etc/secrets/portfolio/prod/app.enc.yaml:/run/secrets/app.enc.yaml:ro
+      - /etc/secrets/keys/portfolio-prod.key:/run/secrets/age.key:ro
       - type: tmpfs
         target: /tmp
         tmpfs: { mode: 01777, size: 67108864 }
