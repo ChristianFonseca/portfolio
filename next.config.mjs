@@ -11,6 +11,15 @@ const nextConfig = {
   // 301 permanente porque la URL no va a volver.
   async redirects() {
     return [
+      // www → dominio principal, cualquier ruta (incluido robots.txt). Sin esto www servía una
+      // copia entera del sitio con 200, y Search Console arrastraba de junio un "Bloqueada por
+      // robots.txt" para www (de cuando el subdominio apuntaba a otro sitio).
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "www.christianfonseca.dev" }],
+        destination: "https://christianfonseca.dev/:path*",
+        permanent: true,
+      },
       { source: "/chat", destination: "/", permanent: true },
       { source: "/es/chat", destination: "/es", permanent: true },
     ]
