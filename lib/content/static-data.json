@@ -1184,6 +1184,7 @@
               "bullets": [
                 "Enhanced Brain-Computer Interface performance by 10% using advanced digital signal processing and ML algorithms.",
                 "Built a custom C++ user interface for brain signal acquisition based on ERP and sensorimotor rhythms.",
+                "Analyzed multimodal brain MRI to classify ischemic stroke, hemorrhagic stroke, and brain tumors using Deep Learning.",
                 "Optimized EEG data acquisition and channel selection by applying Python's statistical and CSP methods."
               ],
               "tech": [
@@ -1265,6 +1266,7 @@
               "bullets": [
                 "Mejoré el rendimiento de la Interfaz Cerebro-Computadora en un 10% utilizando procesamiento digital de señales avanzado y algoritmos de ML.",
                 "Construí una interfaz de usuario personalizada en C++ para la adquisición de señales cerebrales basada en ERP y ritmos sensoriomotores.",
+                "Analicé resonancias magnéticas cerebrales multimodales para clasificar ictus isquémicos, ictus hemorrágicos y tumores cerebrales con Deep Learning.",
                 "Optimicé la adquisición de datos EEG y la selección de canales aplicando métodos estadísticos y CSP en Python."
               ],
               "tech": [
@@ -1343,6 +1345,28 @@
       "data": {
         "en": {
           "items": [
+            {
+              "role": "Senior MLOps Engineer",
+              "org": "Entel",
+              "period": "May 2025 - Present",
+              "current": true,
+              "bullets": [
+                "Led the Guardian Agents squad, overseeing availability and operational health of ML models across AWS and OCI.",
+                "Led end-to-end deployment of Sinfonía, an in-house transcription and insights engine, across staging and production.",
+                "Designed and implemented DevOps and LLMOps practices for Sinfonía's transcription, analytics, and AI insights platform."
+              ],
+              "tech": [
+                "Python",
+                "Docker",
+                "Agents",
+                "LLM",
+                "OpenAI",
+                "Bedrock",
+                "Next.js",
+                "AWS",
+                "OCI"
+              ]
+            },
             {
               "role": "AIOps Specialist",
               "org": "Baufest",
@@ -1491,6 +1515,28 @@
         },
         "es": {
           "items": [
+            {
+              "role": "Ingeniero Senior de MLOps",
+              "org": "Entel",
+              "period": "Mayo 2025 - Presente",
+              "current": true,
+              "bullets": [
+                "Lideré el squad Guardian Agents, a cargo de la disponibilidad y la salud operativa de los modelos de ML en AWS y OCI.",
+                "Lideré el despliegue de extremo a extremo de Sinfonía, un motor propio de transcripción e insights, en staging y producción.",
+                "Diseñé e implementé prácticas de DevOps y LLMOps para la plataforma de transcripción, analítica e insights de IA de Sinfonía."
+              ],
+              "tech": [
+                "Python",
+                "Docker",
+                "Agents",
+                "LLM",
+                "OpenAI",
+                "Bedrock",
+                "Next.js",
+                "AWS",
+                "OCI"
+              ]
+            },
             {
               "role": "Especialista en AIOps",
               "org": "Baufest",
@@ -1652,8 +1698,8 @@
             {
               "role": "Data & AI Consultant",
               "org": "Coderio",
-              "period": "October 2025 - Present",
-              "current": true,
+              "period": "October 2025 - October 2026",
+              "current": false,
               "bullets": [
                 "Built an end-to-end finance system for Andes Logistics, optimizing 9-country data consolidation from days to minutes.",
                 "Established Banco Basa's medallion lake governance by developing data lineage and automated quality/security KPIs.",
@@ -1794,8 +1840,8 @@
             {
               "role": "Consultor de Datos e IA",
               "org": "Coderio",
-              "period": "Octubre 2025 - Presente",
-              "current": true,
+              "period": "Octubre 2025 - Octubre 2026",
+              "current": false,
               "bullets": [
                 "Construí un sistema financiero end-to-end para Andes Logistics, optimizando la consolidación de datos de 9 países de días a minutos.",
                 "Establecí la gobernanza del lake con arquitectura medallion de Banco Basa, desarrollando linaje de datos y KPIs automatizados de calidad y seguridad.",
@@ -1954,7 +2000,7 @@
             },
             {
               "question": "Which industries has Christian worked in?",
-              "answer": "Banking (BBVA, BCP), insurance (Rimac), mining (Antamina), retail (Tottus, DELOSI), logistics, edtech and technology consulting across Latin America and global teams."
+              "answer": "Banking (BBVA, BCP), insurance (Rimac), telecommunications (Entel), mining (Antamina), retail (Tottus, DELOSI), logistics, edtech and technology consulting across Latin America and global teams."
             },
             {
               "question": "Does Christian work with international teams?",
@@ -1978,7 +2024,7 @@
             },
             {
               "question": "¿En qué industrias ha trabajado Christian?",
-              "answer": "Banca (BBVA, BCP), seguros (Rimac), minería (Antamina), retail (Tottus, DELOSI), logística, edtech y consultoría tecnológica en Latinoamérica y equipos globales."
+              "answer": "Banca (BBVA, BCP), seguros (Rimac), telecomunicaciones (Entel), minería (Antamina), retail (Tottus, DELOSI), logística, edtech y consultoría tecnológica en Latinoamérica y equipos globales."
             },
             {
               "question": "¿Trabaja Christian con equipos internacionales?",
