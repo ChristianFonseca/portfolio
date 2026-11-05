@@ -662,10 +662,14 @@
                 "Ships as an Android (TWA) and iOS (Capacitor) app over the same live web codebase; fully bilingual ES/EN."
               ],
               "images": [
-                "/projects/furtale/00-demo.anim.webp",
-                "/projects/furtale/01-asistente-con-fuentes.webp",
-                "/projects/furtale/02-plan-de-salud.webp",
-                "/projects/furtale/03-inicio.webp"
+                "/projects/furtale/00-tus-mascotas.anim.webp",
+                "/projects/furtale/01-clinica.anim.webp",
+                "/projects/furtale/02-asistente.anim.webp",
+                "/projects/furtale/03-tus-mascotas.webp",
+                "/projects/furtale/04-plan-de-salud.webp",
+                "/projects/furtale/05-clinica-pacientes.webp",
+                "/projects/furtale/06-clinica-resumen-previo.webp",
+                "/projects/furtale/07-clinica-recordatorios.webp"
               ]
             },
             {
@@ -927,10 +931,14 @@
                 "Se distribuye como app de Android (TWA) y iOS (Capacitor) sobre el mismo código web en vivo; completamente bilingüe ES/EN."
               ],
               "images": [
-                "/projects/furtale/00-demo.anim.webp",
-                "/projects/furtale/01-asistente-con-fuentes.webp",
-                "/projects/furtale/02-plan-de-salud.webp",
-                "/projects/furtale/03-inicio.webp"
+                "/projects/furtale/00-tus-mascotas.anim.webp",
+                "/projects/furtale/01-clinica.anim.webp",
+                "/projects/furtale/02-asistente.anim.webp",
+                "/projects/furtale/03-tus-mascotas.webp",
+                "/projects/furtale/04-plan-de-salud.webp",
+                "/projects/furtale/05-clinica-pacientes.webp",
+                "/projects/furtale/06-clinica-resumen-previo.webp",
+                "/projects/furtale/07-clinica-recordatorios.webp"
               ]
             },
             {
