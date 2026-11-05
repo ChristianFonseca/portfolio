@@ -3,6 +3,7 @@ import { sql } from "@/lib/db"
 import { kindSpecs } from "@/lib/content/specs"
 import type { SectionKind } from "@/lib/content/schemas"
 import { SectionEditor } from "@/components/admin/section-editor"
+import { withStaticDefaults } from "@/lib/content/queries"
 
 export const dynamic = "force-dynamic"
 
@@ -19,10 +20,10 @@ export default async function EditSectionPage({ params }: { params: Promise<{ sl
 
   // data = { en, es }; tolera formato legacy plano (pre-i18n)
   const raw = (section.data ?? {}) as Record<string, unknown>
-  const initialData =
-    "en" in raw
-      ? (raw as { en?: Record<string, unknown>; es?: Record<string, unknown> })
-      : { en: raw, es: raw }
+  const initialData = withStaticDefaults(section.slug, "en" in raw ? raw : { en: raw, es: raw }) as {
+    en?: Record<string, unknown>
+    es?: Record<string, unknown>
+  }
 
   return (
     <SectionEditor

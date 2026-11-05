@@ -4,6 +4,7 @@ import staticData from "./static-data.json"
 import type { Locale } from "@/lib/i18n/dictionaries"
 import type {
   AboutData,
+  ApproachData,
   ExperienceData,
   FaqData,
   HeroData,
@@ -25,16 +26,41 @@ function resolveData(raw: unknown, locale: Locale): unknown {
   return raw
 }
 
+const isPlainObject = (v: unknown): v is Record<string, unknown> =>
+  !!v && typeof v === "object" && !Array.isArray(v)
+
+// Un campo que se añade al esquema no existe en las filas ya guardadas: hasta que
+// el admin las vuelva a guardar, se toma del contenido estático. Solo rellena
+// claves ausentes; un valor guardado (aunque sea "") siempre gana.
+function withDefaults(data: unknown, fallback: unknown): unknown {
+  if (!isPlainObject(data) || !isPlainObject(fallback)) return data
+  return { ...fallback, ...data }
+}
+
+const staticBySlug = new Map(STATIC_SECTIONS.map((s) => [s.slug, s]))
+
+// Lo mismo para el editor del admin, que trabaja con { en, es } a la vez: así
+// muestra el texto que ya se ve en la web y no lo borra al guardar.
+export function withStaticDefaults(slug: string, data: { en?: unknown; es?: unknown }) {
+  const fallback = staticBySlug.get(slug)
+  if (!fallback) return data
+  return {
+    en: withDefaults(data.en, resolveData(fallback.data, "en")),
+    es: withDefaults(data.es, resolveData(fallback.data, "es")),
+  }
+}
+
 function buildContent(rows: SectionRecord[], locale: Locale): LandingContent {
-  const bySlug = new Map<string, SectionRecord>()
-  for (const s of STATIC_SECTIONS) bySlug.set(s.slug, s)
+  const bySlug = new Map<string, SectionRecord>(staticBySlug)
   for (const r of rows) bySlug.set(r.slug, r)
 
   const entry = <T>(slug: string) => {
     const s = bySlug.get(slug)
     if (!s) throw new Error(`Sección faltante: ${slug}`)
     const title = locale === "es" ? s.title_es || s.title : s.title
-    return { title, visible: s.visible, data: resolveData(s.data, locale) as T }
+    const fallback = staticBySlug.get(slug)
+    const data = withDefaults(resolveData(s.data, locale), fallback && resolveData(fallback.data, locale))
+    return { title, visible: s.visible, data: data as T }
   }
 
   return {
@@ -46,6 +72,7 @@ function buildContent(rows: SectionRecord[], locale: Locale): LandingContent {
     experience: entry<ExperienceData>("experience"),
     teaching: entry<ExperienceData>("teaching"),
     faq: entry<FaqData>("faq"),
+    approach: entry<ApproachData>("approach"),
   }
 }
 

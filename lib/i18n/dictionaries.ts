@@ -11,6 +11,7 @@ export const dictionaries = {
       profile: "Profile",
       projects: "Projects",
       experience: "Experience",
+      approach: "How I work",
       blog: "Blog",
       contact: "Contact",
     },
@@ -20,6 +21,15 @@ export const dictionaries = {
       // mascota; empieza por el texto visible para cumplir WCAG 2.5.3.
       chatCtaLabel: "Ask Syn, Christian's AI assistant",
       downloadCV: "Download CV",
+      now: "Now",
+    },
+    experience: {
+      expandAll: "Expand all",
+      collapseAll: "Collapse all",
+      current: "Current",
+    },
+    approach: {
+      seenIn: "Where you can see it",
     },
     profile: {
       heading: "Professional Profile",
@@ -37,6 +47,8 @@ export const dictionaries = {
       highlights: "Highlights",
       achievements: "Achievements",
       papers: "Papers",
+      paperOne: "paper",
+      paperCount: "papers",
       stack: "Tech stack",
       present: "Present",
     },
@@ -56,6 +68,7 @@ export const dictionaries = {
       sending: "Sending...",
       sendError: "Failed to send message. Please try again or contact directly via email.",
       directEmail: "Direct Email",
+      otherWays: "Other ways to reach me",
       scholar: "Google Scholar",
     },
     footer: {
@@ -122,6 +135,7 @@ export const dictionaries = {
       profile: "Perfil",
       projects: "Proyectos",
       experience: "Experiencia",
+      approach: "Cómo trabajo",
       blog: "Blog",
       contact: "Contacto",
     },
@@ -129,6 +143,15 @@ export const dictionaries = {
       chatCta: "Pregúntale a Syn",
       chatCtaLabel: "Pregúntale a Syn, el asistente de IA de Christian",
       downloadCV: "Descargar CV",
+      now: "Ahora",
+    },
+    experience: {
+      expandAll: "Abrir todo",
+      collapseAll: "Cerrar todo",
+      current: "Actual",
+    },
+    approach: {
+      seenIn: "Dónde se ve",
     },
     profile: {
       heading: "Perfil Profesional",
@@ -146,6 +169,8 @@ export const dictionaries = {
       highlights: "Destacados",
       achievements: "Logros",
       papers: "Publicaciones",
+      paperOne: "publicación",
+      paperCount: "publicaciones",
       stack: "Tecnologías",
       present: "Presente",
     },
@@ -165,6 +190,7 @@ export const dictionaries = {
       sending: "Enviando...",
       sendError: "No se pudo enviar el mensaje. Intenta de nuevo o escríbeme directamente por email.",
       directEmail: "Email Directo",
+      otherWays: "Otras formas de contactarme",
       scholar: "Google Scholar",
     },
     footer: {

@@ -10,6 +10,7 @@
         "en": {
           "name": "Christian Fonseca",
           "tagline": "AI Engineer | Data Architect | Data Scientist",
+          "summary": "I take LLMs from demo to production: RAG assistants that cite their sources, and agents where the model proposes and code decides.",
           "location": "Lima, Peru",
           "photo": "/profile.webp",
           "certs": [
@@ -38,6 +39,7 @@
         "es": {
           "name": "Christian Fonseca",
           "tagline": "Ingeniero de IA | Arquitecto de Datos | Científico de Datos",
+          "summary": "Llevo los LLMs de la demo a producción: asistentes con RAG que citan sus fuentes y agentes donde el modelo propone y el código decide.",
           "location": "Lima, Perú",
           "photo": "/profile.webp",
           "certs": [
@@ -1985,6 +1987,102 @@
             {
               "question": "¿Qué hace diferente a su perfil?",
               "answer": "Una década de experiencia práctica combinando ingeniería de datos, machine learning y GenAI, respaldada por más de 21 certificaciones cloud (13x AWS, 4x Azure, 4x OCI) y más de 5 años enseñando analítica avanzada a más de 100 profesionales."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "slug": "approach",
+      "kind": "approach",
+      "title": "How I work",
+      "title_es": "Cómo trabajo",
+      "position": 9,
+      "visible": true,
+      "data": {
+        "en": {
+          "intro": "The principles behind everything I build with AI, and where you can see each one.",
+          "items": [
+            {
+              "icon": "cite",
+              "title": "Grounded, not generic",
+              "text": "Assistants answer from real sources and cite them. When there is no source, they say they don't know instead of guessing.",
+              "proof": [
+                "Furtale",
+                "Baufest",
+                "Syn"
+              ]
+            },
+            {
+              "icon": "shield",
+              "title": "LLMs propose, code decides",
+              "text": "What matters (limits, money, permissions) is enforced by deterministic code the model can't override, not by a line in the prompt.",
+              "proof": [
+                "MAT",
+                "Syn",
+                "Atalaya"
+              ]
+            },
+            {
+              "icon": "route",
+              "title": "The right model for each step",
+              "text": "Providers stay swappable behind one interface. I choose the model by task, cost and latency, with a fallback ready.",
+              "proof": [
+                "OrchestrAI",
+                "Furtale"
+              ]
+            },
+            {
+              "icon": "rocket",
+              "title": "Built for production",
+              "text": "Cost per job, rate limits, auth and security from day one, and I measure quality before I call it done.",
+              "proof": [
+                "Klipsum",
+                "Syn"
+              ]
+            }
+          ]
+        },
+        "es": {
+          "intro": "Los principios detrás de todo lo que construyo con IA, y dónde se ve cada uno.",
+          "items": [
+            {
+              "icon": "cite",
+              "title": "Con fuentes, no genérico",
+              "text": "Los asistentes responden desde fuentes reales y las citan. Si no hay fuente, dicen que no lo saben en vez de inventar.",
+              "proof": [
+                "Furtale",
+                "Baufest",
+                "Syn"
+              ]
+            },
+            {
+              "icon": "shield",
+              "title": "El LLM propone, el código decide",
+              "text": "Lo que importa (límites, dinero, permisos) lo hace cumplir código determinista que el modelo no puede saltarse, no una línea en el prompt.",
+              "proof": [
+                "MAT",
+                "Syn",
+                "Atalaya"
+              ]
+            },
+            {
+              "icon": "route",
+              "title": "El modelo adecuado para cada paso",
+              "text": "Los proveedores son intercambiables detrás de una sola interfaz. Elijo el modelo por tarea, costo y latencia, con uno de respaldo listo.",
+              "proof": [
+                "OrchestrAI",
+                "Furtale"
+              ]
+            },
+            {
+              "icon": "rocket",
+              "title": "Hecho para producción",
+              "text": "Costo por trabajo, límites de uso, autenticación y seguridad desde el primer día, y mido la calidad antes de darla por buena.",
+              "proof": [
+                "Klipsum",
+                "Syn"
+              ]
             }
           ]
         }

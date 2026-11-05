@@ -5,7 +5,7 @@ import type React from "react"
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Menu, X, Home, User, Briefcase, Code, Mail, Languages, BookOpen } from "lucide-react"
+import { Menu, X, Home, User, Briefcase, Code, Compass, Mail, Languages, BookOpen } from "lucide-react"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { BrandLogo } from "@/components/brand-logo"
 import type { Dictionary, Locale } from "@/lib/i18n/dictionaries"
@@ -39,12 +39,14 @@ export function Navigation({ locale, dict }: { locale: Locale; dict: Dictionary 
   }
 
   // Los anchors hacen smooth-scroll en la landing; Blog navega a otra página,
-  // por eso va al final, separado del resto
+  // por eso va al final, separado del resto. Mismo orden que las secciones de
+  // components/landing.tsx: si se mueve una sección, se mueve aquí también.
   const navItems = [
     { icon: Home, label: dict.nav.home, href: "#home" },
     { icon: User, label: dict.nav.profile, href: "#profile" },
     { icon: Code, label: dict.nav.projects, href: "#public-projects" },
     { icon: Briefcase, label: dict.nav.experience, href: "#experience" },
+    { icon: Compass, label: dict.nav.approach, href: "#approach" },
     { icon: Mail, label: dict.nav.contact, href: "#contact" },
     { icon: BookOpen, label: dict.nav.blog, href: locale === "es" ? "/es/blog" : "/blog" },
   ]
