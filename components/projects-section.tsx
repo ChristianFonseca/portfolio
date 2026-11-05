@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
 import { ProjectCarousel } from "@/components/project-carousel"
 import { ProjectImage } from "@/components/project-image"
+import { tileOf, type Tile } from "@/lib/content/project-tiles"
 import type { ProjectsData, SectionEntry } from "@/lib/content/schemas"
 import type { Dictionary } from "@/lib/i18n/dictionaries"
 
@@ -113,6 +114,119 @@ function StatusChips({
   )
 }
 
+function ProjectTile({
+  project,
+  index,
+  tile,
+  dict,
+  onOpen,
+}: {
+  project: Project
+  index: number
+  tile: Tile
+  dict: Dictionary
+  onOpen: () => void
+}) {
+  const gallery = galleryOf(project)
+  // Las anchas/completas se ponen en horizontal en desktop: imagen a la izquierda
+  const horizontal = tile.lg !== "normal"
+  const span = [
+    tile.mdFull ? "md:col-span-2" : "",
+    tile.featured ? "lg:col-span-2 lg:row-span-2" : tile.lg === "full" ? "lg:col-span-3" : tile.lg === "wide" ? "lg:col-span-2" : tile.mdFull ? "lg:col-span-1" : "",
+  ].join(" ")
+  const techMax = tile.featured ? 6 : 3
+
+  return (
+    <BubbleCard
+      noAnimation
+      className={`glow-effect relative flex flex-col p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/10 ${span}`}
+    >
+      {/* Chips de estado: siblings del botón (no anidados) para poder ser enlaces */}
+      <div className="absolute right-3 top-3 z-10 flex flex-col items-end gap-1.5">
+        <StatusChips project={project} dict={dict} />
+      </div>
+
+      <button
+        type="button"
+        onClick={onOpen}
+        data-track={`project:${project.title}`}
+        aria-label={`${dict.projects.details}: ${project.title}`}
+        className={`group flex flex-1 flex-col text-left ${horizontal ? "lg:flex-row lg:items-stretch lg:gap-6" : ""}`}
+      >
+        <div
+          className={`relative w-full overflow-hidden rounded-xl bg-gradient-to-br ${CARD_GRADIENTS[index % CARD_GRADIENTS.length]} ${
+            tile.featured
+              ? "mb-5 aspect-[16/9] lg:aspect-auto lg:min-h-[260px] lg:flex-1"
+              : horizontal
+                ? `mb-4 aspect-[16/9] lg:mb-0 lg:shrink-0 ${tile.lg === "full" ? "lg:w-2/5" : "lg:w-1/2"}`
+                : "mb-4 aspect-[16/9]"
+          }`}
+        >
+          {gallery.length > 0 ? (
+            <>
+              {/* lazy: las tarjetas quedan bajo el pliegue y una portada animada pesa */}
+              <ProjectImage
+                src={gallery[0]}
+                alt={project.title}
+                loading="lazy"
+                className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105 motion-reduce:transition-none"
+              />
+              {gallery.length > 1 && (
+                <span className="absolute bottom-2 left-2 inline-flex items-center gap-1 rounded-full bg-black/60 px-2 py-0.5 text-[10px] font-semibold text-white backdrop-blur-sm">
+                  <ImageIcon className="h-3 w-3" />
+                  {gallery.length}
+                </span>
+              )}
+            </>
+          ) : (
+            <span className="absolute inset-0 flex items-center justify-center font-serif text-5xl italic text-foreground/15">
+              {project.title.charAt(0)}
+            </span>
+          )}
+        </div>
+
+        {/* La destacada no estira el texto: el hueco sobrante es para la imagen. En las
+            horizontales el texto va centrado en vertical, por debajo de los chips */}
+        <div
+          className={`flex flex-col ${
+            tile.featured ? "" : horizontal ? "flex-1 lg:justify-center lg:py-6" : "flex-1"
+          }`}
+        >
+          <div className="mb-2 flex items-start justify-between gap-2">
+            <h3
+              className={`font-semibold text-primary underline-offset-4 group-hover:underline ${
+                tile.featured ? "text-2xl" : "text-lg"
+              }`}
+            >
+              {project.title}
+            </h3>
+            <ArrowUpRight className="mt-1 h-4 w-4 shrink-0 text-muted-foreground/50 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-primary" />
+          </div>
+          <p
+            className={`mb-4 text-muted-foreground ${
+              tile.featured ? "text-base line-clamp-3" : horizontal ? "text-sm line-clamp-2 lg:line-clamp-4" : "text-sm line-clamp-2"
+            }`}
+          >
+            {project.description}
+          </p>
+          <div className={`flex flex-wrap gap-1 ${horizontal ? "mt-auto lg:mt-0" : "mt-auto"}`}>
+            {project.tech.slice(0, techMax).map((tech) => (
+              <Badge key={tech} variant="secondary" className="text-xs">
+                {tech}
+              </Badge>
+            ))}
+            {project.tech.length > techMax && (
+              <Badge variant="secondary" className="text-xs">
+                +{project.tech.length - techMax}
+              </Badge>
+            )}
+          </div>
+        </div>
+      </button>
+    </BubbleCard>
+  )
+}
+
 export function ProjectsSection({ section, dict }: { section: SectionEntry<ProjectsData>; dict: Dictionary }) {
   const [selected, setSelected] = useState<Project | null>(null)
 
@@ -123,69 +237,18 @@ export function ProjectsSection({ section, dict }: { section: SectionEntry<Proje
           {section.title}
         </h2>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* Mosaico: el primero (el orden lo decide el admin) va destacado en 2×2 y las
+            filas sobrantes se rellenan con tarjetas anchas para no dejar huecos */}
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {section.data.items.map((project, i) => (
-            <BubbleCard key={`${project.title}-${i}`} className="glow-effect relative flex flex-col">
-              {/* Chips de estado: siblings del botón (no anidados) para poder ser enlaces */}
-              <div className="absolute right-3 top-3 z-10 flex flex-col items-end gap-1.5">
-                <StatusChips project={project} dict={dict} />
-              </div>
-
-              <button
-                type="button"
-                onClick={() => setSelected(project)}
-                data-track={`project:${project.title}`}
-                aria-label={`${dict.projects.details}: ${project.title}`}
-                className="group flex flex-1 flex-col text-left"
-              >
-                <div
-                  className={`relative w-full aspect-[16/9] mb-4 rounded-lg overflow-hidden bg-gradient-to-br ${
-                    CARD_GRADIENTS[i % CARD_GRADIENTS.length]
-                  }`}
-                >
-                  {galleryOf(project).length > 0 ? (
-                    <>
-                      {/* lazy: las tarjetas quedan bajo el pliegue y una portada animada pesa */}
-                      <ProjectImage
-                        src={galleryOf(project)[0]}
-                        alt={project.title}
-                        loading="lazy"
-                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                      />
-                      {galleryOf(project).length > 1 && (
-                        <span className="absolute bottom-2 left-2 inline-flex items-center gap-1 rounded-full bg-black/60 px-2 py-0.5 text-[10px] font-semibold text-white backdrop-blur-sm">
-                          <ImageIcon className="h-3 w-3" />
-                          {galleryOf(project).length}
-                        </span>
-                      )}
-                    </>
-                  ) : (
-                    <span className="absolute inset-0 flex items-center justify-center font-serif text-5xl italic text-foreground/15">
-                      {project.title.charAt(0)}
-                    </span>
-                  )}
-                </div>
-                <div className="flex items-start justify-between gap-2 mb-2">
-                  <h3 className="text-lg font-semibold text-primary group-hover:underline underline-offset-4">
-                    {project.title}
-                  </h3>
-                  <ArrowUpRight className="h-4 w-4 shrink-0 text-muted-foreground/50 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-primary" />
-                </div>
-                <p className="text-sm text-muted-foreground mb-4 line-clamp-3">{project.description}</p>
-                <div className="mt-auto flex flex-wrap gap-1">
-                  {project.tech.slice(0, 4).map((tech) => (
-                    <Badge key={tech} variant="secondary" className="text-xs">
-                      {tech}
-                    </Badge>
-                  ))}
-                  {project.tech.length > 4 && (
-                    <Badge variant="secondary" className="text-xs">
-                      +{project.tech.length - 4}
-                    </Badge>
-                  )}
-                </div>
-              </button>
-            </BubbleCard>
+            <ProjectTile
+              key={`${project.title}-${i}`}
+              project={project}
+              index={i}
+              tile={tileOf(i, section.data.items.length)}
+              dict={dict}
+              onOpen={() => setSelected(project)}
+            />
           ))}
         </div>
       </div>

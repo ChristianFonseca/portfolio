@@ -12,6 +12,7 @@ import { LinkTagsInput, type LinkTag } from "@/components/admin/link-tags-input"
 import { PapersInput, type Paper } from "@/components/admin/papers-input"
 import type { FieldSpec, SubFieldSpec } from "@/lib/content/specs"
 import type { SectionKind } from "@/lib/content/schemas"
+import { tileLabel, tileOf } from "@/lib/content/project-tiles"
 import type { Locale } from "@/lib/i18n/dictionaries"
 
 // Form model: como los datos reales, pero con bullets como texto multilínea
@@ -478,6 +479,12 @@ export function SectionEditor({
                 <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
                   {field.label}
                 </p>
+                {kind === "projects" && (
+                  <p className="mb-3 text-xs text-muted-foreground">
+                    El primero de la lista se ve grande en la web; los demás se acomodan alrededor. Cambia cuál
+                    con las flechas: el orden es el mismo en EN y ES.
+                  </p>
+                )}
                 <div className="space-y-4">
                   {(model[field.key] as FormItem[]).map((item, i, arr) => (
                     <div key={i} className="overflow-hidden rounded-2xl border border-border bg-card/40">
@@ -486,6 +493,17 @@ export function SectionEditor({
                         <span className="flex-1 truncate text-sm font-semibold">
                           {String(item[field.titleKey] || `${field.itemName} ${i + 1}`)}
                         </span>
+                        {kind === "projects" && tileLabel(tileOf(i, arr.length)) && (
+                          <span
+                            className={`shrink-0 rounded-full border px-2 py-0.5 text-[10px] font-semibold ${
+                              tileOf(i, arr.length).featured
+                                ? "border-primary/50 bg-primary/15 text-primary"
+                                : "border-border bg-muted/50 text-muted-foreground"
+                            }`}
+                          >
+                            {tileLabel(tileOf(i, arr.length))}
+                          </span>
+                        )}
                         <button
                           type="button"
                           aria-label="Subir"

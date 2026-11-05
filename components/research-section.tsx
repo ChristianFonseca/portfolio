@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { ArrowUpRight, ImageIcon } from "lucide-react"
+import { ArrowUpRight, FileText, ImageIcon } from "lucide-react"
 import { BubbleCard } from "@/components/bubble-card"
 import { Badge } from "@/components/ui/badge"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
@@ -55,73 +55,94 @@ export function ResearchSection({
           {section.title}
         </h2>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {section.data.items.map((item, i) => (
-            <BubbleCard key={`${item.title}-${i}`} className="glow-effect relative flex flex-col">
-              <button
-                type="button"
-                onClick={() => setSelected(item)}
-                data-track={`research:${item.title}`}
-                aria-label={`${dict.projects.details}: ${item.title}`}
-                className="group flex flex-1 flex-col text-left"
-              >
-                <div
-                  className={`relative w-full aspect-[16/9] mb-4 rounded-lg overflow-hidden bg-gradient-to-br ${
-                    CARD_GRADIENTS[i % CARD_GRADIENTS.length]
-                  }`}
+        {/* Lista horizontal, a propósito distinta del mosaico de proyectos: aquí pesan
+            dónde y cuándo se hizo y lo publicado, no la captura */}
+        <ol className="space-y-5">
+          {section.data.items.map((item, i) => {
+            const gallery = galleryOf(item)
+            const when = dateRange(item, dict.projects.present, locale)
+            const papers = item.papers?.length ?? 0
+            return (
+              <li key={`${item.title}-${i}`}>
+                <BubbleCard
+                  noAnimation
+                  className="glow-effect p-4 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/10 md:p-5"
                 >
-                  {galleryOf(item).length > 0 ? (
-                    <>
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={galleryOf(item)[0]}
-                        alt={item.title}
-                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                      />
-                      {galleryOf(item).length > 1 && (
-                        <span className="absolute bottom-2 left-2 inline-flex items-center gap-1 rounded-full bg-black/60 px-2 py-0.5 text-[10px] font-semibold text-white backdrop-blur-sm">
-                          <ImageIcon className="h-3 w-3" />
-                          {galleryOf(item).length}
+                  <button
+                    type="button"
+                    onClick={() => setSelected(item)}
+                    data-track={`research:${item.title}`}
+                    aria-label={`${dict.projects.details}: ${item.title}`}
+                    className="group flex w-full flex-col gap-5 text-left sm:flex-row"
+                  >
+                    <div
+                      className={`relative aspect-[16/10] w-full shrink-0 overflow-hidden rounded-xl bg-gradient-to-br sm:w-56 md:w-64 ${
+                        CARD_GRADIENTS[i % CARD_GRADIENTS.length]
+                      }`}
+                    >
+                      {gallery.length > 0 ? (
+                        <>
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            src={gallery[0]}
+                            alt={item.title}
+                            loading="lazy"
+                            className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105 motion-reduce:transition-none"
+                          />
+                          {gallery.length > 1 && (
+                            <span className="absolute bottom-2 left-2 inline-flex items-center gap-1 rounded-full bg-black/60 px-2 py-0.5 text-[10px] font-semibold text-white backdrop-blur-sm">
+                              <ImageIcon className="h-3 w-3" />
+                              {gallery.length}
+                            </span>
+                          )}
+                        </>
+                      ) : (
+                        <span className="absolute inset-0 flex items-center justify-center font-serif text-5xl italic text-foreground/15">
+                          {item.title.charAt(0)}
                         </span>
                       )}
-                    </>
-                  ) : (
-                    <span className="absolute inset-0 flex items-center justify-center font-serif text-5xl italic text-foreground/15">
-                      {item.title.charAt(0)}
-                    </span>
-                  )}
-                </div>
-                <div className="flex items-start justify-between gap-2 mb-1">
-                  <h3 className="text-lg font-semibold text-primary group-hover:underline underline-offset-4">
-                    {item.title}
-                  </h3>
-                  <ArrowUpRight className="h-4 w-4 shrink-0 text-muted-foreground/50 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-primary" />
-                </div>
-                {(item.institution || dateRange(item, dict.projects.present, locale)) && (
-                  <div className="mb-2 text-xs leading-snug">
-                    {item.institution && <div className="text-muted-foreground/80">{item.institution}</div>}
-                    {dateRange(item, dict.projects.present, locale) && (
-                      <div className="text-muted-foreground/60">{dateRange(item, dict.projects.present, locale)}</div>
-                    )}
-                  </div>
-                )}
-                <p className="text-sm text-muted-foreground mb-4 line-clamp-3">{item.description}</p>
-                <div className="mt-auto flex flex-wrap gap-1">
-                  {item.tech.slice(0, 4).map((tech) => (
-                    <Badge key={tech} variant="secondary" className="text-xs">
-                      {tech}
-                    </Badge>
-                  ))}
-                  {item.tech.length > 4 && (
-                    <Badge variant="secondary" className="text-xs">
-                      +{item.tech.length - 4}
-                    </Badge>
-                  )}
-                </div>
-              </button>
-            </BubbleCard>
-          ))}
-        </div>
+                    </div>
+
+                    <div className="flex min-w-0 flex-1 flex-col py-1">
+                      {(item.institution || when) && (
+                        <p className="mb-1.5 flex flex-wrap items-center gap-x-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                          {item.institution && <span className="text-accent">{item.institution}</span>}
+                          {item.institution && when && <span aria-hidden className="h-1 w-1 rounded-full bg-muted-foreground/50" />}
+                          {when && <span>{when}</span>}
+                        </p>
+                      )}
+                      <div className="mb-2 flex items-start justify-between gap-2">
+                        <h3 className="text-lg font-semibold text-primary underline-offset-4 group-hover:underline">
+                          {item.title}
+                        </h3>
+                        <ArrowUpRight className="mt-1 h-4 w-4 shrink-0 text-muted-foreground/50 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-primary" />
+                      </div>
+                      <p className="mb-4 text-sm text-muted-foreground line-clamp-2">{item.description}</p>
+                      <div className="mt-auto flex flex-wrap items-center gap-1">
+                        {papers > 0 && (
+                          <span className="mr-1 inline-flex items-center gap-1 rounded-full border border-accent/40 bg-accent/10 px-2 py-0.5 text-xs font-semibold text-accent">
+                            <FileText className="h-3 w-3" />
+                            {papers} {papers === 1 ? dict.projects.paperOne : dict.projects.paperCount}
+                          </span>
+                        )}
+                        {item.tech.slice(0, 4).map((tech) => (
+                          <Badge key={tech} variant="secondary" className="text-xs">
+                            {tech}
+                          </Badge>
+                        ))}
+                        {item.tech.length > 4 && (
+                          <Badge variant="secondary" className="text-xs">
+                            +{item.tech.length - 4}
+                          </Badge>
+                        )}
+                      </div>
+                    </div>
+                  </button>
+                </BubbleCard>
+              </li>
+            )
+          })}
+        </ol>
       </div>
 
       <Dialog open={selected !== null} onOpenChange={(open) => !open && setSelected(null)}>

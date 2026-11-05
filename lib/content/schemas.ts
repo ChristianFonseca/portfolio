@@ -3,6 +3,8 @@ import { z } from "zod"
 export const heroSchema = z.object({
   name: z.string().min(1).max(120),
   tagline: z.string().min(1).max(200),
+  // Una frase de posicionamiento bajo el tagline (opcional)
+  summary: z.string().max(300).default(""),
   location: z.string().max(120),
   photo: z.string().max(300).optional(),
   certs: z.array(z.object({ count: z.string().max(20), label: z.string().min(1).max(60) })).max(20),
@@ -116,6 +118,24 @@ export const faqSchema = z.object({
     .max(20),
 })
 
+// "Cómo trabajo": principios con dónde se ven. El icono es una clave fija (ver
+// APPROACH_ICONS en components/approach-section.tsx); una desconocida cae al primero.
+export const APPROACH_ICON_KEYS = ["cite", "shield", "route", "rocket", "bot", "gauge"] as const
+
+export const approachSchema = z.object({
+  intro: z.string().max(400).default(""),
+  items: z
+    .array(
+      z.object({
+        icon: z.string().max(20).default("cite"),
+        title: z.string().min(1).max(80),
+        text: z.string().min(1).max(400),
+        proof: z.array(z.string().min(1).max(60)).max(6).default([]),
+      }),
+    )
+    .max(6),
+})
+
 export const kindSchemas = {
   hero: heroSchema,
   about: aboutSchema,
@@ -124,6 +144,7 @@ export const kindSchemas = {
   research: researchSchema,
   experience: experienceSchema,
   faq: faqSchema,
+  approach: approachSchema,
 } as const
 
 export type SectionKind = keyof typeof kindSchemas
@@ -141,6 +162,7 @@ export type ProjectsData = z.infer<typeof projectsSchema>
 export type ResearchData = z.infer<typeof researchSchema>
 export type ExperienceData = z.infer<typeof experienceSchema>
 export type FaqData = z.infer<typeof faqSchema>
+export type ApproachData = z.infer<typeof approachSchema>
 
 export interface SectionRecord {
   slug: string
@@ -167,4 +189,5 @@ export interface LandingContent {
   experience: SectionEntry<ExperienceData>
   teaching: SectionEntry<ExperienceData>
   faq: SectionEntry<FaqData>
+  approach: SectionEntry<ApproachData>
 }

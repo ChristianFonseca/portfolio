@@ -20,6 +20,7 @@ export const KB_SOURCES = [
   { key: "teaching", name: "Docencia", locked: false },
   { key: "projects", name: "Proyectos públicos", locked: false },
   { key: "research", name: "Proyectos de investigación", locked: false },
+  { key: "approach", name: "Cómo trabajo (principios)", locked: false },
   { key: "faq", name: "FAQ", locked: false },
   { key: "blog", name: "Blog (artículos publicados, recortados a 2.500 chars)", locked: false },
   { key: "extra", name: "Contexto extra (Configuración → Chat)", locked: false },
@@ -224,6 +225,23 @@ export async function buildKnowledgeBase(): Promise<KnowledgeBase> {
     content.researchProjects.title,
   )
 
+  const approach = content.approach.visible ? content.approach.data : { intro: "", items: [] }
+  add(
+    "approach",
+    approach.items.length,
+    approach.items.length
+      ? [
+          approach.intro,
+          ...approach.items.map(
+            (a) => `- ${a.title}: ${a.text}${a.proof.length ? ` (Seen in: ${a.proof.join(", ")})` : ""}`,
+          ),
+        ]
+          .filter(Boolean)
+          .join("\n")
+      : "",
+    content.approach.title,
+  )
+
   const faq = content.faq.visible ? content.faq.data.items : []
   add("faq", faq.length, faq.map((f) => `Q: ${f.question}\nA: ${f.answer}`).join("\n"), "Frequently asked questions")
 
@@ -252,6 +270,6 @@ export async function buildKnowledgeBase(): Promise<KnowledgeBase> {
   }
 }
 
-export const getKnowledgeBase = unstable_cache(buildKnowledgeBase, ["chat-knowledge-base-v4"], {
+export const getKnowledgeBase = unstable_cache(buildKnowledgeBase, ["chat-knowledge-base-v5"], {
   tags: ["content", "posts"],
 })

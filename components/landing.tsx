@@ -6,6 +6,8 @@ import { Navigation } from "@/components/navigation"
 import { BubbleCard } from "@/components/bubble-card"
 import { ProjectsSection } from "@/components/projects-section"
 import { ResearchSection } from "@/components/research-section"
+import { ExperienceAccordion } from "@/components/experience-accordion"
+import { ApproachSection } from "@/components/approach-section"
 import { ThemedBackground } from "@/components/themed-background"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -40,7 +42,6 @@ const SKILL_BADGE_CLASSES: Record<string, string> = {
   cyan: "bg-cyan-500/10 text-cyan-700 dark:text-cyan-300 border-cyan-500/30 dark:border-cyan-500/20 hover:bg-cyan-500/20 hover:border-cyan-500/60",
   rose: "bg-rose-500/10 text-rose-700 dark:text-rose-300 border-rose-500/30 dark:border-rose-500/20 hover:bg-rose-500/20 hover:border-rose-500/60",
 }
-
 
 export function Landing({
   content,
@@ -103,7 +104,7 @@ export function Landing({
     }))
   }
 
-  const { hero, about, skills, publicProjects, researchProjects, experience, teaching, faq } = content
+  const { hero, about, skills, publicProjects, researchProjects, experience, teaching, faq, approach } = content
 
   return (
     <main className="min-h-screen relative animate-page-fade">
@@ -148,6 +149,11 @@ export function Landing({
               <p className="text-xl md:text-3xl text-foreground font-medium mb-6 max-w-3xl mx-auto">
                 {hero.data.tagline}
               </p>
+              {hero.data.summary && (
+                <p className="text-lg md:text-xl text-muted-foreground leading-relaxed mb-8 max-w-3xl mx-auto text-balance">
+                  {hero.data.summary}
+                </p>
+              )}
               <div className="flex flex-wrap justify-center items-center gap-2 md:gap-4 mb-8 text-sm md:text-base text-muted-foreground max-w-4xl mx-auto font-medium">
                 {hero.data.certs.map((cert, i) => (
                   <span key={`${cert.label}-${i}`} className="contents">
@@ -219,81 +225,17 @@ export function Landing({
         </section>
       )}
 
-      {/* Profile Section */}
-      {(about.visible || skills.visible) && (
+      {/* Sobre mí: la presentación va justo después del hero */}
+      {about.visible && (
         <section id="profile" className="py-20 px-6">
           <div className="max-w-6xl mx-auto">
             <h2 className="text-3xl md:text-4xl font-bold text-center mb-16 floating-element bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
               {dict.profile.heading}
             </h2>
-
-            {about.visible && (
-              <div className="mb-16">
-                <BubbleCard size="lg" className="glow-effect">
-                  <h3 className="text-2xl font-semibold mb-4 text-primary">{about.title}</h3>
-                  <p className="text-lg md:text-xl text-muted-foreground leading-relaxed">{about.data.text}</p>
-                </BubbleCard>
-              </div>
-            )}
-
-            {/* Skills & Certs Grid */}
-            {skills.visible && (
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {skills.data.groups.map((group) => (
-                  <BubbleCard key={group.name} className="glow-effect flex flex-col h-full">
-                    <h4 className="text-lg font-semibold mb-4 text-primary">{group.name}</h4>
-                    <div className="flex flex-wrap gap-2">
-                      {group.badges.map((skill, bi) => {
-                        // Resiliente a datos legacy (string) o nuevos ({name, url})
-                        const name = typeof skill === "string" ? skill : skill.name
-                        const url = typeof skill === "string" ? "" : skill.url
-                        const cls = `text-xs transition-all hover:-translate-y-0.5 ${
-                          SKILL_BADGE_CLASSES[group.color] ?? SKILL_BADGE_CLASSES.purple
-                        }`
-                        if (url) {
-                          return (
-                            <a
-                              key={`${name}-${bi}`}
-                              href={url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              title={hostOf(url)}
-                              className="cursor-pointer"
-                            >
-                              <Badge variant="outline" className={`${cls} cursor-pointer hover:border-primary`}>
-                                {name}
-                              </Badge>
-                            </a>
-                          )
-                        }
-                        return (
-                          <Badge key={`${name}-${bi}`} variant="outline" className={cls}>
-                            {name}
-                          </Badge>
-                        )
-                      })}
-                    </div>
-                  </BubbleCard>
-                ))}
-
-                <BubbleCard className="glow-effect flex flex-col h-full">
-                  <h4 className="text-lg font-semibold mb-4 text-primary">{dict.profile.languagesTitle}</h4>
-                  <div className="flex flex-col gap-2">
-                    {skills.data.languages.map((lang) => (
-                      <div
-                        key={lang.name}
-                        className="flex items-center justify-between p-2 rounded-lg bg-background/40 border border-border/50"
-                      >
-                        <span className="text-sm font-medium">{lang.name}</span>
-                        <Badge variant="secondary" className="bg-primary/10 text-primary border-none text-[10px]">
-                          {lang.level}
-                        </Badge>
-                      </div>
-                    ))}
-                  </div>
-                </BubbleCard>
-              </div>
-            )}
+            <BubbleCard size="lg" className="glow-effect">
+              <h3 className="text-2xl font-semibold mb-4 text-primary">{about.title}</h3>
+              <p className="text-lg md:text-xl text-muted-foreground leading-relaxed">{about.data.text}</p>
+            </BubbleCard>
           </div>
         </section>
       )}
@@ -304,35 +246,74 @@ export function Landing({
       {/* Research Projects Section */}
       {researchProjects.visible && <ResearchSection section={researchProjects} dict={dict} locale={locale} />}
 
-      {/* Experience Section */}
-      {experience.visible && (
-        <section id="experience" className="py-20 px-6">
+      {/* Experiencia y consultoría/docencia: acordeón con "abrir/cerrar todo" */}
+      {experience.visible && <ExperienceAccordion id="experience" section={experience} dict={dict} />}
+      {teaching.visible && <ExperienceAccordion id="teaching" section={teaching} dict={dict} />}
+
+      {/* Cómo trabajo */}
+      {approach.visible && approach.data.items.length > 0 && <ApproachSection section={approach} dict={dict} />}
+
+      {/* Skills: de consulta, más abajo. Si el about está oculto, hereda el ancla del menú */}
+      {skills.visible && (
+        <section id={about.visible ? "skills" : "profile"} className="py-20 px-6">
           <div className="max-w-6xl mx-auto">
             <h2 className="text-3xl md:text-4xl font-bold text-center mb-16 floating-element bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-              {experience.title}
+              {skills.title}
             </h2>
-
-            <div className="space-y-8">
-              {experience.data.items.map((item, i) => (
-                <ExperienceCard key={`${item.org}-${i}`} item={item} />
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {skills.data.groups.map((group) => (
+                <BubbleCard key={group.name} className="glow-effect flex flex-col h-full">
+                  <h4 className="text-lg font-semibold mb-4 text-primary">{group.name}</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {group.badges.map((skill, bi) => {
+                      // Resiliente a datos legacy (string) o nuevos ({name, url})
+                      const name = typeof skill === "string" ? skill : skill.name
+                      const url = typeof skill === "string" ? "" : skill.url
+                      const cls = `text-xs transition-all hover:-translate-y-0.5 ${
+                        SKILL_BADGE_CLASSES[group.color] ?? SKILL_BADGE_CLASSES.purple
+                      }`
+                      if (url) {
+                        return (
+                          <a
+                            key={`${name}-${bi}`}
+                            href={url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            title={hostOf(url)}
+                            className="cursor-pointer"
+                          >
+                            <Badge variant="outline" className={`${cls} cursor-pointer hover:border-primary`}>
+                              {name}
+                            </Badge>
+                          </a>
+                        )
+                      }
+                      return (
+                        <Badge key={`${name}-${bi}`} variant="outline" className={cls}>
+                          {name}
+                        </Badge>
+                      )
+                    })}
+                  </div>
+                </BubbleCard>
               ))}
-            </div>
-          </div>
-        </section>
-      )}
 
-      {/* Consulting & Teaching Section */}
-      {teaching.visible && (
-        <section id="teaching" className="py-20 px-6">
-          <div className="max-w-6xl mx-auto">
-            <h2 className="text-3xl md:text-4xl font-bold text-center mb-16 floating-element bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-              {teaching.title}
-            </h2>
-
-            <div className="space-y-8">
-              {teaching.data.items.map((item, i) => (
-                <ExperienceCard key={`${item.org}-${i}`} item={item} />
-              ))}
+              <BubbleCard className="glow-effect flex flex-col h-full">
+                <h4 className="text-lg font-semibold mb-4 text-primary">{dict.profile.languagesTitle}</h4>
+                <div className="flex flex-col gap-2">
+                  {skills.data.languages.map((lang) => (
+                    <div
+                      key={lang.name}
+                      className="flex items-center justify-between p-2 rounded-lg bg-background/40 border border-border/50"
+                    >
+                      <span className="text-sm font-medium">{lang.name}</span>
+                      <Badge variant="secondary" className="bg-primary/10 text-primary border-none text-[10px]">
+                        {lang.level}
+                      </Badge>
+                    </div>
+                  ))}
+                </div>
+              </BubbleCard>
             </div>
           </div>
         </section>
@@ -341,11 +322,13 @@ export function Landing({
       {/* FAQ Section */}
       {faq.visible && faq.data.items.length > 0 && (
         <section id="faq" className="py-20 px-6">
-          <div className="max-w-3xl mx-auto">
+          <div className="max-w-6xl mx-auto">
             <h2 className="text-3xl md:text-4xl font-bold text-center mb-16 floating-element bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
               {faq.title}
             </h2>
-            <div className="space-y-4">
+            {/* Dos columnas: al ancho completo las respuestas quedarían en líneas larguísimas.
+                items-start: abrir una pregunta no estira a su vecina */}
+            <div className="grid items-start gap-4 lg:grid-cols-2">
               {faq.data.items.map((item, i) => (
                 <details
                   key={i}
@@ -365,7 +348,7 @@ export function Landing({
 
       {/* Contact Section */}
       <section id="contact" className="py-20 px-6">
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-6xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center floating-element bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
             {dict.contact.heading}
           </h2>
@@ -373,129 +356,120 @@ export function Landing({
             {dict.contact.subheading}
           </p>
 
-          <BubbleCard size="lg" className="glow-effect max-w-2xl mx-auto mb-12" noAnimation>
-            <form className="space-y-6" onSubmit={handleSubmit}>
-              <div className="grid md:grid-cols-2 gap-6">
+          {/* Formulario a la izquierda (lo principal) y las otras vías a la derecha; en móvil, apilados */}
+          <div className="grid gap-6 lg:grid-cols-[1.6fr_1fr]">
+            <BubbleCard size="lg" className="glow-effect" noAnimation>
+              <form className="space-y-6" onSubmit={handleSubmit}>
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label htmlFor="name" className="text-sm font-medium text-foreground">
+                      {dict.contact.name}
+                    </label>
+                    <input
+                      id="name"
+                      type="text"
+                      placeholder={dict.contact.namePlaceholder}
+                      value={formData.name}
+                      onChange={handleChange}
+                      className="w-full px-4 py-3 rounded-2xl bg-background/50 border border-border focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label htmlFor="email" className="text-sm font-medium text-foreground">
+                      {dict.contact.email}
+                    </label>
+                    <input
+                      id="email"
+                      type="email"
+                      placeholder={dict.contact.emailPlaceholder}
+                      value={formData.email}
+                      onChange={handleChange}
+                      className="w-full px-4 py-3 rounded-2xl bg-background/50 border border-border focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
+                      required
+                    />
+                  </div>
+                </div>
                 <div className="space-y-2">
-                  <label htmlFor="name" className="text-sm font-medium text-foreground">
-                    {dict.contact.name}
+                  <label htmlFor="subject" className="text-sm font-medium text-foreground">
+                    {dict.contact.subject}
                   </label>
                   <input
-                    id="name"
+                    id="subject"
                     type="text"
-                    placeholder={dict.contact.namePlaceholder}
-                    value={formData.name}
+                    placeholder={dict.contact.subjectPlaceholder}
+                    value={formData.subject}
                     onChange={handleChange}
                     className="w-full px-4 py-3 rounded-2xl bg-background/50 border border-border focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
                     required
                   />
                 </div>
                 <div className="space-y-2">
-                  <label htmlFor="email" className="text-sm font-medium text-foreground">
-                    {dict.contact.email}
+                  <label htmlFor="message" className="text-sm font-medium text-foreground">
+                    {dict.contact.message}
                   </label>
-                  <input
-                    id="email"
-                    type="email"
-                    placeholder={dict.contact.emailPlaceholder}
-                    value={formData.email}
+                  <textarea
+                    id="message"
+                    rows={6}
+                    placeholder={dict.contact.messagePlaceholder}
+                    value={formData.message}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 rounded-2xl bg-background/50 border border-border focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
+                    className="w-full px-4 py-3 rounded-2xl bg-background/50 border border-border focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all resize-none"
                     required
                   />
                 </div>
-              </div>
-              <div className="space-y-2">
-                <label htmlFor="subject" className="text-sm font-medium text-foreground">
-                  {dict.contact.subject}
-                </label>
-                <input
-                  id="subject"
-                  type="text"
-                  placeholder={dict.contact.subjectPlaceholder}
-                  value={formData.subject}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 rounded-2xl bg-background/50 border border-border focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
-                  required
-                />
-              </div>
-              <div className="space-y-2">
-                <label htmlFor="message" className="text-sm font-medium text-foreground">
-                  {dict.contact.message}
-                </label>
-                <textarea
-                  id="message"
-                  rows={6}
-                  placeholder={dict.contact.messagePlaceholder}
-                  value={formData.message}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 rounded-2xl bg-background/50 border border-border focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all resize-none"
-                  required
-                />
-              </div>
-              <Button
-                type="submit"
-                size="lg"
-                className="w-full"
-                disabled={isSubmitting}
-                data-track="cta:contact-send"
-              >
-                <Mail className="h-5 w-5 mr-2" />
-                {isSubmitting ? dict.contact.sending : dict.contact.send}
-              </Button>
-            </form>
-          </BubbleCard>
+                <Button
+                  type="submit"
+                  size="lg"
+                  className="w-full"
+                  disabled={isSubmitting}
+                  data-track="cta:contact-send"
+                >
+                  <Mail className="h-5 w-5 mr-2" />
+                  {isSubmitting ? dict.contact.sending : dict.contact.send}
+                </Button>
+              </form>
+            </BubbleCard>
 
-          <div className="flex flex-wrap justify-center gap-6">
-            <Button variant="outline" size="lg" asChild>
-              <a href="#" role="button" onClick={handleNavigateToChat} data-track="cta:chat" aria-label={dict.hero.chatCtaLabel}>
-                <MessageCircle className="h-5 w-5 mr-2" />
-                {dict.hero.chatCta}
-              </a>
-            </Button>
-            <Button
-              variant="outline"
-              size="lg"
-             
-              asChild
-            >
-              <a href="mailto:christian.fonseca.r@gmail.com" data-track="cta:email">
-                <Mail className="h-5 w-5 mr-2" />
-                {dict.contact.directEmail}
-              </a>
-            </Button>
-            <Button
-              variant="outline"
-              size="lg"
-             
-              asChild
-            >
-              <a
-                href="https://linkedin.com/in/christian-fonseca-rodriguez"
-                target="_blank"
-                rel="noopener noreferrer"
-                data-track="social:linkedin"
-              >
-                <Linkedin className="h-5 w-5 mr-2" />
-                LinkedIn
-              </a>
-            </Button>
-            <Button
-              variant="outline"
-              size="lg"
-             
-              asChild
-            >
-              <a
-                href="https://scholar.google.com/citations?user=95NzphUAAAAJ&hl=es"
-                target="_blank"
-                rel="noopener noreferrer"
-                data-track="social:scholar"
-              >
-                <ExternalLink className="h-5 w-5 mr-2" />
-                {dict.contact.scholar}
-              </a>
-            </Button>
+            <BubbleCard size="lg" className="glow-effect flex flex-col" noAnimation>
+              <h3 className="mb-5 text-lg font-semibold text-primary">{dict.contact.otherWays}</h3>
+              <div className="flex flex-col gap-3">
+                <Button variant="outline" size="lg" className="w-full justify-start" asChild>
+                  <a href="#" role="button" onClick={handleNavigateToChat} data-track="cta:chat" aria-label={dict.hero.chatCtaLabel}>
+                    <MessageCircle className="h-5 w-5 mr-2" />
+                    {dict.hero.chatCta}
+                  </a>
+                </Button>
+                <Button variant="outline" size="lg" className="w-full justify-start" asChild>
+                  <a href="mailto:christian.fonseca.r@gmail.com" data-track="cta:email">
+                    <Mail className="h-5 w-5 mr-2" />
+                    {dict.contact.directEmail}
+                  </a>
+                </Button>
+                <Button variant="outline" size="lg" className="w-full justify-start" asChild>
+                  <a
+                    href="https://linkedin.com/in/christian-fonseca-rodriguez"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    data-track="social:linkedin"
+                  >
+                    <Linkedin className="h-5 w-5 mr-2" />
+                    LinkedIn
+                  </a>
+                </Button>
+                <Button variant="outline" size="lg" className="w-full justify-start" asChild>
+                  <a
+                    href="https://scholar.google.com/citations?user=95NzphUAAAAJ&hl=es"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    data-track="social:scholar"
+                  >
+                    <ExternalLink className="h-5 w-5 mr-2" />
+                    {dict.contact.scholar}
+                  </a>
+                </Button>
+              </div>
+            </BubbleCard>
           </div>
         </div>
       </section>
@@ -512,41 +486,5 @@ export function Landing({
 
       <SuccessModal isOpen={showSuccessModal} onClose={() => setShowSuccessModal(false)} />
     </main>
-  )
-}
-
-function ExperienceCard({
-  item,
-}: {
-  item: { role: string; org: string; period: string; current: boolean; bullets: string[]; tech: string[] }
-}) {
-  return (
-    <BubbleCard size="lg" className="glow-effect">
-      <div className="flex flex-col md:flex-row md:items-start md:justify-between mb-4">
-        <div>
-          <h3 className="text-xl font-semibold text-primary">{item.role}</h3>
-          <p className="text-lg font-medium text-foreground">{item.org}</p>
-        </div>
-        {item.current ? (
-          <Badge className="mt-2 md:mt-0 bg-primary text-primary-foreground">{item.period}</Badge>
-        ) : (
-          <Badge variant="outline" className="mt-2 md:mt-0 border-primary text-primary">
-            {item.period}
-          </Badge>
-        )}
-      </div>
-      <ul className="text-muted-foreground space-y-2 text-sm">
-        {item.bullets.map((bullet, i) => (
-          <li key={i}>• {bullet}</li>
-        ))}
-      </ul>
-      <div className="flex flex-wrap gap-2 mt-4">
-        {item.tech.map((tech) => (
-          <Badge key={tech} variant="secondary" className="text-xs">
-            {tech}
-          </Badge>
-        ))}
-      </div>
-    </BubbleCard>
   )
 }

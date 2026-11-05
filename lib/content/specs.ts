@@ -24,6 +24,7 @@ export const kindSpecs: Record<SectionKind, FieldSpec[]> = {
   hero: [
     { key: "name", label: "Nombre", type: "text" },
     { key: "tagline", label: "Tagline", type: "text" },
+    { key: "summary", label: "Propuesta de valor (una frase, opcional)", type: "textarea", hint: "va bajo el tagline" },
     { key: "location", label: "Ubicación", type: "text" },
     { key: "photo", label: "Foto de perfil", type: "image", aspect: 1 },
     {
@@ -146,6 +147,22 @@ export const kindSpecs: Record<SectionKind, FieldSpec[]> = {
       fields: [
         { key: "question", label: "Pregunta", type: "text" },
         { key: "answer", label: "Respuesta", type: "textarea" },
+      ],
+    },
+  ],
+  approach: [
+    { key: "intro", label: "Introducción (opcional)", type: "textarea" },
+    {
+      key: "items",
+      label: "Principios",
+      type: "items",
+      itemName: "principio",
+      titleKey: "title",
+      fields: [
+        { key: "icon", label: "Icono", type: "text", shared: true, hint: "cite | shield | route | rocket | bot | gauge" },
+        { key: "title", label: "Título", type: "text" },
+        { key: "text", label: "Texto", type: "textarea" },
+        { key: "proof", label: "Dónde se ve", type: "tags", hint: "separados por comas (ej. MAT, Syn, Atalaya)" },
       ],
     },
   ],
