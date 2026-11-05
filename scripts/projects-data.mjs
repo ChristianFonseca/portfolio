@@ -5,8 +5,9 @@ export const projectsEn = [
   {
     title: "Furtale",
     description:
-      "A full-stack platform for managing pet health records. Owners keep their pets' profiles, photos, voice-note journals and veterinary documents in one place, get vaccination and appointment reminders by email, share records read-only with a vet, and query an AI assistant grounded in each pet's real medical history.",
+      "A full-stack platform for managing pet health records. Owners keep their pets' profiles, photos, voice-note journals and veterinary documents in one place, get vaccination and appointment reminders by email, share records read-only with a vet, and query an AI assistant grounded in each pet's real medical history. The images show sample data.",
     image: "",
+    images: ["/projects/furtale/00-demo.anim.webp", "/projects/furtale/01-asistente-con-fuentes.webp", "/projects/furtale/02-plan-de-salud.webp", "/projects/furtale/03-inicio.webp"],
     repoUrl: "",
     liveUrl: "https://furtale.pet",
     tech: ["TypeScript", "Next.js", "React", "Python", "FastAPI", "PostgreSQL", "pgvector", "Anthropic Claude", "Google Gemini", "Whisper", "S3 / MinIO", "Docker", "Cloudflare", "Resend"],
@@ -141,8 +142,9 @@ export const projectsEs = [
   {
     title: "Furtale",
     description:
-      "Plataforma full-stack para gestionar historiales de salud de mascotas. Los dueños mantienen perfiles, fotos, bitácoras con notas de voz y documentos veterinarios en un solo lugar, reciben recordatorios de vacunas y citas por correo, comparten el historial en modo lectura con su veterinario y consultan a un asistente de IA anclado al historial médico real de cada mascota.",
+      "Plataforma full-stack para gestionar historiales de salud de mascotas. Los dueños mantienen perfiles, fotos, bitácoras con notas de voz y documentos veterinarios en un solo lugar, reciben recordatorios de vacunas y citas por correo, comparten el historial en modo lectura con su veterinario y consultan a un asistente de IA anclado al historial médico real de cada mascota. Las imágenes muestran datos de ejemplo.",
     image: "",
+    images: ["/projects/furtale/00-demo.anim.webp", "/projects/furtale/01-asistente-con-fuentes.webp", "/projects/furtale/02-plan-de-salud.webp", "/projects/furtale/03-inicio.webp"],
     repoUrl: "",
     liveUrl: "https://furtale.pet",
     tech: ["TypeScript", "Next.js", "React", "Python", "FastAPI", "PostgreSQL", "pgvector", "Anthropic Claude", "Google Gemini", "Whisper", "S3 / MinIO", "Docker", "Cloudflare", "Resend"],

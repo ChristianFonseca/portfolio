@@ -631,7 +631,7 @@
           "items": [
             {
               "title": "Furtale",
-              "description": "A full-stack platform for managing pet health records. Owners keep their pets' profiles, photos, voice-note journals and veterinary documents in one place, get vaccination and appointment reminders by email, share records read-only with a vet, and query an AI assistant grounded in each pet's real medical history.",
+              "description": "A full-stack platform for managing pet health records. Owners keep their pets' profiles, photos, voice-note journals and veterinary documents in one place, get vaccination and appointment reminders by email, share records read-only with a vet, and query an AI assistant grounded in each pet's real medical history. The images show sample data.",
               "image": "",
               "repoUrl": "",
               "liveUrl": "https://furtale.pet",
@@ -659,7 +659,12 @@
                 "Hardened edge: Cloudflare WAF and rate limiting, admin panel on a separate hostname behind Cloudflare Access (email OTP), and the origin locked down with Authenticated Origin Pulls (mTLS) so direct-to-IP traffic is rejected.",
                 "Ships as an Android (TWA) and iOS (Capacitor) app over the same live web codebase; fully bilingual ES/EN."
               ],
-              "images": []
+              "images": [
+                "/projects/furtale/00-demo.anim.webp",
+                "/projects/furtale/01-asistente-con-fuentes.webp",
+                "/projects/furtale/02-plan-de-salud.webp",
+                "/projects/furtale/03-inicio.webp"
+              ]
             },
             {
               "title": "Andes Finance",
@@ -891,7 +896,7 @@
           "items": [
             {
               "title": "Furtale",
-              "description": "Plataforma full-stack para gestionar historiales de salud de mascotas. Los dueños mantienen perfiles, fotos, bitácoras con notas de voz y documentos veterinarios en un solo lugar, reciben recordatorios de vacunas y citas por correo, comparten el historial en modo lectura con su veterinario y consultan a un asistente de IA anclado al historial médico real de cada mascota.",
+              "description": "Plataforma full-stack para gestionar historiales de salud de mascotas. Los dueños mantienen perfiles, fotos, bitácoras con notas de voz y documentos veterinarios en un solo lugar, reciben recordatorios de vacunas y citas por correo, comparten el historial en modo lectura con su veterinario y consultan a un asistente de IA anclado al historial médico real de cada mascota. Las imágenes muestran datos de ejemplo.",
               "image": "",
               "repoUrl": "",
               "liveUrl": "https://furtale.pet",
@@ -919,7 +924,12 @@
                 "Borde endurecido: WAF y rate limiting de Cloudflare, panel de administración en un hostname separado detrás de Cloudflare Access (OTP por correo), y origen bloqueado con Authenticated Origin Pulls (mTLS) que rechaza el tráfico directo a la IP.",
                 "Se distribuye como app de Android (TWA) y iOS (Capacitor) sobre el mismo código web en vivo; completamente bilingüe ES/EN."
               ],
-              "images": []
+              "images": [
+                "/projects/furtale/00-demo.anim.webp",
+                "/projects/furtale/01-asistente-con-fuentes.webp",
+                "/projects/furtale/02-plan-de-salud.webp",
+                "/projects/furtale/03-inicio.webp"
+              ]
             },
             {
               "title": "Andes Finance",
